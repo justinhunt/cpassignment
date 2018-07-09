@@ -363,7 +363,9 @@ function cpassignment_dotask(progress_trace $trace) {
 }
 
 function cpassignment_get_editornames(){
-	return array('passage','welcome','feedback');
+	// return array('passage','welcome','feedback');
+    // Note: also defines file areas for storage.
+    return array('welcome','feedback');
 }
 
 /**

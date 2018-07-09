@@ -36,8 +36,6 @@ use \mod_cpassignment\constants;
  */
 class utils{
 
-
-
    // function cpassignment_editor_with_files_options($context){
     public static function editor_with_files_options($context){
 
@@ -47,6 +45,12 @@ class utils{
 
     public static function editor_no_files_options($context){
         return array('maxfiles' => 0, 'noclean' => true,'context'=>$context);
+    }
+
+    public static function editor_standard($context){
+       return array('subdirs' => true, 'maxfiles' => -1,
+            'changeformat' => 1, 'context' => $context,
+            'noclean' => true, 'trusttext' => false);
     }
 
     //are we willing and able to transcribe submissions?

@@ -66,7 +66,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
                 progresscontainer: $('.' +  opts['progresscontainer']),
                 feedbackcontainer: $('.' +  opts['feedbackcontainer']),
                 errorcontainer: $('.' +  opts['errorcontainer']),
-                passagecontainer: $('.' +  opts['passagecontainer']),
+                //passagecontainer: $('.' +  opts['passagecontainer']),
                 recordingcontainer: $('.' +  opts['recordingcontainer']),
                 recordercontainer: $('.' +  opts['recordercontainer']),
                 instructionscontainer: $('.' +  opts['instructionscontainer'])
@@ -94,7 +94,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
             //See https://api.poodll.com
             var on_recording_start= function(eventdata){
                 dd.dopassagelayout();
-                dd.controls.passagecontainer.show(1000,dd.beginall);
+                //dd.controls.passagecontainer.show(1000,dd.beginall);
             };
 
             //originates from the recording:ended event
@@ -202,7 +202,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
             var m = this;
             m.controls.hider.fadeOut('fast');
             m.controls.progresscontainer.fadeOut('fast');
-            m.controls.passagecontainer.hide();
+            //m.controls.passagecontainer.hide();
             m.controls.recordingcontainer.hide();
             m.controls.errorcontainer.show();
         }

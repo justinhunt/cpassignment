@@ -75,27 +75,36 @@ class mod_cpassignment_mod_form extends moodleform_mod {
 		//could add files but need the context/mod info. So for now just rich text
 		$config = get_config(constants::M_FRANKY);
 
-		//The pasage
+		//The passage area is not used
 		//$edfileoptions = \mod_cpassignment\utils::editor_with_files_options($this->context);
-		$ednofileoptions = \mod_cpassignment\utils::editor_no_files_options($this->context);
-		$opts = array('rows'=>'15', 'columns'=>'80');
-		$mform->addElement('editor','passage_editor',get_string('passagelabel',constants::M_LANG),$opts, $ednofileoptions);
 
-		//welcome and feedback
-		$opts = array('rows'=>'6', 'columns'=>'80');
-		$mform->addElement('editor','welcome_editor',get_string('welcomelabel',constants::M_LANG),$opts, $ednofileoptions);
+		// $opts = array('rows'=>'15', 'columns'=>'80');
+		//$mform->addElement('editor','passage_editor',get_string('passagelabel',constants::M_LANG),$opts, $ednofileoptions);
+
+		// Welcome area is an html format page content area
+        // It is for activity instructions and resources.
+        $editorstandard = \mod_cpassignment\utils::editor_standard($this->context);
+		$mform->addElement('editor','welcome_editor',get_string('welcomelabel',constants::M_LANG), null, $editorstandard);
+
+         // post-assignment feedback
+        $opts = array('rows'=>'6', 'columns'=>'80');
+        $ednofileoptions = \mod_cpassignment\utils::editor_no_files_options($this->context);
 		$mform->addElement('editor','feedback_editor',get_string('feedbacklabel',constants::M_LANG),$opts, $ednofileoptions);
 
 		//defaults
-		$mform->setDefault('passage_editor',array('text'=>'', 'format'=>FORMAT_MOODLE));
-		$mform->setDefault('welcome_editor',array('text'=>$config->defaultwelcome, 'format'=>FORMAT_MOODLE));
+		//$mform->setDefault('passage_editor',array('text'=>'', 'format'=>FORMAT_MOODLE));
+		$mform->setDefault('welcome_editor',array('text'=>$config->defaultwelcome, 'format'=>FORMAT_HTML));
 		$mform->setDefault('feedback_editor',array('text'=>$config->defaultfeedback, 'format'=>FORMAT_MOODLE));
 
 		//types
-		$mform->setType('passage_editor',PARAM_RAW);
-		$mform->setType('welcome_editor',PARAM_RAW);
+		//$mform->setType('passage_editor',PARAM_RAW);
+		$mform->setType('welcome_editor', PARAM_RAW);
 		$mform->setType('feedback_editor',PARAM_RAW);
 
+        // Editor rules and help
+        $mform->addRule('welcome_editor', get_string('required'),
+                'required', null, 'client');
+        $mform->addHelpButton('welcome_editor', 'welcome_editor', constants::M_MODNAME);
 
         //Enable AI
         $mform->addElement('advcheckbox', 'transcribe', get_string('transcribe', constants::M_LANG), get_string('transcribe_details', constants::M_LANG));
@@ -177,12 +186,17 @@ class mod_cpassignment_mod_form extends moodleform_mod {
 	}
 
 	public function data_preprocessing(&$form_data) {
-		$ednofileoptions = \mod_cpassignment\utils::editor_no_files_options($this->context);
 		$editors  = cpassignment_get_editornames();
 		 if ($this->current->instance) {
 			$itemid = 0;
-			foreach($editors as $editor){
-				$form_data = file_prepare_standard_editor((object)$form_data,$editor, $ednofileoptions, $this->context,constants::M_FRANKY,$editor, $itemid);
+			foreach($editors as $editor) {
+                if ($editor == 'feedback') {
+                    $edoptions = \mod_cpassignment\utils::editor_no_files_options($this->context);
+                } else {
+                    // Welcome/activity instructions area
+                    $edoptions = \mod_cpassignment\utils::editor_standard($this->context);
+                }
+				$form_data = file_prepare_standard_editor((object)$form_data,$editor, $edoptions, $this->context,constants::M_FRANKY,$editor, $itemid);
 			}
 		}
 	}

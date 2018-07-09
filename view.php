@@ -115,8 +115,9 @@ if($attempts && $retake==0){
 		$latestattempt = array_shift($attempts);
 
 		// show results if graded
-		if($latestattempt->sessiontime==null){
-			echo $renderer->show_welcome($moduleinstance->welcome,$moduleinstance->name);
+		if($latestattempt->sessiontime==null) {
+            // Don't show the welcome/activity description, just the ungraded message.
+			// echo $renderer->show_welcome($moduleinstance->welcome,$moduleinstance->name);
 			echo $renderer->show_ungradedyet();
 		}else{
 			$submission = new \mod_cpassignment\submission($latestattempt->id,$modulecontext->id);

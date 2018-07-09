@@ -31,6 +31,8 @@ use \mod_cpassignment\constants;
 
 if ($ADMIN->fulltree) {
 
+    // let's use the welcome area as the activity page for
+    // instructions and resources.  Perhaps rename later.
 	 $settings->add(new admin_setting_configtextarea('mod_cpassignment/defaultwelcome',
         get_string('welcomelabel', 'cpassignment'), get_string('welcomelabel_details', constants::M_LANG), get_string('defaultwelcome',constants::M_LANG), PARAM_TEXT));
 	 $settings->add(new admin_setting_configtextarea('mod_cpassignment/defaultfeedback',
