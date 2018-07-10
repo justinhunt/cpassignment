@@ -363,9 +363,9 @@ function cpassignment_dotask(progress_trace $trace) {
 }
 
 function cpassignment_get_editornames(){
-	// return array('passage','welcome','feedback');
+	// return array('passage','instructions','feedback');
     // Note: also defines file areas for storage.
-    return array('welcome','feedback');
+    return array('instructions', 'completion');
 }
 
 /**
@@ -395,10 +395,13 @@ function cpassignment_process_editors(stdClass $themodule, mod_cpassignment_mod_
     $cmid = $themodule->coursemodule;
     $context = context_module::instance($cmid);
 	$editors = cpassignment_get_editornames();
-	$itemid=0;
-	$edoptions = \mod_cpassignment\utils::editor_no_files_options($context);
-	foreach($editors as $editor){
-		$themodule = file_postupdate_standard_editor( $themodule, $editor, $edoptions,$context,constants::M_FRANKY,$editor,$itemid);
+	$itemid=$themodule->id;
+    $edoptions = \mod_cpassignment\utils::editor_standard(
+            $context);
+
+    foreach($editors as $editor) {
+	    $themodule = file_postupdate_standard_editor( $themodule, $editor,
+        $edoptions, $context,constants::M_FRANKY,$editor,$itemid);
 	}
 	return $themodule;
 }
@@ -419,7 +422,7 @@ function cpassignment_update_instance(stdClass $themodule, mod_cpassignment_mod_
 
     $themodule->timemodified = time();
     $themodule->id = $themodule->instance;
-	$themodule = cpassignment_process_editors($themodule,$mform);
+	$themodule = cpassignment_process_editors($themodule, $mform);
 	$success = $DB->update_record(constants::M_TABLE, $themodule);
 	return $success;
 }

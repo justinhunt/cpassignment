@@ -48,9 +48,11 @@ class utils{
     }
 
     public static function editor_standard($context){
-       return array('subdirs' => true, 'maxfiles' => -1,
-            'changeformat' => 1, 'context' => $context,
-            'noclean' => true, 'trusttext' => false);
+      global $CFG;
+      return array('subdirs' => true, 'maxfiles' => EDITOR_UNLIMITED_FILES,
+              'maxbytes' => $CFG->maxbytes, 'changeformat' => 1,
+              'context' => $context, 'noclean' => true,
+              'trusttext' => false);
     }
 
     //are we willing and able to transcribe submissions?

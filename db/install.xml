@@ -13,10 +13,10 @@
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)"/>
 		<FIELD NAME="passage" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The passage to be read." />
         <FIELD NAME="passageformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the passage field (MOODLE, HTML, MARKDOWN...)"/>
-		<FIELD NAME="welcome" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Welcome text" />
-        <FIELD NAME="welcomeformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the welcome field (MOODLE, HTML, MARKDOWN...)"/>
-		<FIELD NAME="feedback" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Feedback text" />
-        <FIELD NAME="feedbackformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the feedback field (MOODLE, HTML, MARKDOWN...)"/>
+		<FIELD NAME="instructions" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Activity instructions and resources" />
+        <FIELD NAME="instructionsformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the instructions field (MOODLE, HTML, MARKDOWN...)"/>
+		<FIELD NAME="completion" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Activity completion message area" />
+        <FIELD NAME="completionformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the completion message field (MOODLE, HTML, MARKDOWN...)"/>
 		<FIELD NAME="timelimit" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
 		<FIELD NAME="grade" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
 		<FIELD NAME="gradeoptions" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0"  SEQUENCE="false" COMMENT="gradeoptions" />

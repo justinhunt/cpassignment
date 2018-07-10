@@ -93,15 +93,22 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
-     *  Show instructions/welcome
+     *  Show instructions/instructions
      */
-    public function show_welcome($showtext, $showtitle) {
+    public function show_instructions($showtext, $showtitle) {
         $thetitle =  $this->output->heading($showtitle, 3, 'main');
-        $displaytext =  \html_writer::div($thetitle ,constants::M_CLASS  . '_center');
+        $displaytext =  \html_writer::div($thetitle,
+                constants::M_CLASS  . '_center');
         $displaytext .= $this->output->box_start();
-        $displaytext .= \html_writer::div($showtext ,constants::M_CLASS  . '_center');
+
+        // Show the text according to the layout in the editor.
+        $displaytext .= \html_writer::div($showtext);
+
         $displaytext .= $this->output->box_end();
-        $ret= \html_writer::div($displaytext,constants::M_INSTRUCTIONS_CONTAINER,array('id'=>constants::M_INSTRUCTIONS_CONTAINER));
+        $ret= \html_writer::div($displaytext,
+                constants::M_INSTRUCTIONS_CONTAINER,
+                array('id'=>constants::M_INSTRUCTIONS_CONTAINER));
+
         return $ret;
     }
 
@@ -144,20 +151,23 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Show the feedback set in the activity settings
+     * Show the completion message in the activity settings
      */
-    public function show_feedback($themodule, $cm, $showtitle) {
+    public function show_completion($themodule, $cm, $showtext,
+            $showtitle) {
         $thetitle =  $this->output->heading($showtitle, 3, 'main');
-        $displaytext =  \html_writer::div($thetitle ,constants::M_CLASS  . '_center');
+        $displaytext =  \html_writer::div($thetitle,
+                constants::M_CLASS  . '_center');
         $displaytext .= $this->output->box_start();
-        $displaytext .=  \html_writer::div($themodule->feedback,constants::M_CLASS  . '_center');
+        $displaytext .=  \html_writer::div($showtext,
+                 constants::M_CLASS  . '_center');
         $displaytext .= $this->output->box_end();
 
         // Add a button for user to nav back to view.
         // Can add a different label if required.
         $displaytext .= self::reattemptbutton($themodule,
             get_string('reattempt',constants::M_FRANKY));
-        $ret = \html_writer::div($displaytext,constants::M_FEEDBACK_CONTAINER,array('id'=>constants::M_FEEDBACK_CONTAINER));
+        $ret = \html_writer::div($displaytext,constants::M_COMPLETION_CONTAINER,array('id'=>constants::M_COMPLETION_CONTAINER));
 
         return $ret;
     }
@@ -211,10 +221,10 @@ class renderer extends \plugin_renderer_base {
         $recopts['recordercontainer'] = constants::M_RECORDER_CONTAINER;
 
         //activity html ids
-        $recopts['passagecontainer'] = constants::M_PASSAGE_CONTAINER;
+        //$recopts['passagecontainer'] = constants::M_PASSAGE_CONTAINER;
         $recopts['instructionscontainer'] = constants::M_INSTRUCTIONS_CONTAINER;
         $recopts['progresscontainer'] = constants::M_PROGRESS_CONTAINER;
-        $recopts['feedbackcontainer'] = constants::M_FEEDBACK_CONTAINER;
+        $recopts['completioncontainer'] = constants::M_COMPLETION_CONTAINER;
         $recopts['hider']=constants::M_HIDER;
 
 

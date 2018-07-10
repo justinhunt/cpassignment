@@ -15,6 +15,8 @@ class constants
 const M_FRANKY='mod_cpassignment';
 const M_FILEAREA_SUBMISSIONS='submission';
 const M_FILEAREA_FEEDBACKTEXT='feedbacktext';
+const M_FILEAREA_COMPLETION='completion';
+const M_FILEAREA_INSTRUCTIONS='intructions';
 const M_LANG='mod_cpassignment';
 const M_TABLE='cpassignment';
 const M_USERTABLE='cpassignment_attempt';
@@ -28,16 +30,15 @@ const M_RECORDERID='therecorderid';
 const M_RECORDING_CONTAINER='mod_cpassignment_recording_cont';
 const M_RECORDER_CONTAINER='mod_cpassignment_recorder_cont';
 const M_INSTRUCTIONS_CONTAINER='mod_cpassignment_instructions_cont';
-const M_PASSAGE_CONTAINER='mod_cpassignment_passage_cont';
-const M_FEEDBACK_CONTAINER='mod_cpassignment_feedback_cont';
+//const M_PASSAGE_CONTAINER='mod_cpassignment_passage_cont';
+const M_COMPLETION_CONTAINER='mod_cpassignment_completion_cont';
 const M_ERROR_CONTAINER='mod_cpassignment_error_cont';
 const M_GRADING_PLAYER_CONTAINER='mod_cpassignment_grading_player_cont';
 const M_GRADING_PLAYER='mod_cpassignment_grading_player';
-    const M_GRADING_FORM_SESSIONTIME='mod_cpassignment_gradingform_sessiontime';
-    const M_GRADING_FORM_FEEDBACKAUDIO='mod_cpassignment_gradingform_feedbackaudio';
-    const M_GRADING_FORM_FEEDBACKVIDEO='mod_cpassignment_gradingform_feedbackvideo';
-    const M_GRADING_FORM_SESSIONSCORE='mod_cpassignment_gradingform_sessionscore';
-
+const M_GRADING_FORM_SESSIONTIME='mod_cpassignment_gradingform_sessiontime';
+const M_GRADING_FORM_FEEDBACKAUDIO='mod_cpassignment_gradingform_feedbackaudio';
+const M_GRADING_FORM_FEEDBACKVIDEO='mod_cpassignment_gradingform_feedbackvideo';
+const M_GRADING_FORM_SESSIONSCORE='mod_cpassignment_gradingform_sessionscore';
 
 const M_HIDDEN_PLAYER='mod_cpassignment_hidden_player';
 const M_HIDDEN_PLAYER_BUTTON='mod_cpassignment_hidden_player_button';

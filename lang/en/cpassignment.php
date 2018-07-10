@@ -39,7 +39,61 @@ $string['cpassignment'] = 'cpassignment';
 $string['pluginadministration'] = 'CloudPoodll Assignment Administration';
 $string['pluginname'] = 'CloudPoodll Assignment Activity';
 
+// Admin Settings strings
+$string['instructionslabel'] = 'Activity instructions';
+$string['instructionslabel_details'] ='The default text to show in the activity area when creating a new CloudPoodll Assignment.';
+$string['defaultinstructions'] = 'Instructions and resources for this CloudPoodll Assignment.';
+$string['instructions_editor'] ='Activity description.';
+$string['instructions_editor_help'] ='Add your assignment instructions and resources here.  You may include media such as images, audio and video.';
+$string['completionlabel'] = 'Completed attempt message';
+$string['completionlabel'] = 'completion Message';
+$string['completionlabel_details'] ='The default text to show in the completion field when creating a new CloudPoodll Assignment.';
+$string['completion_editor'] ='Activity completion message.';
+$string['completion_editor_help'] ='Add your assignment completion message  here.  You may include media such as images, audio and video.';
+$string['defaultcompletion'] = 'Thanks for your time.';
+$string['apiuser']='Poodll API User ';
+$string['apiuser_details']='The Poodll account username that authorises Poodll on this site.';
+$string['apisecret']='Poodll API Secret ';
+$string['apisecret_details']='The Poodll API secret. See <a href= "https://support.poodll.com/support/solutions/articles/19000083076-cloud-poodll-api-secret">here</a> for more details';
+$string['transcribe']='Transcribe audio';
+$string['transcribe_details']='';
+
+
+$string['useast1']='US East';
+$string['tokyo']='Tokyo, Japan';
+$string['sydney']='Sydney, Australia';
+$string['dublin']='Dublin, Ireland';
+$string['forever']='Never expire';
+$string['en-us']='English (US)';
+$string['es-us']='Spanish (US)';
+$string['awsregion']='AWS Region';
+$string['region']='AWS Region';
+$string['expiredays']='Days to keep file';
+
+$string['audio']='Audio';
+$string['video']='Video';
+$string['onetwothree']='One Two Three';
+$string['bmr']='Burnt Rose';
+$string['once']='Once';
+$string['mediatype']='Media Type';
+$string['recordertype']='Recorder Type';
+
+// Sections in instance settings
 $string['cpassignmentsettings'] = 'cpassignment settings';
+$string['attemptsettings'] = 'Attempt settings';
+$string['feedbacksettings'] = 'Grader feedback settings';
+$string['fblabel'] = 'Settings';
+$string['fbdescription'] = 'Select default feedback method for grading. You can select additional feedback options on the grading page.';
+
+// Checkboxes for grading choices - instance settings.
+$string['feedbackaudiolabel'] ='Feedback (audio)';
+$string['feedbacktextlabel'] ='Feedback (text)';
+$string['feedbackvideolabel'] ='Feedback (video)';
+$string['fbtext_details'] = 'Enable text feedback';
+$string['fbaudio_details'] = 'Enable audio feedback';
+$string['fbvideo_details'] = 'Enable video feedback';
+
+// Capabilities and permissions.
 $string['cpassignment:addinstance'] = 'Add a new CloudPoodll Assignment';
 $string['cpassignment:view'] = 'View CloudPoodll Assignment';
 $string['cpassignment:view'] = 'Preview CloudPoodll Assignment';
@@ -51,7 +105,6 @@ $string['cpassignment:manage'] = 'Can manage CloudPoodll Assignment instances';
 $string['cpassignment:preview'] = 'Can preview CloudPoodll Assignment activities';
 $string['cpassignment:submit'] = 'Can submit CloudPoodll Assignment attempts';
 $string['privacy:metadata'] = 'The Poodll CloudPoodll Assignment plugin does store personal data.';
-
 
 $string['id']='ID';
 $string['name']='Name';
@@ -94,18 +147,13 @@ $string['gradeaverage'] ='average score of all attempts';
 $string['defaultsettings'] ='Default Settings';
 $string['exceededattempts'] ='You have completed the maximum {$a} attempts.';
 $string['cpassignmenttask'] ='CloudPoodll Assignment Task';
-$string['passagelabel'] ='Reading Passage';
-$string['welcomelabel'] = 'Activity instructions';
-$string['welcomelabel_details'] ='The default text to show in the activity area when creating a new CloudPoodll Assignment.';
-$string['welcome_editor'] ='Activity description.';
-$string['welcome_editor_help'] ='Add your assignment instructions and resources here.  You may include media such as images, audio and video.';
-$string['feedbacklabel'] = 'Feedback Message';
-$string['feedbacklabel_details'] ='The default text to show in the feedback field when creating a new CloudPoodll Assignment.';
-$string['feedbackaudiolabel'] ='Feedback(audio)';
-$string['feedbacktextlabel'] ='Feedback(text)';
-$string['feedbackvideolabel'] ='Feedback(video)';
-$string['defaultwelcome'] = 'Welcome to this CloudPoodll Assignment.';
-$string['defaultfeedback'] = 'Thanks for your time.';
+//$string['passagelabel'] ='Reading Passage';
+
+// Grading form labels (and checkboxes)
+$string['feedbackaudiolabel'] ='Feedback (audio)';
+$string['feedbacktextlabel'] ='Feedback (text)';
+$string['feedbackvideolabel'] ='Feedback (video)';
+
 $string['timelimit'] = 'Time Limit';
 $string['gotnosound'] = 'We could not hear you. Please check the permissions and settings for microphone and try again.';
 $string['done'] = 'Done';
@@ -134,30 +182,3 @@ $string['accuracy_p']='Acc(%)';
 $string['mistakes']='Mistakes';
 $string['grade']='Grade';
 $string['grade_p']='Grade(%)';
-
-$string['apiuser']='Poodll API User ';
-$string['apiuser_details']='The Poodll account username that authorises Poodll on this site.';
-$string['apisecret']='Poodll API Secret ';
-$string['apisecret_details']='The Poodll API secret. See <a href= "https://support.poodll.com/support/solutions/articles/19000083076-cloud-poodll-api-secret">here</a> for more details';
-$string['transcribe']='Transcribe audio';
-$string['transcribe_details']='';
-
-
-$string['useast1']='US East';
-$string['tokyo']='Tokyo, Japan';
-$string['sydney']='Sydney, Australia';
-$string['dublin']='Dublin, Ireland';
-$string['forever']='Never expire';
-$string['en-us']='English (US)';
-$string['es-us']='Spanish (US)';
-$string['awsregion']='AWS Region';
-$string['region']='AWS Region';
-$string['expiredays']='Days to keep file';
-
-$string['audio']='Audio';
-$string['video']='Video';
-$string['onetwothree']='One Two Three';
-$string['bmr']='Burnt Rose';
-$string['once']='Once';
-$string['mediatype']='Media Type';
-$string['recordertype']='Recorder Type';

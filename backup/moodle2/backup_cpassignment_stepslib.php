@@ -50,7 +50,7 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
 
         // root element describing cpassignment instance
         $oneactivity = new backup_nested_element(constants::M_MODNAME, array('id'), array(
-            'course','name','intro','introformat','timelimit','passage','passageformat','welcome','welcomeformat','feedback','feedbackformat',
+            'course','name','intro','introformat','timelimit','passage','passageformat','instructions','instructionsformat','feedback','feedbackformat',
             'grade','gradeoptions','maxattempts','mingrade','language','transcribe','subtitle','mediatype','recordertype','region','timecreated','timemodified'
 			));
 
@@ -85,7 +85,7 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
         // Define file annotations.
         // intro file area has 0 itemid.
         $oneactivity->annotate_files(constants::M_FRANKY, 'intro', null);
-		$oneactivity->annotate_files(constants::M_FRANKY, 'welcome', null);
+		$oneactivity->annotate_files(constants::M_FRANKY, 'instructions', null);
 		$oneactivity->annotate_files(constants::M_FRANKY, 'passage', null);
 		$oneactivity->annotate_files(constants::M_FRANKY, 'feedback', null);
 

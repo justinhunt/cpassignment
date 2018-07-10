@@ -21,6 +21,7 @@
 	text-align: center;
 	width: 100%;
 }
+/*
 .mod_cpassignment_passage_cont {
 	display: none;
 	line-height: 2em;
@@ -35,11 +36,9 @@
 	background-color: #CCCCCC;
 	padding: 2px;
 }
-.mod_cpassignment_feedback_cont {
+*/
+.mod_cpassignment_completion_cont {
 	display: none;
-}
-.mod_cpassignment_return_course {
-    /* display: none; */
 }
 .mod_cpassignment_error_cont {
 	display: none;
@@ -73,7 +72,7 @@
 .mod_cpassignment_hidden_player_button_playing{
 	color: white;
 }
-mod_cpassignment_grading_error_img {
+.mod_cpassignment_grading_error_img {
 	color: blue;
 }
 .mod_cpassignment_grading_action_cont {
@@ -121,5 +120,4 @@ mod_cpassignment_grading_error_img {
         border:  2px solid black;
         z-index:100;
 		background-color: white;
-
     }

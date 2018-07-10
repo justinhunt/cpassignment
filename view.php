@@ -25,13 +25,8 @@
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 use \mod_cpassignment\constants;
-
-
-
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $retake = optional_param('retake', 0, PARAM_INT); // course_module ID, or
@@ -116,8 +111,6 @@ if($attempts && $retake==0){
 
 		// show results if graded
 		if($latestattempt->sessiontime==null) {
-            // Don't show the welcome/activity description, just the ungraded message.
-			// echo $renderer->show_welcome($moduleinstance->welcome,$moduleinstance->name);
 			echo $renderer->show_ungradedyet();
 		}else{
 			$submission = new \mod_cpassignment\submission($latestattempt->id,$modulecontext->id);
@@ -137,9 +130,7 @@ if($attempts && $retake==0){
 		return;
 }
 
-
 //From here we actually display the page.
-//this is core renderer stuff
 
 //if we are teacher we see tabs. If student we just see the activity
 if(has_capability('mod/cpassignment:preview',$modulecontext)){
@@ -153,10 +144,20 @@ $token = \mod_cpassignment\utils::fetch_token($config->apiuser,$config->apisecre
 
 
 //show all the main parts. Many will be hidden and displayed by JS
-echo $renderer->show_welcome($moduleinstance->welcome,$moduleinstance->name);
-echo $renderer->show_feedback($moduleinstance, $cm, $moduleinstance->name);
+
+// Process plugin files for standard editor component.
+$instructions = file_rewrite_pluginfile_urls($moduleinstance->instructions,
+    'pluginfile.php', $modulecontext->id, constants::M_MODNAME,
+    constants::M_FILEAREA_INSTRUCTIONS, $moduleinstance->id);
+$completion = file_rewrite_pluginfile_urls($moduleinstance->completion,
+    'pluginfile.php', $modulecontext->id, constants::M_MODNAME,
+    constants::M_FILEAREA_COMPLETION, $moduleinstance->id);
+
+echo $renderer->show_instructions($instructions, $moduleinstance->name);
+echo $renderer->show_completion($moduleinstance, $cm,
+        $completion, $moduleinstance->name);
 echo $renderer->show_error($moduleinstance,$cm);
-echo $renderer->show_passage($moduleinstance,$cm);
+//echo $renderer->show_passage($moduleinstance,$cm);
 echo $renderer->show_recorder($moduleinstance,$token);
 echo $renderer->show_progress($moduleinstance,$cm);
 

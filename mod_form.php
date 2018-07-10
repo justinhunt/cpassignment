@@ -45,8 +45,8 @@ class mod_cpassignment_mod_form extends moodleform_mod {
 
         $mform = $this->_form;
 
-        //-------------------------------------------------------------------------------
-        // Adding the "general" fieldset, where all the common settings are showed
+        //----------------------------------------------------------------
+        // Adding the "general" fieldset, where all the common settings are shown.
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field
@@ -71,46 +71,53 @@ class mod_cpassignment_mod_form extends moodleform_mod {
 		$mform->addElement('duration', 'timelimit', get_string('timelimit',constants::M_LANG));
 		$mform->setDefault('timelimit',60);
 
-		//add other editors
-		//could add files but need the context/mod info. So for now just rich text
+		// Add other editors.  HTML format for media files.
 		$config = get_config(constants::M_FRANKY);
 
-		//The passage area is not used
+		//The passage area is not used but hasn't been removed yet.
 		//$edfileoptions = \mod_cpassignment\utils::editor_with_files_options($this->context);
 
 		// $opts = array('rows'=>'15', 'columns'=>'80');
 		//$mform->addElement('editor','passage_editor',get_string('passagelabel',constants::M_LANG),$opts, $ednofileoptions);
 
-		// Welcome area is an html format page content area
+		// instructions area is an html format page content area
         // It is for activity instructions and resources.
         $editorstandard = \mod_cpassignment\utils::editor_standard($this->context);
-		$mform->addElement('editor','welcome_editor',get_string('welcomelabel',constants::M_LANG), null, $editorstandard);
+		$mform->addElement('editor','instructions_editor',
+                get_string('instructionslabel', constants::M_LANG), null,
+                $editorstandard);
 
-         // post-assignment feedback
-        $opts = array('rows'=>'6', 'columns'=>'80');
-        $ednofileoptions = \mod_cpassignment\utils::editor_no_files_options($this->context);
-		$mform->addElement('editor','feedback_editor',get_string('feedbacklabel',constants::M_LANG),$opts, $ednofileoptions);
+         // Post-assignment completion.
+		$mform->addElement('editor','completion_editor',
+                get_string('completionlabel', constants::M_LANG),
+                null, $editorstandard);
 
 		//defaults
 		//$mform->setDefault('passage_editor',array('text'=>'', 'format'=>FORMAT_MOODLE));
-		$mform->setDefault('welcome_editor',array('text'=>$config->defaultwelcome, 'format'=>FORMAT_HTML));
-		$mform->setDefault('feedback_editor',array('text'=>$config->defaultfeedback, 'format'=>FORMAT_MOODLE));
+		$mform->setDefault('instructions_editor',array('text'=>$config->defaultinstructions, 'format'=>FORMAT_HTML));
+		$mform->setDefault('completion_editor',array('text'=>$config->defaultcompletion, 'format'=>FORMAT_HTML));
 
 		//types
 		//$mform->setType('passage_editor',PARAM_RAW);
-		$mform->setType('welcome_editor', PARAM_RAW);
-		$mform->setType('feedback_editor',PARAM_RAW);
+		$mform->setType('instructions_editor', PARAM_RAW);
+		$mform->setType('completion_editor',PARAM_RAW);
 
         // Editor rules and help
-        $mform->addRule('welcome_editor', get_string('required'),
-                'required', null, 'client');
-        $mform->addHelpButton('welcome_editor', 'welcome_editor', constants::M_MODNAME);
+        $mform->addRule('instructions_editor', get_string('required'),
+                 'required', null, 'client');
+        $mform->addHelpButton('instructions_editor', 'instructions_editor',
+                 constants::M_MODNAME);
+        $mform->addHelpButton('completion_editor', 'completion_editor',
+                 constants::M_MODNAME);
 
         //Enable AI
         $mform->addElement('advcheckbox', 'transcribe', get_string('transcribe', constants::M_LANG), get_string('transcribe_details', constants::M_LANG));
         $mform->setDefault('transcribe',$config->transcribe);
 
 		//Attempts
+        $mform->addElement('header', 'attemptsettings',
+                get_string('attemptsettings', constants::M_LANG));
+
         $attemptoptions = array(0 => get_string('unlimited', constants::M_LANG),
                             1 => '1',2 => '2',3 => '3',4 => '4',5 => '5',);
         $mform->addElement('select', 'maxattempts', get_string('maxattempts', constants::M_LANG), $attemptoptions);
@@ -139,6 +146,24 @@ class mod_cpassignment_mod_form extends moodleform_mod {
         $expiredaysoptions = \mod_cpassignment\utils::get_expiredays_options();
         $mform->addElement('select', 'expiredays', get_string('expiredays', constants::M_LANG), $expiredaysoptions);
         $mform->setDefault('expiredays',$config->expiredays);
+
+        // Feedback options.
+        $mform->addElement('header', 'feedbacksettings',
+                get_string('feedbacksettings', constants::M_LANG));
+
+        $mform->addElement('static', 'feedbackdescription',
+                get_string('fblabel', constants::M_LANG),
+                get_string('fbdescription', constants::M_LANG));
+
+        $mform->addElement('advcheckbox', 'fbtext',
+                get_string('feedbacktextlabel',  constants::M_LANG),
+                get_string('fbtext_details', constants::M_LANG));
+        $mform->addElement('advcheckbox', 'fbtaudio',
+                get_string('feedbackaudiolabel', constants::M_LANG),
+                get_string('fbaudio_details', constants::M_LANG));
+        $mform->addElement('advcheckbox', 'fbvideo',
+                get_string('feedbackvideolabel', constants::M_LANG),
+                get_string('fbvideo_details', constants::M_LANG));
 
 		 // Grade.
         $this->standard_grading_coursemodule_elements();
@@ -188,15 +213,14 @@ class mod_cpassignment_mod_form extends moodleform_mod {
 	public function data_preprocessing(&$form_data) {
 		$editors  = cpassignment_get_editornames();
 		 if ($this->current->instance) {
-			$itemid = 0;
 			foreach($editors as $editor) {
-                if ($editor == 'feedback') {
-                    $edoptions = \mod_cpassignment\utils::editor_no_files_options($this->context);
-                } else {
-                    // Welcome/activity instructions area
-                    $edoptions = \mod_cpassignment\utils::editor_standard($this->context);
-                }
-				$form_data = file_prepare_standard_editor((object)$form_data,$editor, $edoptions, $this->context,constants::M_FRANKY,$editor, $itemid);
+                $edoptions = \mod_cpassignment\utils::editor_standard(
+                        $this->context;
+				$form_data = (object) $form_data;
+                $form_data = file_prepare_standard_editor(
+                        $form_data, $editor, $edoptions,
+                        $this->context, constants::M_FRANKY,
+                        $editor, $formdata->id);
 			}
 		}
 	}

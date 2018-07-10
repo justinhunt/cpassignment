@@ -104,7 +104,7 @@ class restore_cpassignment_activity_structure_step extends restore_activity_stru
     protected function after_execute() {
         // Add module related files, no need to match by itemname (just internally handled context)
         $this->add_related_files(constants::M_FRANKY, 'intro', null);
-		$this->add_related_files(constants::M_FRANKY, 'welcome', null);
+		$this->add_related_files(constants::M_FRANKY, 'instructions', null);
 		$this->add_related_files(constants::M_FRANKY, 'passage', null);
 		$this->add_related_files(constants::M_FRANKY, 'feedback', null);
 
