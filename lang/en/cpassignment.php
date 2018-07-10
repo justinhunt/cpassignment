@@ -65,6 +65,7 @@ $string['totalattempts']='Attempts';
 $string['overview']='Overview';
 $string['overview_help']='Overview Help';
 $string['view']='View';
+$string['returncourse']='Finish';
 $string['preview']='Preview';
 $string['viewreports']='View Reports';
 $string['reports']='Reports';

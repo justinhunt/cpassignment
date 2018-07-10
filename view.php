@@ -140,7 +140,7 @@ if($attempts && $retake==0){
 //From here we actually display the page.
 //this is core renderer stuff
 
-//if we are teacher we see tabs. If student we just see the quiz
+//if we are teacher we see tabs. If student we just see the activity
 if(has_capability('mod/cpassignment:preview',$modulecontext)){
 	echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', constants::M_LANG));
 }else{
@@ -153,7 +153,7 @@ $token = \mod_cpassignment\utils::fetch_token($config->apiuser,$config->apisecre
 
 //show all the main parts. Many will be hidden and displayed by JS
 echo $renderer->show_welcome($moduleinstance->welcome,$moduleinstance->name);
-echo $renderer->show_feedback($moduleinstance,$cm,$moduleinstance->name);
+echo $renderer->show_feedback($moduleinstance, $cm, $moduleinstance->name);
 echo $renderer->show_error($moduleinstance,$cm);
 echo $renderer->show_passage($moduleinstance,$cm);
 echo $renderer->show_recorder($moduleinstance,$token);

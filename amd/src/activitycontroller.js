@@ -179,12 +179,12 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
             m.controls.introbox.hide();
             //m.controls.instructionscontainer.hide();
             if(m.controls.allowearlyexit){
-              //  m.controls.stopbutton.hide();
+              m.controls.stopbutton.hide();
             }
         },
         douploadlayout: function(){
             var m = this;
-            m.controls.passagecontainer.addClass('mod_cpassignment_passage_finished');
+            //m.controls.passagecontainer.addClass('mod_cpassignment_passage_finished');
             m.controls.hider.fadeIn('fast');
             m.controls.progresscontainer.fadeIn('fast');
         },

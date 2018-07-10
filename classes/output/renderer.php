@@ -149,13 +149,16 @@ class renderer extends \plugin_renderer_base {
     /**
      * Show the feedback set in the activity settings
      */
-    public function show_feedback($themodule,$cm,$showtitle){
+    public function show_feedback($themodule, $cm, $showtitle) {
         $thetitle =  $this->output->heading($showtitle, 3, 'main');
         $displaytext =  \html_writer::div($thetitle ,constants::M_CLASS  . '_center');
         $displaytext .= $this->output->box_start();
         $displaytext .=  \html_writer::div($themodule->feedback,constants::M_CLASS  . '_center');
+
         $displaytext .= $this->output->box_end();
-        $ret= \html_writer::div($displaytext,constants::M_FEEDBACK_CONTAINER,array('id'=>constants::M_FEEDBACK_CONTAINER));
+        $displaytext .= self::reattemptbutton($themodule);
+        $ret = \html_writer::div($displaytext,constants::M_FEEDBACK_CONTAINER,array('id'=>constants::M_FEEDBACK_CONTAINER));
+
         return $ret;
     }
 

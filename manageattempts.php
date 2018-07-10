@@ -90,7 +90,8 @@ switch($action){
 			print_error("Could not delete attempt");
 		}
 		//delete AI grades for this attempt too
-        $DB->delete_records(constants::M_AITABLE, array('attemptid'=>$attemptid));
+		// No such table yet...
+        // $DB->delete_records(constants::M_AITABLE, array('attemptid'=>$attemptid));
 
 		redirect($redirecturl);
 		return;
