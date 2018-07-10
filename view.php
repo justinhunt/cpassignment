@@ -128,7 +128,8 @@ if($attempts && $retake==0){
 
 		//show  button or a label depending on of can retake
 		if($canattempt){
-			echo $renderer->reattemptbutton($moduleinstance);
+			echo $renderer->reattemptbutton($moduleinstance,
+                get_string('reattempt',constants::M_FRANKY));
 		}else{
 			echo $renderer->exceededattempts($moduleinstance);
 		}

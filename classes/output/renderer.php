@@ -63,18 +63,17 @@ class renderer extends \plugin_renderer_base {
         return $this->output->header();
     }
 
-
     /**
-     *
+     *  Might be useful as general purpose buttoner.
      */
-    public function reattemptbutton($moduleinstance){
+    public function reattemptbutton($moduleinstance, $buttonlabel){
 
         $button = $this->output->single_button(new \moodle_url(constants::M_URL . '/view.php',
-            array('n'=>$moduleinstance->id,'retake'=>1)),get_string('reattempt',constants::M_FRANKY));
+            array('n'=>$moduleinstance->id,'retake'=>1)),
+            $buttonlabel);
 
         $ret = \html_writer::div($button ,constants::M_CLASS  . '_afterattempt_cont');
         return $ret;
-
     }
 
     /**
@@ -92,8 +91,6 @@ class renderer extends \plugin_renderer_base {
         $ret = \html_writer::div($message ,constants::M_CLASS  . '_ungraded_cont');
         return $ret;
     }
-
-
 
     /**
      *  Show instructions/welcome
@@ -154,9 +151,12 @@ class renderer extends \plugin_renderer_base {
         $displaytext =  \html_writer::div($thetitle ,constants::M_CLASS  . '_center');
         $displaytext .= $this->output->box_start();
         $displaytext .=  \html_writer::div($themodule->feedback,constants::M_CLASS  . '_center');
-
         $displaytext .= $this->output->box_end();
-        $displaytext .= self::reattemptbutton($themodule);
+
+        // Add a button for user to nav back to view.
+        // Can add a different label if required.
+        $displaytext .= self::reattemptbutton($themodule,
+            get_string('reattempt',constants::M_FRANKY));
         $ret = \html_writer::div($displaytext,constants::M_FEEDBACK_CONTAINER,array('id'=>constants::M_FEEDBACK_CONTAINER));
 
         return $ret;
