@@ -82,7 +82,7 @@ class mod_cpassignment_mod_form extends moodleform_mod {
 
 		// instructions area is an html format page content area
         // It is for activity instructions and resources.
-        $editorstandard = \mod_cpassignment\utils::editor_standard($this->context);
+        $editorstandard = \mod_cpassignment\utils::editor_with_files_options($this->context);
 		$mform->addElement('editor','instructions_editor',
                 get_string('instructionslabel', constants::M_LANG), null,
                 $editorstandard);
@@ -157,13 +157,18 @@ class mod_cpassignment_mod_form extends moodleform_mod {
 
         $mform->addElement('advcheckbox', 'fbtext',
                 get_string('feedbacktextlabel',  constants::M_LANG),
-                get_string('fbtext_details', constants::M_LANG));
-        $mform->addElement('advcheckbox', 'fbtaudio',
+                get_string('fbtext_details', constants::M_LANG),
+                null, array(0, 1));
+
+        $mform->addElement('advcheckbox', 'fbaudio',
                 get_string('feedbackaudiolabel', constants::M_LANG),
-                get_string('fbaudio_details', constants::M_LANG));
+                get_string('fbaudio_details', constants::M_LANG),
+                null, array(0, 1));
+
         $mform->addElement('advcheckbox', 'fbvideo',
                 get_string('feedbackvideolabel', constants::M_LANG),
-                get_string('fbvideo_details', constants::M_LANG));
+                get_string('fbvideo_details', constants::M_LANG),
+                null, array(0, 1));
 
 		 // Grade.
         $this->standard_grading_coursemodule_elements();
@@ -218,13 +223,13 @@ class mod_cpassignment_mod_form extends moodleform_mod {
 		$editors  = cpassignment_get_editornames();
 		 if ($this->current->instance) {
 			foreach($editors as $editor) {
-                $edoptions = \mod_cpassignment\utils::editor_standard(
-                        $this->context;
+                $edoptions = \mod_cpassignment\utils::editor_with_files_options(
+                        $this->context);
 				$form_data = (object) $form_data;
                 $form_data = file_prepare_standard_editor(
                         $form_data, $editor, $edoptions,
                         $this->context, constants::M_FRANKY,
-                        $editor, $formdata->id);
+                        $editor, $form_data->id);
 			}
 		}
 	}

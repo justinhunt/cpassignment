@@ -50,6 +50,8 @@ class gradenowform extends \moodleform{
         $shownext = $this->_customdata['shownext'];
 		$mform->addElement('header','General','');
 
+        // Selected forms of feedback from mod_form.
+        $fbopts = $this->_customdata['fbopts'];
 
         // adding the hidden fields which recorders write to and other bits we might/will use
 		$mform->addElement('hidden', 'action');
@@ -76,21 +78,31 @@ class gradenowform extends \moodleform{
         $mform->setType('sessionscore', PARAM_INT);
 
 
-        //Feedback text
-        $edfileoptions = \mod_cpassignment\utils::editor_with_files_options($this->context);
-        $opts = array('rows'=>'15', 'columns'=>'80');
-        $mform->addElement('editor','feedbacktext_editor',get_string('feedbacktextlabel',constants::M_LANG),$opts, $edfileoptions);
-        $mform->setDefault('feedbacktext_editor',array('text'=>'', 'format'=>FORMAT_MOODLE));
-        $mform->setType('feedbacktext_editor',PARAM_RAW);
+        // Feedback text.
+        if ($fbopts['text']) {
+            $edfileoptions = \mod_cpassignment\utils::
+                    editor_with_files_options($this->context);
+            $opts = array('rows'=>'15', 'columns'=>'80');
+            $mform->addElement('editor','feedbacktext_editor',
+                    get_string('feedbacktextlabel', constants::M_LANG),
+                    $opts, $edfileoptions);
+            $mform->setDefault('feedbacktext_editor',
+                    array('text'=>'', 'format' => FORMAT_HTML));
+            $mform->setType('feedbacktext_editor',PARAM_RAW);
+        }
+        // Feedback audio.
+        if ($fbopts['audio']) {
+            $mform->addElement('static', 'feedbackaudioholder',
+                    get_string('feedbackaudiolabel',constants::M_LANG),
+                    $this->audiorecorderhtml);
+        }
 
-        //feedback audio
-        $mform->addElement('static', 'feedbackaudioholder',get_string('feedbackaudiolabel',constants::M_LANG),
-            $this->audiorecorderhtml);
-
-        //feedback video
-        $mform->addElement('static', 'feedbackvideoholder',get_string('feedbackvideolabel',constants::M_LANG),
-            $this->videorecorderhtml);
-
+        // Feedback video.
+        if ($fbopts['audio']) {
+            $mform->addElement('static', 'feedbackvideoholder',
+                    get_string('feedbackvideolabel',constants::M_LANG),
+                    $this->videorecorderhtml);
+        }
 
         //-------------------------------------------------------------------------------
         // add out buttons for submitting and cancelling

@@ -46,14 +46,15 @@ use \mod_cpassignment\constants;
  */
 function cpassignment_supports($feature) {
     switch($feature) {
-        case FEATURE_MOD_INTRO:         return true;
-        case FEATURE_SHOW_DESCRIPTION:  return true;
+        case FEATURE_MOD_INTRO: return true;
+        case FEATURE_SHOW_DESCRIPTION: return true;
 		case FEATURE_COMPLETION_HAS_RULES: return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
-        case FEATURE_GRADE_HAS_GRADE:         return true;
-        case FEATURE_GRADE_OUTCOMES:          return true;
-        case FEATURE_BACKUP_MOODLE2:          return true;
-        default:                        return null;
+        case FEATURE_GRADE_HAS_GRADE: return true;
+        case FEATURE_GRADE_OUTCOMES: return true;
+        case FEATURE_BACKUP_MOODLE2: return true;
+
+        default: return null;
     }
 }
 
@@ -396,8 +397,8 @@ function cpassignment_process_editors(stdClass $themodule, mod_cpassignment_mod_
     $context = context_module::instance($cmid);
 	$editors = cpassignment_get_editornames();
 	$itemid=$themodule->id;
-    $edoptions = \mod_cpassignment\utils::editor_standard(
-            $context);
+    $edoptions = \mod_cpassignment\utils::
+            editor_with_files_options($context);
 
     foreach($editors as $editor) {
 	    $themodule = file_postupdate_standard_editor( $themodule, $editor,

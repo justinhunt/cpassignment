@@ -88,12 +88,13 @@ if($CFG->version<2014051200){
 switch($action){
 	case 'gradenowsubmit':
 		$mform = new \mod_cpassignment\gradenowform();
-		if($mform->is_cancelled()) {
-			$action='grading';
+		if ($mform->is_cancelled()) {
+			$action = 'grading';
 			break;
-		}else{
+		} else {
 			$data = $mform->get_data();
-			$submission = new \mod_cpassignment\submission($attemptid,$cm->id);
+			$submission = new \mod_cpassignment\submission($attemptid,
+                $cm->id);
 			$submission->update($data);
 
 			//update gradebook
@@ -152,33 +153,57 @@ switch ($action){
             'feedbacktextformat'=>$submission->fetch('feedbacktextformat'),
 			'sessiontime'=>$submission->fetch('sessiontime'),
 			'sessionscore'=>$submission->fetch('sessionscore'));
-		//get next id
-		$nextid = $submission->get_next_ungraded_id();
-        //fetch recorders
-        $token = \mod_cpassignment\utils::fetch_token($config->apiuser,$config->apisecret);
-        $timelimit =0;
-        $audiorecid = constants::M_RECORDERID . '_' . constants::M_GRADING_FORM_FEEDBACKAUDIO;
-        $videorecid = constants::M_RECORDERID . '_' . constants::M_GRADING_FORM_FEEDBACKVIDEO;
-        $audiorecorderhtml = \mod_cpassignment\utils::fetch_recorder($moduleinstance,$audiorecid, $token, constants::M_GRADING_FORM_FEEDBACKAUDIO,$timelimit,'audio','bmr');
-        $videorecorderhtml = \mod_cpassignment\utils::fetch_recorder($moduleinstance,$videorecid, $token, constants::M_GRADING_FORM_FEEDBACKVIDEO,$timelimit,'video','bmr');
-        //create form
-		$gradenowform = new \mod_cpassignment\gradenowform(null,array('shownext'=>$nextid !== false,'context'=>$modulecontext,'token'=>$token,
-        'audiorecorderhtml'=>$audiorecorderhtml,'videorecorderhtml'=>$videorecorderhtml));
 
-		//prepare text editor
+        // Get next id
+		$nextid = $submission->get_next_ungraded_id();
+
+        // Fetch recorders
+        $token = \mod_cpassignment\utils::fetch_token($config->apiuser,$config->apisecret);
+
+        $timelimit = 0;
+
+        // Get selected feedback options
+        $fbopts = array();
+        $fbopts['text'] = $moduleinstance->fbtext;
+        $fbopts['audio'] = $moduleinstance->fbaudio;
+        $fbopts['video'] = $moduleinstance->fbvideo;
+
+        $opts = $fbopts['text'] || $fbopts['audio'] || $fbopts['video'];
+        if (!$opts) {
+        // Probably need a warning that no feedback options are selected.
+        }
+
+        $audiorecid = constants::M_RECORDERID . '_' . constants::M_GRADING_FORM_FEEDBACKAUDIO;
+
+        $videorecid = constants::M_RECORDERID . '_' . constants::M_GRADING_FORM_FEEDBACKVIDEO;
+
+        $audiorecorderhtml = \mod_cpassignment\utils::fetch_recorder($moduleinstance,$audiorecid, $token, constants::M_GRADING_FORM_FEEDBACKAUDIO,$timelimit,'audio','bmr');
+
+        $videorecorderhtml = \mod_cpassignment\utils::fetch_recorder($moduleinstance,$videorecid, $token, constants::M_GRADING_FORM_FEEDBACKVIDEO,$timelimit,'video','bmr');
+
+        // Create form.
+		$gradenowform = new \mod_cpassignment\gradenowform(null,
+                array('shownext'=>$nextid !== false,
+                'context' => $modulecontext,'token' => $token,
+                'audiorecorderhtml' => $audiorecorderhtml,
+                'videorecorderhtml' => $videorecorderhtml,
+                'fbopts' => $fbopts));
+
+		// Prepare text editor.
 		$edfileoptions = \mod_cpassignment\utils::editor_with_files_options($modulecontext);
         $editor = "feedbacktext";
-        $data = file_prepare_standard_editor((object)$data,$editor, $edfileoptions, $modulecontext,constants::M_FRANKY,$editor, $attemptid);
-
-
+        $data = file_prepare_standard_editor( (object)$data, $editor,
+                $edfileoptions, $modulecontext, constants::M_FRANKY,
+                $editor, $attemptid);
 
 		$gradenowform->set_data($data);
+
 		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_LANG));
+
 		echo $submissionrenderer->render_submission($submission);
 		$gradenowform->display();
 		echo $renderer->footer();
 		return;
-
 
 	case 'grading':
 		$report = new \mod_cpassignment\report\grading();

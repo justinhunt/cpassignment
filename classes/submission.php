@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use \mod_cpassignment\constants;
-
+use \mod_cpassignment\utils;
 
 /**
  * Grade Now class for mod_cpassignment
@@ -69,19 +69,23 @@ class submission{
 		$updatedattempt->id=$this->attemptid;
 		$updatedattempt->sessiontime = $formdata->sessiontime;
 	//	$updatedattempt->accuracy = $formdata->accuracy;
-       $updatedattempt->feedbackaudio = $formdata->feedbackaudio;
-       $updatedattempt->feedbackvideo = $formdata->feedbackvideo;
-		$updatedattempt->sessionscore = $formdata->sessionscore;
+        $updatedattempt->feedbackaudio = $formdata->feedbackaudio;
+        $updatedattempt->feedbackvideo = $formdata->feedbackvideo;
+	    $updatedattempt->sessionscore = $formdata->sessionscore;
 
 
-       $context = \context_module::instance($this->modulecontextid );
-       $edoptions = \mod_cpassignment\utils::editor_with_files_options($context);
+       $context = \context_module::instance($this->modulecontextid);
+       $edoptions = utils::editor_with_files_options($context);
        $editor = "feedbacktext";
-       $formdata = file_postupdate_standard_editor( $formdata, $editor, $edoptions,$context,constants::M_FRANKY,$editor,$this->attemptid);
+       $formdata = file_postupdate_standard_editor($formdata, $editor,
+               $edoptions,$context,constants::M_FRANKY,
+               $editor,$this->attemptid);
        $updatedattempt->feedbacktext = $formdata->feedbacktext;
-       $updatedattempt->feedbacktextformat = $formdata->feedbacktextformat;
-
-		$DB->update_record(constants::M_USERTABLE,$updatedattempt);
+       // Problem here, this is currently null.  Hacked it for now.
+       // There's an error if there is not FB text selected.
+       // $formdata->feedbacktextformat;
+        $updatedattempt->feedbacktextformat = FORMAT_HTML;
+		$DB->update_record(constants::M_USERTABLE, $updatedattempt);
    }
 
    public function fetch($property){

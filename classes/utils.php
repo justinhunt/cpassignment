@@ -40,19 +40,13 @@ class utils{
     public static function editor_with_files_options($context){
 
         return array('maxfiles' => EDITOR_UNLIMITED_FILES,
-            'noclean' => true, 'context' => $context, 'subdirs' => true);
+                'noclean' => true, 'context' => $context,
+                'subdirs' => true);
     }
 
     public static function editor_no_files_options($context){
-        return array('maxfiles' => 0, 'noclean' => true,'context'=>$context);
-    }
-
-    public static function editor_standard($context){
-      global $CFG;
-      return array('subdirs' => true, 'maxfiles' => EDITOR_UNLIMITED_FILES,
-              'maxbytes' => $CFG->maxbytes, 'changeformat' => 1,
-              'context' => $context, 'noclean' => true,
-              'trusttext' => false);
+        return array('maxfiles' => 0, 'noclean' => true,
+                'context' => $context);
     }
 
     //are we willing and able to transcribe submissions?
