@@ -166,7 +166,7 @@ class renderer extends \plugin_renderer_base {
         // Add a button for user to nav back to view.
         // Can add a different label if required.
         $displaytext .= self::reattemptbutton($themodule,
-            get_string('reattempt',constants::M_FRANKY));
+            get_string('attempt_completed', constants::M_FRANKY));
         $ret = \html_writer::div($displaytext,constants::M_COMPLETION_CONTAINER,array('id'=>constants::M_COMPLETION_CONTAINER));
 
         return $ret;

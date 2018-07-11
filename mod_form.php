@@ -169,11 +169,15 @@ class mod_cpassignment_mod_form extends moodleform_mod {
         $this->standard_grading_coursemodule_elements();
 
         //grade options
-        $gradeoptions = array(constants::M_GRADEHIGHEST => get_string('gradehighest',constants::M_LANG),
-                            constants::M_GRADELOWEST => get_string('gradelowest', constants::M_LANG),
-                            constants::M_GRADELATEST => get_string('gradelatest', constants::M_LANG),
-                            constants::M_GRADEAVERAGE => get_string('gradeaverage', constants::M_LANG),
-							constants::M_GRADENONE => get_string('gradenone', constants::M_LANG));
+        $gradeoptions = array(constants::M_GRADEHIGHEST => get_string(
+                'gradehighest',constants::M_LANG),
+                constants::M_GRADELOWEST => get_string('gradelowest',
+                constants::M_LANG), constants::M_GRADELATEST =>
+                get_string('gradelatest', constants::M_LANG),
+                constants::M_GRADEAVERAGE => get_string('gradeaverage',
+                constants::M_LANG), constants::M_GRADENONE =>
+                get_string('gradenone', constants::M_LANG));
+
         $mform->addElement('select', 'gradeoptions', get_string('gradeoptions', constants::M_LANG), $gradeoptions);
 		$mform->setDefault('gradeoptions',constants::M_GRADELATEST);
 

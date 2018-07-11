@@ -147,6 +147,8 @@ $string['gradeaverage'] ='average score of all attempts';
 $string['defaultsettings'] ='Default Settings';
 $string['exceededattempts'] ='You have completed the maximum {$a} attempts.';
 $string['cpassignmenttask'] ='CloudPoodll Assignment Task';
+$string['attempt_completed'] ='Finish';
+
 //$string['passagelabel'] ='Reading Passage';
 
 // Grading form labels (and checkboxes)

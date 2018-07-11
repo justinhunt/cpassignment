@@ -72,12 +72,8 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 $PAGE->set_pagelayout('course');
 
-
-
 //Get an admin settings
 $config = get_config(constants::M_FRANKY);
-
-
 
 //Get our renderers
 $renderer = $PAGE->get_renderer('mod_cpassignment');
@@ -110,9 +106,9 @@ if($attempts && $retake==0){
 		$latestattempt = array_shift($attempts);
 
 		// show results if graded
-		if($latestattempt->sessiontime==null) {
+		if ($latestattempt->sessiontime==null) {
 			echo $renderer->show_ungradedyet();
-		}else{
+		} else {
 			$submission = new \mod_cpassignment\submission($latestattempt->id,$modulecontext->id);
 			$reviewmode =true;
 			$submission->prepare_javascript($reviewmode);
@@ -120,9 +116,9 @@ if($attempts && $retake==0){
 		}
 
 		//show  button or a label depending on of can retake
-		if($canattempt){
+		if ($canattempt) {
 			echo $renderer->reattemptbutton($moduleinstance,
-                get_string('reattempt',constants::M_FRANKY));
+                    get_string('reattempt',constants::M_FRANKY));
 		}else{
 			echo $renderer->exceededattempts($moduleinstance);
 		}

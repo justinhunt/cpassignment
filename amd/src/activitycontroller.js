@@ -129,8 +129,6 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
             //dd.controls.passagecontainer.click(function(){log.debug('clicked');})
         },
 
-
-
         send_submission: function(filename){
 
             //set up our ajax request
@@ -178,6 +176,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
             var m = this;
             m.controls.introbox.hide();
             //m.controls.instructionscontainer.hide();
+            m.controls.instructionscontainer.show();
             if(m.controls.allowearlyexit){
               m.controls.stopbutton.hide();
             }

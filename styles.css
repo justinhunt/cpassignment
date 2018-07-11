@@ -37,8 +37,11 @@
 	padding: 2px;
 }
 */
-.mod_cpassignment_completion_cont {
+.mod_cpassignment_feedback_cont {
 	display: none;
+}
+.mod_cpassignment_completion_cont {
+    display: none;
 }
 .mod_cpassignment_error_cont {
 	display: none;
