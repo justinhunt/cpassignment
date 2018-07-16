@@ -45,7 +45,8 @@ class restore_cpassignment_activity_task extends restore_activity_task {
      */
     protected function define_my_steps() {
         // Choice only has one structure step
-        $this->add_step(new restore_cpassignment_activity_structure_step('cpassignment_structure', 'cpassignment.xml'));
+        $this->add_step(new restore_cpassignment_activity_structure_step(
+            'cpassignment_structure', 'cpassignment.xml'));
     }
 
     /**
@@ -62,7 +63,7 @@ class restore_cpassignment_activity_task extends restore_activity_task {
 		$contents[] = new restore_decode_content(constants::M_MODNAME,
                           array('passage'), constants::M_MODNAME);
 		$contents[] = new restore_decode_content(constants::M_MODNAME,
-                          array('feedback'), constants::M_MODNAME);
+                          array('completion'), constants::M_MODNAME);
 
         return $contents;
     }
@@ -74,8 +75,8 @@ class restore_cpassignment_activity_task extends restore_activity_task {
     static public function define_decode_rules() {
         $rules = array();
 
-        $rules[] = new restore_decode_rule('READALOUDVIEWBYID', '/mod/cpassignment/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('READALOUDINDEX', '/mod/cpassignment/index.php?id=$1', 'course');
+        $rules[] = new restore_decode_rule('CPASSIGNMENTVIEWBYID', '/mod/cpassignment/view.php?id=$1', 'course_module');
+        $rules[] = new restore_decode_rule('CPASSIGNMENTINDEX', '/mod/cpassignment/index.php?id=$1', 'course');
 
         return $rules;
 
@@ -84,13 +85,14 @@ class restore_cpassignment_activity_task extends restore_activity_task {
     /**
      * Define the restore log rules that will be applied
      * by the {@link restore_logs_processor} when restoring
-     * englishcentral logs. It must return one array
+     * cpassignment logs. It must return one array
      * of {@link restore_log_rule} objects
      */
     static public function define_restore_log_rules() {
         $rules = array();
 
         $rules[] = new restore_log_rule(constants::M_MODNAME, 'add', 'view.php?id={course_module}', '{'. constants::M_TABLE .'}');
+        $rules[] = new restore_log_rule(constants::M_MODNAME, 'edit', 'view.php?id={course_module}', '{'. constants::M_TABLE .'}');
         $rules[] = new restore_log_rule(constants::M_MODNAME, 'update', 'view.php?id={course_module}', '{'. constants::M_TABLE .'}');
         $rules[] = new restore_log_rule(constants::M_MODNAME, 'view', 'view.php?id={course_module}', '{'. constants::M_TABLE .'}');
 

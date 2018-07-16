@@ -50,19 +50,26 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
 
         // root element describing cpassignment instance
         $oneactivity = new backup_nested_element(constants::M_MODNAME, array('id'), array(
-            'course','name','intro','introformat','timelimit','passage','passageformat','instructions','instructionsformat','feedback','feedbackformat',
-            'grade','gradeoptions','maxattempts','mingrade','language','transcribe','subtitle','mediatype','recordertype','region','timecreated','timemodified'
+                'course', 'name', 'intro', 'introformat',
+                'passage', 'passageformat', 'instructions',
+                'instructionsformat', 'completion',
+                'completionformat', 'timelimit', 'grade',
+                'gradeoptions', 'maxattempts', 'mingrade',
+                'language', 'mediatype', 'recordertype',
+                'transcribe', 'subtitle', 'expiredays',
+                'region', 'fbaudio', 'fbvideo',
+                'timecreated', 'timemodified'
 			));
 
 		//attempts
         $attempts = new backup_nested_element('attempts');
-        $attempt = new backup_nested_element('attempt', array('id'),array(
-			constants::M_MODNAME ."id","courseid","userid","status","filename","transcript","fulltranscript","subtitles","feedbacktext","feedbacktextformat","feedbackaudio","feedbackvideo",
-			"sessionscore","sessiontime","timecreated","timemodified"
+        $attempt = new backup_nested_element('attempt', array('id'),
+            array("courseid", constants::M_MODNAME . "id", "userid",
+            "status", "filename", "transcript", "fulltranscript",
+            "subtitles", "sessionscore", "sessiontime", "feedbacktext",
+            "feedbacktextformat", "feedbackaudio", "feedbackvideo",
+            "timecreated","timemodified"
 		));
-
-
-
 
 		// Build the tree.
         $oneactivity->add_child($attempts);
@@ -75,7 +82,7 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
         //sources if including user info
         if ($userinfo) {
 			$attempt->set_source_table(constants::M_USERTABLE,
-											array(constants::M_MODNAME . 'id' => backup::VAR_PARENTID));
+			array(constants::M_MODNAME . 'id' => backup::VAR_PARENTID));
         }
 
         // Define id annotations.
@@ -87,7 +94,7 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
         $oneactivity->annotate_files(constants::M_FRANKY, 'intro', null);
 		$oneactivity->annotate_files(constants::M_FRANKY, 'instructions', null);
 		$oneactivity->annotate_files(constants::M_FRANKY, 'passage', null);
-		$oneactivity->annotate_files(constants::M_FRANKY, 'feedback', null);
+		$oneactivity->annotate_files(constants::M_FRANKY, 'completion', null);
 
 		//file annotation if including user info
         if ($userinfo) {

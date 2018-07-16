@@ -106,8 +106,7 @@ class restore_cpassignment_activity_structure_step extends restore_activity_stru
         $this->add_related_files(constants::M_FRANKY, 'intro', null);
 		$this->add_related_files(constants::M_FRANKY, 'instructions', null);
 		$this->add_related_files(constants::M_FRANKY, 'passage', null);
-		$this->add_related_files(constants::M_FRANKY, 'feedback', null);
-
+		$this->add_related_files(constants::M_FRANKY, 'completion', null);
 		 $userinfo = $this->get_setting_value('userinfo'); // are we including userinfo?
 		 if($userinfo){
 			$this->add_related_files(constants::M_FRANKY, constants::M_FILEAREA_SUBMISSIONS, constants::M_USERTABLE);

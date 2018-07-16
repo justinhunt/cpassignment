@@ -42,7 +42,7 @@ class backup_cpassignment_activity_task extends backup_activity_task {
     }
 
     /**
-     * Defines a backup step to store the instance data in the englishcentral.xml file
+     * Defines a backup step to store the instance data in the cpassignment.xml file.
      */
     protected function define_my_steps() {
         $this->add_step(new backup_cpassignment_activity_structure_step('cpassignment_structure', 'cpassignment.xml'));
@@ -61,11 +61,11 @@ class backup_cpassignment_activity_task extends backup_activity_task {
 
         // Link to the list of modules
         $search = "/(" . $base . "\/mod\/cpassignment\/index.php\?id\=)([0-9]+)/";
-        $content = preg_replace($search, '$@READALOUDINDEX*$2@$', $content);
+        $content = preg_replace($search, '$@CPASSIGNMENTINDEX*$2@$', $content);
 
-        //Link to view.pphp by moduleid
+        //Link to view.php by moduleid
         $search = "/(" . $base . "\/mod\/cpassignment\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@READALOUDVIEWBYID*$2@$', $content);
+        $content= preg_replace($search, '$@CPASSIGNMENTVIEWBYID*$2@$', $content);
 
         return $content;
     }
