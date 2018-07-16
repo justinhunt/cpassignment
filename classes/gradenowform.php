@@ -44,14 +44,13 @@ class gradenowform extends \moodleform{
     	global $CFG;
 
         $mform = $this->_form;
-        $this->context = $this->_customdata['context'];
-        $this->audiorecorderhtml = $this->_customdata['audiorecorderhtml'];
-        $this->videorecorderhtml = $this->_customdata['videorecorderhtml'];
+        $context = $this->_customdata['context'];
+        $audiorecorderhtml = $this->_customdata['audiorecorderhtml'];
+        $videorecorderhtml = $this->_customdata['videorecorderhtml'];
         $shownext = $this->_customdata['shownext'];
-		$mform->addElement('header','General','');
+        $maxgrade = $this->_customdata['maxgrade'];
 
-        // Selected forms of feedback from mod_form.
-        $fbopts = $this->_customdata['fbopts'];
+		//$mform->addElement('header','General','');
 
         // adding the hidden fields which recorders write to and other bits we might/will use
 		$mform->addElement('hidden', 'action');
@@ -63,46 +62,52 @@ class gradenowform extends \moodleform{
 				array('class'=>constants::M_GRADING_FORM_FEEDBACKAUDIO,'id'=>constants::M_GRADING_FORM_FEEDBACKAUDIO));
         $mform->addElement('hidden', 'feedbackvideo',null,
             array('class'=>constants::M_GRADING_FORM_FEEDBACKVIDEO,'id'=>constants::M_GRADING_FORM_FEEDBACKVIDEO));
-		//$mform->addElement('hidden', 'sessionscore',null,
-		//		array('class'=>constants::M_GRADING_FORM_SESSIONSCORE,'id'=>constants::M_GRADING_FORM_SESSIONSCORE));
+
 		$mform->setType('action',PARAM_TEXT);
 		$mform->setType('attemptid',PARAM_INT);
 		$mform->setType('n',PARAM_INT);
 		$mform->setType('sessiontime',PARAM_INT);
-		//$mform->setType('sessionscore',PARAM_INT);
 		$mform->setType('feedbackaudio',PARAM_TEXT);
         $mform->setType('feedbackvideo',PARAM_TEXT);
 
-        //session score
-        $mform->addElement('text', 'sessionscore', get_string('grade',constants::M_LANG), array('size'=>'12'));
+        $mform->addElement('header','feedbacklabel',
+                get_string('feedback', constants::M_LANG),
+                2);
+
+        // session score
+        $mform->addElement('text', 'sessionscore',
+                get_string('grade',
+                constants::M_LANG, $maxgrade), array('size'=>'12'));
         $mform->setType('sessionscore', PARAM_INT);
 
-
         // Feedback text.
-        if ($fbopts['text']) {
-            $edfileoptions = \mod_cpassignment\utils::
-                    editor_with_files_options($this->context);
-            $opts = array('rows'=>'15', 'columns'=>'80');
-            $mform->addElement('editor','feedbacktext_editor',
-                    get_string('feedbacktextlabel', constants::M_LANG),
-                    $opts, $edfileoptions);
-            $mform->setDefault('feedbacktext_editor',
-                    array('text'=>'', 'format' => FORMAT_HTML));
-            $mform->setType('feedbacktext_editor',PARAM_RAW);
-        }
+        $edfileoptions = \mod_cpassignment\utils::
+                editor_with_files_options($context);
+        $opts = array('rows'=>'15', 'columns'=>'80');
+        $mform->addElement('editor','feedbacktext_editor',
+                get_string('feedbacktextlabel',
+                constants::M_LANG),
+                $opts, $edfileoptions);
+        $mform->setDefault('feedbacktext_editor',
+                array('text'=>'', 'format' => FORMAT_HTML));
+        $mform->setType('feedbacktext_editor',PARAM_RAW);
+
+
         // Feedback audio.
-        if ($fbopts['audio']) {
-            $mform->addElement('static', 'feedbackaudioholder',
-                    get_string('feedbackaudiolabel',constants::M_LANG),
-                    $this->audiorecorderhtml);
+        if ($audiorecorderhtml != '') {
+            $mform->addElement('button', 'feedbackaudioholder',
+                    get_string('feedbackaudiolabel', constants::M_LANG));
         }
 
         // Feedback video.
-        if ($fbopts['audio']) {
-            $mform->addElement('static', 'feedbackvideoholder',
-                    get_string('feedbackvideolabel',constants::M_LANG),
-                    $this->videorecorderhtml);
+        if ($videorecorderhtml != '') {
+            $mform->addElement('button', 'feedbackvideoholder',
+                    get_string('feedbackvideolabel', constants::M_LANG));
         }
+
+
+        // At the moment let's have buttons to select media feedback
+        //  Those will go on the grading page.
 
         //-------------------------------------------------------------------------------
         // add out buttons for submitting and cancelling

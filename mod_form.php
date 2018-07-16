@@ -112,7 +112,7 @@ class mod_cpassignment_mod_form extends moodleform_mod {
 
         //Enable AI
         $mform->addElement('advcheckbox', 'transcribe', get_string('transcribe', constants::M_LANG), get_string('transcribe_details', constants::M_LANG));
-        $mform->setDefault('transcribe',$config->transcribe);
+        $mform->setDefault('transcribe', $config->transcribe);
 
 		//Attempts
         $mform->addElement('header', 'attemptsettings',
@@ -155,21 +155,17 @@ class mod_cpassignment_mod_form extends moodleform_mod {
                 get_string('fblabel', constants::M_LANG),
                 get_string('fbdescription', constants::M_LANG));
 
-        $mform->addElement('advcheckbox', 'fbtext',
-                get_string('feedbacktextlabel',  constants::M_LANG),
-                get_string('fbtext_details', constants::M_LANG),
-                null, array(0, 1));
-
         $mform->addElement('advcheckbox', 'fbaudio',
                 get_string('feedbackaudiolabel', constants::M_LANG),
                 get_string('fbaudio_details', constants::M_LANG),
                 null, array(0, 1));
+        $mform->setDefault('fbaudio',$config->fbaudio);
 
         $mform->addElement('advcheckbox', 'fbvideo',
                 get_string('feedbackvideolabel', constants::M_LANG),
                 get_string('fbvideo_details', constants::M_LANG),
                 null, array(0, 1));
-
+        $mform->setDefault('fbvideo',$config->fbvideo);
 		 // Grade.
         $this->standard_grading_coursemodule_elements();
 
@@ -220,17 +216,13 @@ class mod_cpassignment_mod_form extends moodleform_mod {
 	}
 
 	public function data_preprocessing(&$form_data) {
-		$editors  = cpassignment_get_editornames();
-		 if ($this->current->instance) {
-			foreach($editors as $editor) {
-                $edoptions = \mod_cpassignment\utils::editor_with_files_options(
-                        $this->context);
-				$form_data = (object) $form_data;
-                $form_data = file_prepare_standard_editor(
-                        $form_data, $editor, $edoptions,
-                        $this->context, constants::M_FRANKY,
-                        $editor, $form_data->id);
-			}
-		}
-	}
+        $ednofileoptions = \mod_cpassignment\utils::editor_with_files_options($this->context);
+        $editors  = cpassignment_get_editornames();
+         if ($this->current->instance) {
+            $itemid = 0;
+            foreach($editors as $editor){
+                $form_data = file_prepare_standard_editor((object)$form_data,$editor, $ednofileoptions, $this->context,constants::M_FRANKY,$editor, $itemid);
+            }
+        }
+    }
 }

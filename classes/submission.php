@@ -71,8 +71,7 @@ class submission{
 	//	$updatedattempt->accuracy = $formdata->accuracy;
         $updatedattempt->feedbackaudio = $formdata->feedbackaudio;
         $updatedattempt->feedbackvideo = $formdata->feedbackvideo;
-	    $updatedattempt->sessionscore = $formdata->sessionscore;
-
+	    $updatedattempt->sessionscore = (int) $formdata->sessionscore;
 
        $context = \context_module::instance($this->modulecontextid);
        $edoptions = utils::editor_with_files_options($context);
@@ -81,10 +80,7 @@ class submission{
                $edoptions,$context,constants::M_FRANKY,
                $editor,$this->attemptid);
        $updatedattempt->feedbacktext = $formdata->feedbacktext;
-       // Problem here, this is currently null.  Hacked it for now.
-       // There's an error if there is not FB text selected.
-       // $formdata->feedbacktextformat;
-        $updatedattempt->feedbacktextformat = FORMAT_HTML;
+       $updatedattempt->feedbacktextformat = $formdata->feedbacktextformat;
 		$DB->update_record(constants::M_USERTABLE, $updatedattempt);
    }
 

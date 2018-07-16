@@ -115,9 +115,7 @@ switch($action){
 		break;
 }
 
-
-
-/// Set up the page header
+// Set up the page header.
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
@@ -162,32 +160,42 @@ switch ($action){
 
         $timelimit = 0;
 
-        // Get selected feedback options
-        $fbopts = array();
-        $fbopts['text'] = $moduleinstance->fbtext;
-        $fbopts['audio'] = $moduleinstance->fbaudio;
-        $fbopts['video'] = $moduleinstance->fbvideo;
+        // Check selected feedback options.
 
-        $opts = $fbopts['text'] || $fbopts['audio'] || $fbopts['video'];
-        if (!$opts) {
-        // Probably need a warning that no feedback options are selected.
+        if ($moduleinstance->fbaudio) {
+
+            $audiorecid = constants::M_RECORDERID . '_' .
+                    constants::M_GRADING_FORM_FEEDBACKAUDIO;
+
+            $audiorecorderhtml = \mod_cpassignment\utils::fetch_recorder(
+                    $moduleinstance,$audiorecid, $token,
+                    constants::M_GRADING_FORM_FEEDBACKAUDIO,
+                    $timelimit,'audio','bmr');
+        } else {
+
+            $audiorecorderhtml = '';
         }
 
-        $audiorecid = constants::M_RECORDERID . '_' . constants::M_GRADING_FORM_FEEDBACKAUDIO;
+        if ($moduleinstance->fbvideo) {
 
-        $videorecid = constants::M_RECORDERID . '_' . constants::M_GRADING_FORM_FEEDBACKVIDEO;
+            $videorecid = constants::M_RECORDERID . '_' .
+                    constants::M_GRADING_FORM_FEEDBACKVIDEO;
 
-        $audiorecorderhtml = \mod_cpassignment\utils::fetch_recorder($moduleinstance,$audiorecid, $token, constants::M_GRADING_FORM_FEEDBACKAUDIO,$timelimit,'audio','bmr');
+            $videorecorderhtml = \mod_cpassignment\utils::fetch_recorder(
+                    $moduleinstance,$videorecid, $token,
+                    constants::M_GRADING_FORM_FEEDBACKVIDEO,
+                    $timelimit,'video','bmr');
+        } else {
 
-        $videorecorderhtml = \mod_cpassignment\utils::fetch_recorder($moduleinstance,$videorecid, $token, constants::M_GRADING_FORM_FEEDBACKVIDEO,$timelimit,'video','bmr');
-
+            $videorecorderhtml = '';
+        }
         // Create form.
 		$gradenowform = new \mod_cpassignment\gradenowform(null,
                 array('shownext'=>$nextid !== false,
                 'context' => $modulecontext,'token' => $token,
                 'audiorecorderhtml' => $audiorecorderhtml,
                 'videorecorderhtml' => $videorecorderhtml,
-                'fbopts' => $fbopts));
+                'maxgrade' => $moduleinstance->grade));
 
 		// Prepare text editor.
 		$edfileoptions = \mod_cpassignment\utils::editor_with_files_options($modulecontext);
@@ -200,8 +208,15 @@ switch ($action){
 
 		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_LANG));
 
-		echo $submissionrenderer->render_submission($submission);
+        echo $submissionrenderer->render_attempt_data($submission);
+        //  Form will display recorders according to
+        //  recorderhtml content.
+
+        // Require mechansim to if recorder(s) should be displayed
+        // or previous recordings should be shown for playback.
+
 		$gradenowform->display();
+
 		echo $renderer->footer();
 		return;
 

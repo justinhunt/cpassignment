@@ -35,8 +35,11 @@ const M_COMPLETION_CONTAINER='mod_cpassignment_completion_cont';
 const M_ERROR_CONTAINER='mod_cpassignment_error_cont';
 const M_GRADING_ATTEMPT_CONTAINER='mod_cpassignment_grading_attempt_cont';
 const M_GRADING_PLAYER_CONTAINER='mod_cpassignment_grading_player_cont';
-const M_GRADING_CURRENTFB_CONTAINER='mod_cpassignment_current_feedback_cont';
-const M_GRADING_CURRENTFBPLAYER_CONTAINER='mod_cpassignment_current_player_cont';
+const M_GRADING_CURRENTFB_CONTAINER=
+    'mod_cpassignment_current_feedback_cont';
+const M_GRADING_CURRENTFBPLAYER_CONTAINER =
+    'mod_cpassignment_current_player_cont';
+
 const M_GRADING_PLAYER='mod_cpassignment_grading_player';
 const M_GRADING_FORM_SESSIONTIME='mod_cpassignment_gradingform_sessiontime';
 const M_GRADING_FORM_FEEDBACKAUDIO='mod_cpassignment_gradingform_feedbackaudio';

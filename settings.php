@@ -63,7 +63,20 @@ if ($ADMIN->fulltree) {
     $recordertypeoptions = \mod_cpassignment\utils::get_recordertype_options();
     $settings->add(new admin_setting_configselect('mod_cpassignment/recordertype', get_string('recordertype', constants::M_LANG), '', 'bmr', $recordertypeoptions));
 
-	 $settings->add(new admin_setting_configtext('mod_cpassignment/itemsperpage',
-        get_string('itemsperpage', constants::M_LANG), get_string('itemsperpage_details', constants::M_LANG), 40, PARAM_INT));
+	$settings->add(new admin_setting_configtext(
+            'mod_cpassignment/itemsperpage',
+            get_string('itemsperpage', constants::M_LANG),
+            get_string('itemsperpage_details', constants::M_LANG),
+            40, PARAM_INT));
+
+    $settings->add(new admin_setting_configcheckbox(
+            'mod_cpassignment/fbaudio',
+            get_string('feedbackaudiolabel', constants::M_LANG),
+            get_string('fbaudio_details', constants::M_LANG), 0));
+
+    $settings->add(new admin_setting_configcheckbox(
+            'mod_cpassignment/fbvideo',
+            get_string('feedbackvideolabel', constants::M_LANG),
+            get_string('fbvideo_details', constants::M_LANG), 0));
 
 }

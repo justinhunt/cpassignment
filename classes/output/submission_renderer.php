@@ -15,15 +15,18 @@ class submission_renderer extends \plugin_renderer_base {
     protected $submission=null;
 
     public function render_submission($submission) {
-        $this->submission = $submission;
 
+        $this->submission = $submission;
         $ret = $this->render_attempt_data($submission);
 
-        $ret .= $this->render_current_feedback($submission);
+        //$ret .= $this->render_current_feedback($submission);
 
         return $ret;
     }
-
+    /**
+     * Renders the attempt section of the grading page
+     *
+     */
     public function render_attempt_data ($submission) {
 
         $ret = \html_writer::start_div(
@@ -31,11 +34,10 @@ class submission_renderer extends \plugin_renderer_base {
 
         $ret .= $this->output->heading(
                 get_string('showingattempt',
-                constants::M_LANG,
-                $submission->fetch('userfullname')), 3);
+                constants::M_LANG), 3);
 
-        $ret .= '<p>' . get_string('grade', constants::M_LANG) . ' ' .
-                $submission->fetch('sessionscore') . '</p>';
+        $ret .= '<p>' . get_string('attemptname', constants::M_LANG,
+                $submission->fetch('userfullname')) . '</p>';
 
         // Get the submission attempt.
         $mediatype = $submission->fetch('mediatype');
@@ -44,10 +46,22 @@ class submission_renderer extends \plugin_renderer_base {
                 $mediatype);
         $ret .= $submissionplayer;
 
-        $ret .= \html_writer::end_div(); // Attempt container.
+        // Get the transcript (if available).
+        $transcript = $submission->fetch('transcript');
+        $ret .= '<br>' . get_string('showingtranscript',
+                constants::M_LANG);
+        if ($transcript) {
+            $ret .= $transcript;
+        } else {
+            $ret .= get_string('nodataavailable', constants::M_LANG);
+        }
+        $ret .= '<br>' . \html_writer::end_div(); // Attempt container.
 
         return $ret;
     }
+    /**
+     * renders the user's media submission
+     */
     public function render_submissionplayer($mediaurl, $submissiontype) {
         switch ($submissiontype){
             case 'video':
@@ -68,7 +82,6 @@ class submission_renderer extends \plugin_renderer_base {
                 constants::M_GRADING_PLAYER_CONTAINER,
                 array('id'=>constants::M_GRADING_PLAYER_CONTAINER));
     }
-
     public function render_current_feedback($submission) {
 
         $ret = \html_writer::start_div(
@@ -94,31 +107,46 @@ class submission_renderer extends \plugin_renderer_base {
     }
 
     public function render_feedbackaudio($mediaurl){
-        $label = '<br>' . $this->output->heading(
+
+        $ret = '<br>' . $this->output->heading(
                 get_string('feedbackaudiolabel',
                 constants::M_LANG), 5);
-        $audioplayer = \html_writer::tag('audio','',
-                array('controls'=>'',
-                'src'=>$mediaurl,'id'=>constants::M_GRADING_PLAYER));
 
-        $ret = \html_writer::div($label . $audioplayer,
-                constants::M_GRADING_PLAYER_CONTAINER,
-                array('id'=>constants::M_GRADING_PLAYER_CONTAINER));
+        if ($mediaurl == '') {
+            $ret .= get_string('nodataavailable',
+                    constants::M_LANG);
+        } else {
 
+            $audioplayer = \html_writer::tag('audio','',
+                    array('controls'=>'',
+                    'src'=>$mediaurl,'id'=>constants::
+                    M_GRADING_PLAYER));
+
+            $ret .= \html_writer::div($audioplayer,
+                    constants::M_GRADING_PLAYER_CONTAINER,
+                    array('id'=>constants::
+                    M_GRADING_PLAYER_CONTAINER));
+        }
         return $ret;
     }
     public function render_feedbackvideo($mediaurl){
-        $label = '<br>' . $this->output->heading(
+
+        $ret = '<br>' . $this->output->heading(
                 get_string('feedbackvideolabel',
                 constants::M_LANG), 5);
-        $videoplayer = \html_writer::tag('video','',
-                array('controls'=>'','src'=>$mediaurl,
-                'id'=>constants::M_GRADING_PLAYER));
 
-        $ret = \html_writer::div($label . $videoplayer,
-                constants::M_GRADING_PLAYER_CONTAINER,
-                array('id'=>constants::M_GRADING_PLAYER_CONTAINER));
+        if ($mediaurl == '') {
+            $ret .= get_string('nodataavailable',constants::M_LANG);
+        } else {
+            $videoplayer = \html_writer::tag('video','',
+                    array('controls'=>'','src'=>$mediaurl,
+                    'id'=>constants::M_GRADING_PLAYER));
 
+            $ret .= \html_writer::div($videoplayer,
+                    constants::M_GRADING_PLAYER_CONTAINER,
+                    array('id'=>constants::
+                    M_GRADING_PLAYER_CONTAINER));
+        }
         return $ret;
     }
 
@@ -138,7 +166,7 @@ class submission_renderer extends \plugin_renderer_base {
                     'pluginfile.php', $contextid, constants::M_FRANKY,
                     'feedbacktext',$attemptid);
 
-            $ret .= \html_writer::div($ret . format_text($text),
+            $ret .= \html_writer::div(format_text($text),
                     constants::M_GRADING_PLAYER_CONTAINER,
                     array('id'=>constants::M_GRADING_PLAYER_CONTAINER));
         }

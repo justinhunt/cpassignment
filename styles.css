@@ -78,10 +78,7 @@
 .mod_cpassignment_grading_error_img {
 	color: blue;
 }
-.mod_cpassignment_grading_action_cont {
-	color: blue;
-	display: flex;
-}
+
 .mod_cpassignment_afterattempt_cont,
 .mod_cpassignment_ungraded_cont {
 	margin-left: auto;
@@ -124,22 +121,3 @@
         z-index:100;
 		background-color: white;
     }
-
-/* Grading page: submission data; */
-.mod_cpassignment_grading_attempt_cont {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 5px;
-}
-.mod_cpassignment_grading_player_cont {
-    display:block;
-}
-.mod_cpassignment_current_feedback_cont {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 5px;
-}
-
-.mod_cpassignment_current_player_cont {
-
-}

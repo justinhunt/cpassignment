@@ -396,13 +396,15 @@ function cpassignment_process_editors(stdClass $themodule, mod_cpassignment_mod_
     $cmid = $themodule->coursemodule;
     $context = context_module::instance($cmid);
 	$editors = cpassignment_get_editornames();
-	$itemid=$themodule->id;
+	$itemid = 0;
     $edoptions = \mod_cpassignment\utils::
             editor_with_files_options($context);
 
     foreach($editors as $editor) {
-	    $themodule = file_postupdate_standard_editor( $themodule, $editor,
-        $edoptions, $context,constants::M_FRANKY,$editor,$itemid);
+	    $themodule = file_postupdate_standard_editor($themodule,
+                $editor,
+        $edoptions, $context,constants::M_FRANKY,$editor,
+                $itemid);
 	}
 	return $themodule;
 }
