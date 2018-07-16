@@ -41,7 +41,7 @@ class gradenowform extends \moodleform{
      * Defines forms elements
      */
     public function definition() {
-    	global $CFG;
+    	global $CFG, $DB;
 
         $mform = $this->_form;
         $context = $this->_customdata['context'];
@@ -92,26 +92,24 @@ class gradenowform extends \moodleform{
                 array('text'=>'', 'format' => FORMAT_HTML));
         $mform->setType('feedbacktext_editor',PARAM_RAW);
 
+        $mediabuttonarray = array();
 
         // Feedback audio.
         if ($audiorecorderhtml != '') {
-            $mform->addElement('button', 'feedbackaudioholder',
-                    get_string('feedbackaudiolabel', constants::M_LANG));
+            $mediabuttonarray[] = $mform->createElement('submit',
+                'btn_fbaudio',
+                get_string('feedbackaudiolabel', constants::M_LANG));
         }
 
         // Feedback video.
         if ($videorecorderhtml != '') {
-            $mform->addElement('button', 'feedbackvideoholder',
-                    get_string('feedbackvideolabel', constants::M_LANG));
+            $mediabuttonarray[] = $mform->createElement('submit',
+                'btn_fbvideo',
+                get_string('feedbackvideolabel', constants::M_LANG));
         }
+        $mform->addGroup($mediabuttonarray, 'mbuttonar', '', array(' '), false);
 
-
-        // At the moment let's have buttons to select media feedback
-        //  Those will go on the grading page.
-
-        //-------------------------------------------------------------------------------
         // add out buttons for submitting and cancelling
-        //-------------------------------------------------------------------------------
         $buttonarray=array();
         $buttonarray[] = &$mform->createElement('cancel');
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('savechanges'));
