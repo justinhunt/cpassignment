@@ -83,11 +83,11 @@ class gradenowform extends \moodleform{
         // Feedback text.
         $edfileoptions = \mod_cpassignment\utils::
                 editor_with_files_options($context);
-        $opts = array('rows'=>'15', 'columns'=>'80');
+        // $opts = array('rows'=>'15', 'columns'=>'80');
         $mform->addElement('editor','feedbacktext_editor',
                 get_string('feedbacktextlabel',
                 constants::M_LANG),
-                $opts, $edfileoptions);
+                null, $edfileoptions);
         $mform->setDefault('feedbacktext_editor',
                 array('text'=>'', 'format' => FORMAT_HTML));
         $mform->setType('feedbacktext_editor',PARAM_RAW);

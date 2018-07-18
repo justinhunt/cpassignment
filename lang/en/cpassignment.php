@@ -29,25 +29,25 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'CloudPoodll Assignment';
-$string['modulenameplural'] = 'CloudPoodll Assignments';
+$string['modulename'] = 'Cloud Poodll Assignment';
+$string['modulenameplural'] = 'Cloud Poodll Assignments';
 $string['modulename_help'] = 'A cpassignment of the Poodll family';
 $string['cpassignmentfieldset'] = 'Custom example fieldset';
-$string['cpassignmentname'] = 'CloudPoodll Assignment';
+$string['cpassignmentname'] = 'Cloud Poodll Assignment';
 $string['cpassignmentname_help'] = 'This is the content of the help tooltip associated with the cpassignmentname field. Markdown syntax is supported.';
 $string['cpassignment'] = 'cpassignment';
-$string['pluginadministration'] = 'CloudPoodll Assignment Administration';
-$string['pluginname'] = 'CloudPoodll Assignment Activity';
+$string['pluginadministration'] = 'Cloud Poodll Assignment Administration';
+$string['pluginname'] = 'Cloud Poodll Assignment Activity';
 
 // Admin Settings strings
 $string['instructionslabel'] = 'Activity instructions';
-$string['instructionslabel_details'] ='The default text to show in the activity area when creating a new CloudPoodll Assignment.';
-$string['defaultinstructions'] = 'Instructions and resources for this CloudPoodll Assignment.';
+$string['instructionslabel_details'] ='The default text to show in the activity area when creating a new Cloud Poodll Assignment.';
+$string['defaultinstructions'] = 'Instructions and resources for this Cloud Poodll Assignment.';
 $string['instructions_editor'] ='Activity description.';
 $string['instructions_editor_help'] ='Add your assignment instructions and resources here.  You may include media such as images, audio and video.';
 $string['completionlabel'] = 'Completed attempt message';
 $string['completionlabel'] = 'completion Message';
-$string['completionlabel_details'] ='The default text to show in the completion field when creating a new CloudPoodll Assignment.';
+$string['completionlabel_details'] ='The default text to show in the completion field when creating a new Cloud Poodll Assignment.';
 $string['completion_editor'] ='Activity completion message.';
 $string['completion_editor_help'] ='Add your assignment completion message  here.  You may include media such as images, audio and video.';
 $string['defaultcompletion'] = 'Thanks for your time.';
@@ -94,17 +94,17 @@ $string['fbaudio_details'] = 'Enable audio feedback';
 $string['fbvideo_details'] = 'Enable video feedback';
 
 // Capabilities and permissions.
-$string['cpassignment:addinstance'] = 'Add a new CloudPoodll Assignment';
-$string['cpassignment:view'] = 'View CloudPoodll Assignment';
-$string['cpassignment:view'] = 'Preview CloudPoodll Assignment';
+$string['cpassignment:addinstance'] = 'Add a new Cloud Poodll Assignment';
+$string['cpassignment:view'] = 'View Cloud Poodll Assignment';
+$string['cpassignment:view'] = 'Preview Cloud Poodll Assignment';
 $string['cpassignment:itemview'] = 'View items';
 $string['cpassignment:itemedit'] = 'Edit items';
 $string['cpassignment:tts'] = 'Can use Text To Speech(tts)';
-$string['cpassignment:manageattempts'] = 'Can manage CloudPoodll Assignment attempts';
-$string['cpassignment:manage'] = 'Can manage CloudPoodll Assignment instances';
-$string['cpassignment:preview'] = 'Can preview CloudPoodll Assignment activities';
-$string['cpassignment:submit'] = 'Can submit CloudPoodll Assignment attempts';
-$string['privacy:metadata'] = 'The Poodll CloudPoodll Assignment plugin does store personal data.';
+$string['cpassignment:manageattempts'] = 'Can manage Cloud Poodll Assignment attempts';
+$string['cpassignment:manage'] = 'Can manage Cloud Poodll Assignment instances';
+$string['cpassignment:preview'] = 'Can preview Cloud Poodll Assignment activities';
+$string['cpassignment:submit'] = 'Can submit Cloud Poodll Assignment attempts';
+$string['privacy:metadata'] = 'The Poodll Cloud Poodll Assignment plugin does store personal data.';
 
 $string['id']='ID';
 $string['name']='Name';
@@ -145,7 +145,7 @@ $string['gradelatest'] ='score of latest attempt';
 $string['gradeaverage'] ='average score of all attempts';
 $string['defaultsettings'] ='Default Settings';
 $string['exceededattempts'] ='You have completed the maximum {$a} attempts.';
-$string['cpassignmenttask'] ='CloudPoodll Assignment Task';
+$string['cpassignmenttask'] ='Cloud Poodll Assignment Task';
 $string['attempt_completed'] ='Finish';
 
 //$string['passagelabel'] ='Reading Passage';
@@ -156,6 +156,7 @@ $string['feedbacktextlabel'] ='Feedback (text)';
 $string['feedbackvideolabel'] ='Feedback (video)';
 
 $string['timelimit'] = 'Time Limit';
+$string['timelimitdetails'] = 'An entry of 0 indicates no time limit.'
 $string['gotnosound'] = 'We could not hear you. Please check the permissions and settings for microphone and try again.';
 $string['done'] = 'Done';
 $string['processing'] = 'Processing';
@@ -185,7 +186,7 @@ $string['grade']='Current grade (/{$a}):';
 $string['grade_p']='Grade(%)';
 $string['thesubmission']='The submission:';
 $string['showcurrentfb']='Current feedback';
-$string['showingattempt']='Grading a CloudPoodll assignment';
+$string['showingattempt']='Grading a Cloud Poodll Assignment';
 $string['attemptname']='Name: {$a}';
 $string['showingtranscript']='Transcript: ';
 $string['feedback']='Feedback';

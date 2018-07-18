@@ -68,8 +68,11 @@ class mod_cpassignment_mod_form extends moodleform_mod {
 		}
 
 		//time target
-		$mform->addElement('duration', 'timelimit', get_string('timelimit',constants::M_LANG));
-		$mform->setDefault('timelimit',60);
+		$mform->addElement('duration', 'timelimit', get_string('timelimit',
+                constants::M_LANG));
+		$mform->setDefault('timelimit', 0);
+        $mform->addElement('static', 'timelimitdetails', ' ',
+                get_string('timelimitdetails', constants::M_LANG));
 
 		// Add other editors.  HTML format for media files.
 		$config = get_config(constants::M_FRANKY);

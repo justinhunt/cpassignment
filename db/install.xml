@@ -11,54 +11,54 @@
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" />
         <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the cpassignment activity" />
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)"/>
-		<FIELD NAME="passage" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The passage to be read." />
+		   <FIELD NAME="passage" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The passage to be read." />
         <FIELD NAME="passageformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the passage field (MOODLE, HTML, MARKDOWN...)"/>
-		<FIELD NAME="instructions" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Activity instructions and resources" />
+		   <FIELD NAME="instructions" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Activity instructions and resources" />
         <FIELD NAME="instructionsformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the instructions field (MOODLE, HTML, MARKDOWN...)"/>
-		<FIELD NAME="completion" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Activity completion message area" />
+		   <FIELD NAME="completion" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Activity completion message area" />
         <FIELD NAME="completionformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the completion message field (MOODLE, HTML, MARKDOWN...)"/>
-		<FIELD NAME="timelimit" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
-		<FIELD NAME="grade" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-		<FIELD NAME="gradeoptions" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0"  SEQUENCE="false" COMMENT="gradeoptions" />
-		<FIELD NAME="maxattempts" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="maxattempts" />
-		<FIELD NAME="mingrade" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="completion condition mingrade" />
-		<FIELD NAME="language" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" DEFAULT="none" COMMENT="the recording language"/>
-          <FIELD NAME="mediatype" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" DEFAULT="none" COMMENT="media type"/>
-          <FIELD NAME="recordertype" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" DEFAULT="none" COMMENT="recorder type"/>
-          <FIELD NAME="transcribe" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Whether to use AI on this activity" />
-          <FIELD NAME="subtitle" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Whether to subtitle on this activity" />
-          <FIELD NAME="expiredays" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="100" SEQUENCE="false" />
-          <FIELD NAME="region" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" DEFAULT="useast1" COMMENT="aws region" />
-          <FIELD NAME="fbaudio" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Feedback by audio selected" />
-          <FIELD NAME="fbvideo" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Feedback by video selected" />
-          <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-      <INDEXES>
-        <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
-      </INDEXES>
-    </TABLE>
+		   <FIELD NAME="timelimit" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
+		   <FIELD NAME="grade" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+		   <FIELD NAME="gradeoptions" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0"  SEQUENCE="false" COMMENT="gradeoptions" />
+		   <FIELD NAME="maxattempts" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="maxattempts" />
+		   <FIELD NAME="mingrade" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="completion condition mingrade" />
+	   	<FIELD NAME="language" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" DEFAULT="none" COMMENT="the recording language"/>
+      <FIELD NAME="mediatype" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" DEFAULT="none" COMMENT="media type"/>
+      <FIELD NAME="recordertype" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" DEFAULT="none" COMMENT="recorder type"/>
+      <FIELD NAME="transcribe" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Whether to use AI on this activity" />
+      <FIELD NAME="subtitle" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Whether to subtitle on this activity" />
+      <FIELD NAME="expiredays" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="100" SEQUENCE="false" />
+      <FIELD NAME="region" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" DEFAULT="useast1" COMMENT="aws region" />
+      <FIELD NAME="fbaudio" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Feedback by audio selected" />
+      <FIELD NAME="fbvideo" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Feedback by video selected" />
+      <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
+      <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
+    </FIELDS>
+    <KEYS>
+      <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+    </KEYS>
+    <INDEXES>
+      <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+    </INDEXES>
+   </TABLE>
 	 <TABLE NAME="cpassignment_attempt" COMMENT="user attempt data for cpassignment">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course cpassignment activity belongs to" />
-		<FIELD NAME="cpassignmentid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="cpassignment activity this data belongs to" />
-		<FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course cpassignment activity belongs to" />
+		    <FIELD NAME="cpassignmentid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="cpassignment activity this data belongs to" />
+		    <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course cpassignment activity belongs to" />
         <FIELD NAME="status" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="status " />
-		<FIELD NAME="filename" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="the submission filename"/>
-          <FIELD NAME="transcript" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The text transcript." />
-          <FIELD NAME="fulltranscript" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The full TTS result (JSON)" />
-          <FIELD NAME="subtitles" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The subtitles (VTT)" />
-		<FIELD NAME="sessionscore" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="the score for this session"/>
+		    <FIELD NAME="filename" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="the submission filename"/>
+        <FIELD NAME="transcript" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The text transcript." />
+        <FIELD NAME="fulltranscript" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The full TTS result (JSON)" />
+        <FIELD NAME="subtitles" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The subtitles (VTT)" />
+		    <FIELD NAME="sessionscore" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="the score for this session"/>
         <FIELD NAME="sessiontime" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" />
-          <FIELD NAME="feedbacktext" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Feedback text" />
-          <FIELD NAME="feedbacktextformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the feedback field (MOODLE, HTML, MARKDOWN...)"/>
-          <FIELD NAME="feedbackaudio" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="audio feedback filename" />
-          <FIELD NAME="feedbackvideo" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="video feedback filename" />
-		<FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
+        <FIELD NAME="feedbacktext" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Feedback text" />
+        <FIELD NAME="feedbacktextformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the feedback field (MOODLE, HTML, MARKDOWN...)"/>
+        <FIELD NAME="feedbackaudio" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="audio feedback filename" />
+        <FIELD NAME="feedbackvideo" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="video feedback filename" />
+		    <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
