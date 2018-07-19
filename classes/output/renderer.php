@@ -64,7 +64,7 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
-     *  Might be useful as general purpose buttoner.
+     *  Show a single button.
      */
     public function reattemptbutton($moduleinstance, $buttonlabel){
 
@@ -95,20 +95,34 @@ class renderer extends \plugin_renderer_base {
     /**
      *  Show instructions/instructions
      */
-    public function show_instructions($showtext, $showtitle) {
-        $thetitle =  $this->output->heading($showtitle, 3, 'main');
+    public function show_instructions($moduleinstance, $showtext) {
+        $thetitle =  $this->output->heading($moduleinstance->name, 3, 'main');
         $displaytext =  \html_writer::div($thetitle,
                 constants::M_CLASS  . '_center');
         $displaytext .= $this->output->box_start();
 
         // Show the text according to the layout in the editor.
         $displaytext .= \html_writer::div($showtext);
-
         $displaytext .= $this->output->box_end();
-        $ret= \html_writer::div($displaytext,
+
+        $ret = \html_writer::div($displaytext,
                 constants::M_INSTRUCTIONS_CONTAINER,
                 array('id'=>constants::M_INSTRUCTIONS_CONTAINER));
 
+        return $ret;
+    }
+
+    /**
+     *  General purpose cancel button, returns to course page.
+     */
+    public function cancelbutton($cm) {
+
+        $button = $this->output->single_button(
+                new \moodle_url('../../course/view.php',
+                array('id' => $cm->course)),
+                get_string('cancel'));
+
+        $ret = \html_writer::div($button, constants::M_CLASS  . '_cancelled');
         return $ret;
     }
 
@@ -153,9 +167,8 @@ class renderer extends \plugin_renderer_base {
     /**
      * Show the completion message in the activity settings
      */
-    public function show_completion($themodule, $cm, $showtext,
-            $showtitle) {
-        $thetitle =  $this->output->heading($showtitle, 3, 'main');
+    public function show_completion($themodule, $cm, $showtext) {
+        $thetitle =  $this->output->heading($themodule->name, 3, 'main');
         $displaytext =  \html_writer::div($thetitle,
                 constants::M_CLASS  . '_center');
         $displaytext .= $this->output->box_start();

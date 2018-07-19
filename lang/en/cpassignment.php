@@ -156,7 +156,7 @@ $string['feedbacktextlabel'] ='Feedback (text)';
 $string['feedbackvideolabel'] ='Feedback (video)';
 
 $string['timelimit'] = 'Time Limit';
-$string['timelimitdetails'] = 'An entry of 0 indicates no time limit.'
+$string['timelimitdetails'] = 'An entry of 0 indicates no time limit.';
 $string['gotnosound'] = 'We could not hear you. Please check the permissions and settings for microphone and try again.';
 $string['done'] = 'Done';
 $string['processing'] = 'Processing';

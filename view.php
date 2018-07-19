@@ -115,7 +115,7 @@ if($attempts && $retake==0){
 			echo $submissionrenderer->render_submission($submission);
 		}
 
-		//show  button or a label depending on of can retake
+		// Show  button or a label depending on attempts made.
 		if ($canattempt) {
 			echo $renderer->reattemptbutton($moduleinstance,
                     get_string('reattempt',constants::M_FRANKY));
@@ -149,13 +149,14 @@ $completion = file_rewrite_pluginfile_urls($moduleinstance->completion,
     'pluginfile.php', $modulecontext->id, constants::M_MODNAME,
     constants::M_FILEAREA_COMPLETION, $moduleinstance->id);
 
-echo $renderer->show_instructions($instructions, $moduleinstance->name);
-echo $renderer->show_completion($moduleinstance, $cm,
-        $completion, $moduleinstance->name);
+echo $renderer->show_instructions($moduleinstance, $instructions);
+echo $renderer->show_completion($moduleinstance, $cm, $completion);
 echo $renderer->show_error($moduleinstance,$cm);
 //echo $renderer->show_passage($moduleinstance,$cm);
 echo $renderer->show_recorder($moduleinstance,$token);
 echo $renderer->show_progress($moduleinstance,$cm);
+
+echo $renderer->cancelbutton($cm);
 
 //the module AMD code
 echo $renderer->fetch_activity_amd($cm, $moduleinstance);
