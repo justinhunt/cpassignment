@@ -64,7 +64,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
                 hider: $('.' + opts['hider']),
                 introbox: $('.' + 'mod_intro_box'),
                 progresscontainer: $('.' +  opts['progresscontainer']),
-                completioncontainer: $('.' +  opts['completioncontainer']),
+                finishedcontainer: $('.' +  opts['finishedcontainer']),
                 errorcontainer: $('.' +  opts['errorcontainer']),
                 //passagecontainer: $('.' +  opts['passagecontainer']),
                 recordingcontainer: $('.' +  opts['recordingcontainer']),
@@ -195,7 +195,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
             m.controls.instructionscontainer.hide();
            // m.controls.passagecontainer.hide();
             m.controls.recordingcontainer.hide();
-            m.controls.completioncontainer.show();
+            m.controls.finishedcontainer.show();
         },
         doerrorlayout: function(){
             var m = this;
