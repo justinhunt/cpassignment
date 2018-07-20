@@ -1,4 +1,4 @@
-define(['jquery','core/log'], function($,log) {
+define(['jquery', 'core/log','mod_cpassignment/dialogs'], function($,log,dialogs) {
     "use strict"; // jshint ;_;
 
     log.debug('cpassignment grading helper: initialising');
@@ -6,13 +6,17 @@ define(['jquery','core/log'], function($,log) {
     return {
 
         controls: {},
+        mediatype: null,
         hiddenplayer: 'mod_cpassignment_hidden_player',
         hiddenplayerbutton: 'mod_cpassignment_hidden_player_button',
+        hiddenvideoplayer: 'mod_cpassignment_hidden_video_player',
+        videoplayercontainer: 'mod_cpassignment_hiddenvideocontainer',
         activebutton: 'mod_cpassignment_hidden_player_button_active',
         activebuttonpaused: 'mod_cpassignment_hidden_player_button_paused',
         activebuttonplaying: 'mod_cpassignment_hidden_player_button_playing',
 
         init: function (opts) {
+            this.mediatype = opts['mediatype'];
             this.hiddenplayer = opts['hiddenplayerclass'];
             this.hiddenplayerbutton = opts['hiddenplayerbuttonclass'];
             this.register_controls();
@@ -21,6 +25,7 @@ define(['jquery','core/log'], function($,log) {
 
         register_controls: function(){
             this.controls.hiddenplayer = $('.' + this.hiddenplayer);
+            this.controls.hiddenvideoplayer = $('.' + this.hiddenvideoplayer);
             this.controls.hiddenplayerbutton = $('.' + this.hiddenplayerbutton);
         },
 
@@ -29,21 +34,32 @@ define(['jquery','core/log'], function($,log) {
             var audioplayer = this.controls.hiddenplayer;
             //handle the button click
             this.controls.hiddenplayerbutton.click(function(e){
-                var audiosrc = $(this).attr('data-audiosource');
-                if (audiosrc == audioplayer.attr('src') && !(audioplayer.prop('paused'))) {
-                    that.dohiddenstop();
-                } else {
-                    that.dohiddenplay(audiosrc);
+                switch(that.mediatype){
+
+                    case 'video':
+                        var mediasrc = $(this).attr('data-audiosource');
+                        that.dohiddenvideoplay(mediasrc);
+                        break;
+
+                    case 'audio':
+                    default:
+                        var mediasrc = $(this).attr('data-audiosource');
+                        if (mediasrc == audioplayer.attr('src') && !(audioplayer.prop('paused'))) {
+                            that.dohiddenstop();
+                        } else {
+                            that.dohiddenaudioplay(mediasrc);
+                        }
                 }
+
             });
 
         },
 
 
-        dohiddenplay: function (audiosrc) {
+        dohiddenaudioplay: function (mediasrc) {
             var m = this;//M.mod_cpassignment.gradinghelper;
             var audioplayer = m.controls.hiddenplayer;
-            audioplayer.attr('src', audiosrc);
+            audioplayer.attr('src', mediasrc);
             audioplayer[0].pause();
             audioplayer[0].load();
             var pp = audioplayer[0].play();
@@ -56,6 +72,26 @@ define(['jquery','core/log'], function($,log) {
             }
             m.dobuttonicons();
         },
+
+        dohiddenvideoplay: function(mediasrc){
+
+            var m = this;//M.mod_cpassignment.gradinghelper;
+            var videoplayer = m.controls.hiddenvideoplayer;
+            videoplayer.attr('src', mediasrc);
+            videoplayer[0].pause();
+            videoplayer[0].load();
+            var pp = videoplayer[0].play();
+            if (pp !== undefined) {
+                pp.then(function() {
+                    // Yay we are playing
+                }).catch(function(error) {
+                    // somethings up ... but we can ignore it
+                });
+            }
+            dialogs.openModal('#' + m.videoplayercontainer);
+            m.dobuttonicons();
+        },
+
         dohiddenstop: function () {
             var m = this;// M.mod_cpassignment.gradinghelper;
             var audioplayer =  m.controls.hiddenplayer;

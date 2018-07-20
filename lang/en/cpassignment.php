@@ -190,3 +190,4 @@ $string['showingattempt']='Grading a Cloud Poodll Assignment';
 $string['attemptname']='Name: {$a}';
 $string['showingtranscript']='Transcript: ';
 $string['feedback']='Feedback';
+$string['uploadsuccessmessage']='Your recording has been submitted. Thank you';

@@ -72,6 +72,7 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 $PAGE->set_pagelayout('course');
 
+
 //Get an admin settings
 $config = get_config(constants::M_FRANKY);
 
@@ -154,6 +155,9 @@ echo $renderer->show_completion($moduleinstance, $cm, $completion);
 echo $renderer->show_error($moduleinstance,$cm);
 //echo $renderer->show_passage($moduleinstance,$cm);
 echo $renderer->show_recorder($moduleinstance,$token);
+
+echo $renderer->show_uploadsuccess($moduleinstance);
+
 echo $renderer->show_progress($moduleinstance,$cm);
 
 echo $renderer->cancelbutton($cm);
