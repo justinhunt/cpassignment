@@ -1,5 +1,5 @@
 /* jshint ignore:start */
-define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], function($, jqui, log, recorderhelper) {
+define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_cpassignment/dialogs'], function($, jqui, log, recorderhelper,dialogs) {
 
     "use strict"; // jshint ;_;
 
@@ -9,12 +9,11 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
 
         cmid: null,
         activitydata: null,
-        holderid: null,
         recorderid: null,
-        playerid: null,
+        successmessageid: null,
         sorryboxid: null,
         controls: null,
-        ra_recorder: null,
+        moduleclass: null,
 
         //for making multiple instances
         clone: function(){
@@ -37,11 +36,12 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
                 return;
             }
 
+            dd.moduleclass = dd.activitydata.moduleclass;
             dd.cmid = props.cmid;
-            dd.holderid = props.widgetid + '_holder';
-            dd.recorderid = props.widgetid + '_recorder';
-            dd.playerid = props.widgetid + '_player';
-            dd.sorryboxid = props.widgetid + '_sorrybox';
+            dd.recorderid = dd.activitydata.recorderid;
+            dd.sorryboxid = "sorryboxid-would-go-here"//props.widgetid + '_sorrybox';
+            dd.successmessageid = dd.moduleclass  + '_uploadsuccess';
+
 
             //if the browser doesn't support html5 recording.
             //then warn and do not go any further
@@ -123,7 +123,6 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
 
         register_events: function() {
             var dd = this;
-
 			//events for other controls on the page
             //ie not recorders
             //dd.controls.passagecontainer.click(function(){log.debug('clicked');})
@@ -147,7 +146,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
                             switch(payloadobject.success) {
                                 case true:
                                     log.debug('attempted submission accepted');
-
+                                    dialogs.openModal('#' + that.successmessageid);
                                     break;
 
                                 case false:
@@ -196,6 +195,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper'], func
            // m.controls.passagecontainer.hide();
             m.controls.recordingcontainer.hide();
             m.controls.finishedcontainer.show();
+
         },
         doerrorlayout: function(){
             var m = this;

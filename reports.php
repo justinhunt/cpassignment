@@ -95,6 +95,7 @@ $PAGE->requires->jquery();
 
 
 $aph_opts =Array();
+$aph_opts['mediatype'] = $moduleinstance->mediatype;
 $aph_opts['hiddenplayerclass'] = constants::M_HIDDEN_PLAYER;
 $aph_opts['hiddenplayerbuttonclass'] = constants::M_HIDDEN_PLAYER_BUTTON;
 $aph_opts['hiddenplayerbuttonactiveclass'] =constants::M_HIDDEN_PLAYER_BUTTON_ACTIVE;
@@ -132,7 +133,16 @@ switch ($showreport){
 
 	case 'attempts':
 		$report = new \mod_cpassignment\report\attempts();
-		echo $submissionrenderer->render_hiddenaudioplayer();
+		switch($moduleinstance->mediatype)
+        {
+            case 'video':
+                echo $submissionrenderer->render_hiddenvideoplayer();
+                break;
+            case 'audio':
+            default:
+                echo $submissionrenderer->render_hiddenaudioplayer();
+        }
+
 		$formdata = new stdClass();
 		$formdata->cpassignmentid = $moduleinstance->id;
 		$formdata->modulecontextid = $modulecontext->id;

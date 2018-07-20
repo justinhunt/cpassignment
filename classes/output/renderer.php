@@ -113,6 +113,46 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
+     *  An upload successmessage displayed in modal
+     */
+    public function show_uploadsuccess($moduleinstance) {
+        $title = '';
+        $content=get_string('uploadsuccessmessage',constants::M_LANG);
+        $modalcontent = $this->fetch_modal_content($title,$content);
+        $modal_attributes = array('id'=>constants::M_CLASS  . '_uploadsuccess', 'role'=>'dialog','aria-hidden'=>'true','tab-index'=>'-1');
+        $modal =  \html_writer::div($modalcontent, constants::M_CLASS  . '_uploadsuccess hidden modal fade',$modal_attributes);
+        return $modal;
+    }
+
+    /**
+     *  A template to hold the content of a modal
+     */
+    public function fetch_modal_content($title,$message) {
+
+        $modalcontent=  '<div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">';
+        $modalcontent .=  $title;
+        $modalcontent .= '</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">';
+        $modalcontent .=  $message;
+        $modalcontent .=  '</div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>';
+
+        return $modalcontent;
+    }
+
+    /**
      *  General purpose cancel button, returns to course page.
      */
     public function cancelbutton($cm) {
@@ -122,7 +162,7 @@ class renderer extends \plugin_renderer_base {
                 array('id' => $cm->course)),
                 get_string('cancel'));
 
-        $ret = \html_writer::div($button, constants::M_CLASS  . '_cancelled');
+        $ret = \html_writer::div($button, constants::M_CLASS  . '_cancelbutton');
         return $ret;
     }
 
@@ -239,10 +279,11 @@ class renderer extends \plugin_renderer_base {
         $recopts['progresscontainer'] = constants::M_PROGRESS_CONTAINER;
         $recopts['completioncontainer'] = constants::M_COMPLETION_CONTAINER;
         $recopts['hider']=constants::M_HIDER;
+        $recopts['moduleclass']=constants::M_CLASS;
 
 
 
-        //we need an update control tp hold the recorded filename, and one for draft item id
+        //we need an update control tp hold the recorded filename,
         $ret_html = $ret_html . \html_writer::tag('input', '', array('id' => constants::M_UPDATE_CONTROL, 'type' => 'hidden'));
 
 

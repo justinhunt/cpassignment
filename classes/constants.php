@@ -52,6 +52,8 @@ const M_HIDDEN_PLAYER_BUTTON_ACTIVE='mod_cpassignment_hidden_player_button_activ
 const M_HIDDEN_PLAYER_BUTTON_PAUSED='mod_cpassignment_hidden_player_button_paused';
 const M_HIDDEN_PLAYER_BUTTON_PLAYING='mod_cpassignment_hidden_player_button_playing';
 
+const M_HIDDEN_VIDEO_PLAYER='mod_cpassignment_hidden_video_player';
+
 const M_GRADEHIGHEST= 0;
 const M_GRADELOWEST= 1;
 const M_GRADELATEST= 2;

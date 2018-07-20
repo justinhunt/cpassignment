@@ -100,12 +100,52 @@ class submission_renderer extends \plugin_renderer_base {
 
     }
 
-    // Render any existing feedback.
+
     public function render_hiddenaudioplayer(){
         $audioplayer = \html_writer::tag('audio','',array('src'=>'','id'=>constants::M_HIDDEN_PLAYER,'class'=>constants::M_HIDDEN_PLAYER));
         return $audioplayer;
     }
 
+    public function render_hiddenvideoplayer(){
+        $title = 'Someones Video';
+        $videoplayer = \html_writer::tag('video','',array('src'=>'','id'=>constants::M_HIDDEN_VIDEO_PLAYER,'class'=>constants::M_HIDDEN_VIDEO_PLAYER, 'controls'=>'true'));
+        $content=$videoplayer;
+        $modalcontent = $this->fetch_modal_content($title,$content);
+
+        $modal_attributes = array('id'=>constants::M_CLASS  . '_hiddenvideocontainer', 'role'=>'dialog','aria-hidden'=>'true','tab-index'=>'-1');
+        $modal =  \html_writer::div($modalcontent, constants::M_CLASS  . '_hiddenvideocontainer hidden modal fade',$modal_attributes);
+        return $modal;
+    }
+
+    /**
+     *  A template to hold the content of a modal
+     */
+    public function fetch_modal_content($title,$content) {
+
+        $modalcontent=  '<div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">';
+        $modalcontent .=  $title;
+        $modalcontent .= '</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">';
+        $modalcontent .=  $content;
+        $modalcontent .=  '</div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>';
+
+        return $modalcontent;
+    }
+
+    // Render any existing feedback.
     public function render_feedbackaudio($mediaurl){
 
         $ret = '<br>' . $this->output->heading(

@@ -52,8 +52,12 @@
 .mod_cpassignment_grading_player_cont {
 	/*color: blue;*/
 }
+.mod_cpassignment_hidden_video_player{
+    display: block;
+    width: 100%;
+}
 .mod_cpassignment_hidden_player {
-	display: none;
+	 display: none;
 }
 .mod_cpassignment_hidden_player_button {
   color: white;
