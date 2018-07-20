@@ -63,7 +63,7 @@ class restore_cpassignment_activity_task extends restore_activity_task {
 		$contents[] = new restore_decode_content(constants::M_MODNAME,
                           array('passage'), constants::M_MODNAME);
 		$contents[] = new restore_decode_content(constants::M_MODNAME,
-                          array('completion'), constants::M_MODNAME);
+                          array('finished'), constants::M_MODNAME);
 
         return $contents;
     }

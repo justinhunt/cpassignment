@@ -220,7 +220,7 @@ class renderer extends \plugin_renderer_base {
         // Can add a different label if required.
         $displaytext .= self::reattemptbutton($themodule,
             get_string('attempt_completed', constants::M_FRANKY));
-        $ret = \html_writer::div($displaytext,constants::M_COMPLETION_CONTAINER,array('id'=>constants::M_COMPLETION_CONTAINER));
+        $ret = \html_writer::div($displaytext,constants::M_FINISHED_CONTAINER,array('id'=>constants::M_FINISHED_CONTAINER));
 
         return $ret;
     }
@@ -277,7 +277,7 @@ class renderer extends \plugin_renderer_base {
         //$recopts['passagecontainer'] = constants::M_PASSAGE_CONTAINER;
         $recopts['instructionscontainer'] = constants::M_INSTRUCTIONS_CONTAINER;
         $recopts['progresscontainer'] = constants::M_PROGRESS_CONTAINER;
-        $recopts['completioncontainer'] = constants::M_COMPLETION_CONTAINER;
+        $recopts['finishedcontainer'] = constants::M_FINISHED_CONTAINER;
         $recopts['hider']=constants::M_HIDER;
         $recopts['moduleclass']=constants::M_CLASS;
 

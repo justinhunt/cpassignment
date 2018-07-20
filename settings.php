@@ -32,11 +32,11 @@ use \mod_cpassignment\constants;
 if ($ADMIN->fulltree) {
 
     // Instructions = old instructions area.
-    // Completion = old feedback area.
+    // finished = old feedback area.
 	 $settings->add(new admin_setting_configtextarea('mod_cpassignment/defaultinstructions',
         get_string('instructionslabel', 'cpassignment'), get_string('instructionslabel_details', constants::M_LANG), get_string('defaultinstructions',constants::M_LANG), PARAM_TEXT));
-	 $settings->add(new admin_setting_configtextarea('mod_cpassignment/defaultcompletion',
-        get_string('completionlabel', 'cpassignment'), get_string('completionlabel_details', constants::M_LANG), get_string('defaultcompletion',constants::M_LANG), PARAM_TEXT));
+	 $settings->add(new admin_setting_configtextarea('mod_cpassignment/defaultfinished',
+        get_string('finishedlabel', 'cpassignment'), get_string('finishedlabel_details', constants::M_LANG), get_string('defaultfinished', constants::M_LANG), PARAM_TEXT));
 
 
     $settings->add(new admin_setting_configtext('mod_cpassignment/apiuser',
@@ -53,10 +53,10 @@ if ($ADMIN->fulltree) {
 
     $expiredays = \mod_cpassignment\utils::get_expiredays_options();
     $settings->add(new admin_setting_configselect('mod_cpassignment/expiredays', get_string('expiredays', constants::M_LANG), '', '365', $expiredays));
-
+/*
 	 $langoptions = \mod_cpassignment\utils::get_lang_options();
 	 $settings->add(new admin_setting_configselect('mod_cpassignment/language', get_string('language', constants::M_LANG), '', 'en', $langoptions));
-
+*/
     $mediaoptions = \mod_cpassignment\utils::get_mediatype_options();
     $settings->add(new admin_setting_configselect('mod_cpassignment/mediatype', get_string('mediatype', constants::M_LANG), '', 'audio', $mediaoptions));
 
@@ -69,6 +69,13 @@ if ($ADMIN->fulltree) {
             get_string('itemsperpage_details', constants::M_LANG),
             40, PARAM_INT));
 
+    // Permit teacher to show grade to students?
+    $settings->add(new admin_setting_configcheckbox(
+            'mod_cpassignment/showgrade',
+            get_string('showgradelabel', constants::M_LANG),
+            get_string('showgrade_details', constants::M_LANG), 1));
+
+    // Permit teacher to select audio and video feedback?
     $settings->add(new admin_setting_configcheckbox(
             'mod_cpassignment/fbaudio',
             get_string('feedbackaudiolabel', constants::M_LANG),

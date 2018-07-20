@@ -15,8 +15,8 @@
         <FIELD NAME="passageformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the passage field (MOODLE, HTML, MARKDOWN...)"/>
 		   <FIELD NAME="instructions" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Activity instructions and resources" />
         <FIELD NAME="instructionsformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the instructions field (MOODLE, HTML, MARKDOWN...)"/>
-		   <FIELD NAME="completion" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Activity completion message area" />
-        <FIELD NAME="completionformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the completion message field (MOODLE, HTML, MARKDOWN...)"/>
+		   <FIELD NAME="finished" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Activity finished message area" />
+        <FIELD NAME="finishedformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the finished message field (MOODLE, HTML, MARKDOWN...)"/>
 		   <FIELD NAME="timelimit" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
 		   <FIELD NAME="grade" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
 		   <FIELD NAME="gradeoptions" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0"  SEQUENCE="false" COMMENT="gradeoptions" />
@@ -29,6 +29,7 @@
       <FIELD NAME="subtitle" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Whether to subtitle on this activity" />
       <FIELD NAME="expiredays" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="100" SEQUENCE="false" />
       <FIELD NAME="region" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" DEFAULT="useast1" COMMENT="aws region" />
+      <FIELD NAME="showgrade" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Show grade to students" />
       <FIELD NAME="fbaudio" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Feedback by audio selected" />
       <FIELD NAME="fbvideo" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"  DEFAULT="0" COMMENT="Feedback by video selected" />
       <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />

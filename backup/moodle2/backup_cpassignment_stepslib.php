@@ -52,8 +52,8 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
         $oneactivity = new backup_nested_element(constants::M_MODNAME, array('id'), array(
                 'course', 'name', 'intro', 'introformat',
                 'passage', 'passageformat', 'instructions',
-                'instructionsformat', 'completion',
-                'completionformat', 'timelimit', 'grade',
+                'instructionsformat', 'finished',
+                'finishedformat', 'timelimit', 'grade',
                 'gradeoptions', 'maxattempts', 'mingrade',
                 'language', 'mediatype', 'recordertype',
                 'transcribe', 'subtitle', 'expiredays',
@@ -94,7 +94,7 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
         $oneactivity->annotate_files(constants::M_FRANKY, 'intro', null);
 		$oneactivity->annotate_files(constants::M_FRANKY, 'instructions', null);
 		$oneactivity->annotate_files(constants::M_FRANKY, 'passage', null);
-		$oneactivity->annotate_files(constants::M_FRANKY, 'completion', null);
+		$oneactivity->annotate_files(constants::M_FRANKY, 'finished', null);
 
 		//file annotation if including user info
         if ($userinfo) {

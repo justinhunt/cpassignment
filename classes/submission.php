@@ -126,7 +126,7 @@ class submission{
 		$gradingopts =Array();
 		$gradingopts['reviewmode'] = $reviewmode;
 		$gradingopts['timelimit'] = $this->activitydata->timelimit;
- 		$gradingopts['language'] = $this->activitydata->language;
+ 		//$gradingopts['language'] = $this->activitydata->language;
 		$gradingopts['activityid'] = $this->activitydata->id;
 		$gradingopts['sesskey'] = sesskey();
 		$gradingopts['attemptid'] = $this->attemptdata->id;

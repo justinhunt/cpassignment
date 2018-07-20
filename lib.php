@@ -366,7 +366,7 @@ function cpassignment_dotask(progress_trace $trace) {
 function cpassignment_get_editornames(){
 	// return array('passage','instructions','feedback');
     // Note: also defines file areas for storage.
-    return array('instructions', 'completion');
+    return array('instructions', 'finished');
 }
 
 /**

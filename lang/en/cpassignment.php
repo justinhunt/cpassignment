@@ -45,19 +45,17 @@ $string['instructionslabel_details'] ='The default text to show in the activity 
 $string['defaultinstructions'] = 'Instructions and resources for this Cloud Poodll Assignment.';
 $string['instructions_editor'] ='Activity description.';
 $string['instructions_editor_help'] ='Add your assignment instructions and resources here.  You may include media such as images, audio and video.';
-$string['completionlabel'] = 'Completed attempt message';
-$string['completionlabel'] = 'completion Message';
-$string['completionlabel_details'] ='The default text to show in the completion field when creating a new Cloud Poodll Assignment.';
-$string['completion_editor'] ='Activity completion message.';
-$string['completion_editor_help'] ='Add your assignment completion message  here.  You may include media such as images, audio and video.';
-$string['defaultcompletion'] = 'Thanks for your time.';
+$string['finishedlabel'] = 'Completion attempt message';
+$string['finishedlabel_details'] ='The default message to show when a Cloud Poodll Assignment has been completed.';
+$string['finished_editor'] ='Activity completion message.';
+$string['finished_editor_help'] ='Add your assignment completion message  here.  You may include media such as images, audio and video.';
+$string['defaultfinished'] = 'Thanks for your time.';
 $string['apiuser']='Poodll API User ';
 $string['apiuser_details']='The Poodll account username that authorises Poodll on this site.';
 $string['apisecret']='Poodll API Secret ';
 $string['apisecret_details']='The Poodll API secret. See <a href= "https://support.poodll.com/support/solutions/articles/19000083076-cloud-poodll-api-secret">here</a> for more details';
 $string['transcribe']='Transcribe audio';
 $string['transcribe_details']='';
-
 
 $string['useast1']='US East';
 $string['tokyo']='Tokyo, Japan';
@@ -78,12 +76,12 @@ $string['once']='Once';
 $string['mediatype']='Media Type';
 $string['recordertype']='Recorder Type';
 
-// Sections in instance settings
+// Sections in instance settings.
 $string['cpassignmentsettings'] = 'cpassignment settings';
 $string['attemptsettings'] = 'Attempt settings';
 $string['feedbacksettings'] = 'Grader feedback settings';
 $string['fblabel'] = 'Settings';
-$string['fbdescription'] = 'Select default feedback method(s) for grading. You can select additional feedback options on the grading page.';
+$string['fbdescription'] = 'Select default feedback method(s) for grading.';
 
 // Checkboxes for grading choices - instance settings.
 $string['feedbackaudiolabel'] ='Feedback (audio)';
@@ -92,6 +90,8 @@ $string['feedbackvideolabel'] ='Feedback (video)';
 $string['fbtext_details'] = 'Enable text feedback';
 $string['fbaudio_details'] = 'Enable audio feedback';
 $string['fbvideo_details'] = 'Enable video feedback';
+$string['showgradelabel'] = 'Show grade to students';
+$string['showgrade_details'] = 'Check to allow students to see their grade';
 
 // Capabilities and permissions.
 $string['cpassignment:addinstance'] = 'Add a new Cloud Poodll Assignment';
@@ -174,7 +174,7 @@ $string['nodataavailable'] = 'No Data Available Yet';
 $string['saveandnext'] = 'Save .... and next';
 $string['reattempt'] = 'Try Again';
 $string['notgradedyet'] = 'Your last submission has not been graded yet';
-$string['language'] = 'TTS Language';
+// $string['language'] = 'TTS Language';
 $string['deleteattemptconfirm'] = "Are you sure that you want to delete this attempt?";
 $string['deletenow']='';
 $string['itemsperpage']='Items per page';

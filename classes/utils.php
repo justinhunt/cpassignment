@@ -229,7 +229,7 @@ class utils{
                 'data-transcode'=>"1",
                 'data-transcribe'=>$transcribe,
                 'data-subtitle'=>$subtitle,
-                'data-transcribelanguage'=>$moduleinstance->language,
+                //'data-transcribelanguage'=>$moduleinstance->language,
                 'data-expiredays'=>$moduleinstance->expiredays,
                 'data-region'=>$moduleinstance->region,
                 'data-hints'=>$string_hints,
@@ -242,13 +242,13 @@ class utils{
         return $recorderdiv;
     }
 
-
+/*
     public static function get_lang_options(){
        return array(
             'en-US'=>get_string('en-us','mod_cpassignment'),
            'es-US'=>get_string('es-us','mod_cpassignment')
        );
-	/*
+
       return array(
 			"none"=>"No TTS",
 			"af"=>"Afrikaans",
@@ -374,6 +374,7 @@ class utils{
 			"yo"=>"Yoruba",
 			"zu"=>"Zulu"
 		);
-	*/
+
    }
+*/
 }
