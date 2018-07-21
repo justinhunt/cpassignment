@@ -207,7 +207,7 @@ class renderer extends \plugin_renderer_base {
     /**
      * Show the completion message in the activity settings
      */
-    public function show_completion($themodule, $cm, $showtext) {
+    public function show_finished($themodule, $cm, $showtext) {
         $thetitle =  $this->output->heading($themodule->name, 3, 'main');
         $displaytext =  \html_writer::div($thetitle,
                 constants::M_CLASS  . '_center');

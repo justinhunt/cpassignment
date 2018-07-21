@@ -163,7 +163,7 @@ class mod_cpassignment_mod_form extends moodleform_mod {
                 null, array(0, 1));
         $mform->setDefault('showgrade', $config->showgrade);
 
-        // Feedback options.
+        /* Feedback options.  These are disabled for now
         $mform->addElement('header', 'feedbacksettings',
                 get_string('feedbacksettings', constants::M_LANG));
 
@@ -182,7 +182,7 @@ class mod_cpassignment_mod_form extends moodleform_mod {
                 get_string('fbvideo_details', constants::M_LANG),
                 null, array(0, 1));
         $mform->setDefault('fbvideo',$config->fbvideo);
-
+    */
         // Grade.
         $this->standard_grading_coursemodule_elements();
 

@@ -75,7 +75,7 @@ if ($ADMIN->fulltree) {
             get_string('showgradelabel', constants::M_LANG),
             get_string('showgrade_details', constants::M_LANG), 1));
 
-    // Permit teacher to select audio and video feedback?
+    /* Permit teacher to select audio and video feedback? - disabled for now
     $settings->add(new admin_setting_configcheckbox(
             'mod_cpassignment/fbaudio',
             get_string('feedbackaudiolabel', constants::M_LANG),
@@ -85,5 +85,5 @@ if ($ADMIN->fulltree) {
             'mod_cpassignment/fbvideo',
             get_string('feedbackvideolabel', constants::M_LANG),
             get_string('fbvideo_details', constants::M_LANG), 0));
-
+*/
 }

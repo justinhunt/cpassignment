@@ -45,8 +45,8 @@ class gradenowform extends \moodleform{
 
         $mform = $this->_form;
         $context = $this->_customdata['context'];
-        $audiorecorderhtml = $this->_customdata['audiorecorderhtml'];
-        $videorecorderhtml = $this->_customdata['videorecorderhtml'];
+//        $audiorecorderhtml = $this->_customdata['audiorecorderhtml'];
+//        $videorecorderhtml = $this->_customdata['videorecorderhtml'];
         $shownext = $this->_customdata['shownext'];
         $maxgrade = $this->_customdata['maxgrade'];
 
@@ -94,19 +94,14 @@ class gradenowform extends \moodleform{
 
         $mediabuttonarray = array();
 
-        // Feedback audio.
-        if ($audiorecorderhtml != '') {
-            $mediabuttonarray[] = $mform->createElement('submit',
-                'btn_fbaudio',
+        // Feedback audio.  These are no longer optional.
+        $mediabuttonarray[] = $mform->createElement('submit', 'btn_fbaudio',
                 get_string('feedbackaudiolabel', constants::M_LANG));
-        }
 
         // Feedback video.
-        if ($videorecorderhtml != '') {
-            $mediabuttonarray[] = $mform->createElement('submit',
-                'btn_fbvideo',
+        $mediabuttonarray[] = $mform->createElement('submit', 'btn_fbvideo',
                 get_string('feedbackvideolabel', constants::M_LANG));
-        }
+
         $mform->addGroup($mediabuttonarray, 'mbuttonar', '', array(' '), false);
 
         // add out buttons for submitting and cancelling

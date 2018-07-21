@@ -146,12 +146,12 @@ $token = \mod_cpassignment\utils::fetch_token($config->apiuser,$config->apisecre
 $instructions = file_rewrite_pluginfile_urls($moduleinstance->instructions,
     'pluginfile.php', $modulecontext->id, constants::M_MODNAME,
     constants::M_FILEAREA_INSTRUCTIONS, $moduleinstance->id);
-$completion = file_rewrite_pluginfile_urls($moduleinstance->completion,
+$finished = file_rewrite_pluginfile_urls($moduleinstance->finished,
     'pluginfile.php', $modulecontext->id, constants::M_MODNAME,
-    constants::M_FILEAREA_COMPLETION, $moduleinstance->id);
+    constants::M_FILEAREA_FINISHED, $moduleinstance->id);
 
 echo $renderer->show_instructions($moduleinstance, $instructions);
-echo $renderer->show_completion($moduleinstance, $cm, $completion);
+echo $renderer->show_finished($moduleinstance, $cm, $finished);
 echo $renderer->show_error($moduleinstance,$cm);
 //echo $renderer->show_passage($moduleinstance,$cm);
 echo $renderer->show_recorder($moduleinstance,$token);

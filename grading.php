@@ -160,41 +160,31 @@ switch ($action){
 
         $timelimit = 0;
 
-        // Check selected feedback options.
+        // Check selected feedback options has been disabled.
+        // To enable, add code back here and pass params to gradenow form (below).
 
-        if ($moduleinstance->fbaudio) {
+        $audiorecid = constants::M_RECORDERID . '_' .
+                constants::M_GRADING_FORM_FEEDBACKAUDIO;
 
-            $audiorecid = constants::M_RECORDERID . '_' .
-                    constants::M_GRADING_FORM_FEEDBACKAUDIO;
+        $audiorecorderhtml = \mod_cpassignment\utils::fetch_recorder(
+                $moduleinstance,$audiorecid, $token,
+                constants::M_GRADING_FORM_FEEDBACKAUDIO,
+                $timelimit,'audio','bmr');
 
-            $audiorecorderhtml = \mod_cpassignment\utils::fetch_recorder(
-                    $moduleinstance,$audiorecid, $token,
-                    constants::M_GRADING_FORM_FEEDBACKAUDIO,
-                    $timelimit,'audio','bmr');
-        } else {
+        $videorecid = constants::M_RECORDERID . '_' .
+                constants::M_GRADING_FORM_FEEDBACKVIDEO;
 
-            $audiorecorderhtml = '';
-        }
+        $videorecorderhtml = \mod_cpassignment\utils::fetch_recorder(
+                $moduleinstance,$videorecid, $token,
+                constants::M_GRADING_FORM_FEEDBACKVIDEO,
+                $timelimit,'video','bmr');
 
-        if ($moduleinstance->fbvideo) {
-
-            $videorecid = constants::M_RECORDERID . '_' .
-                    constants::M_GRADING_FORM_FEEDBACKVIDEO;
-
-            $videorecorderhtml = \mod_cpassignment\utils::fetch_recorder(
-                    $moduleinstance,$videorecid, $token,
-                    constants::M_GRADING_FORM_FEEDBACKVIDEO,
-                    $timelimit,'video','bmr');
-        } else {
-
-            $videorecorderhtml = '';
-        }
         // Create form.
 		$gradenowform = new \mod_cpassignment\gradenowform(null,
                 array('shownext'=>$nextid !== false,
                 'context' => $modulecontext,'token' => $token,
-                'audiorecorderhtml' => $audiorecorderhtml,
-                'videorecorderhtml' => $videorecorderhtml,
+               // 'audiorecorderhtml' => $audiorecorderhtml,
+               // 'videorecorderhtml' => $videorecorderhtml,
                 'maxgrade' => $moduleinstance->grade));
 
 		// Prepare text editor.
