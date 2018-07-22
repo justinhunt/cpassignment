@@ -89,19 +89,22 @@ if(has_capability('mod/cpassignment:preview',$modulecontext)){
 // Can this be attempted?
 $attempts = $DB->get_records(constants::M_USERTABLE,array('userid'=>$USER->id,
         constants::M_MODNAME.'id' => $moduleinstance->id), 'id DESC');
+$numattempts = count($attempts);
 $max = $moduleinstance->maxattempts;
 $attemptsexceeded = 0;
 if ($max != 0) {
-  if ($count($attempts >= $max)) {
+  if ($numattempts >= $max)) {
     $attemptsexceeded = 1;
-  } else {
-    $retake = 1;
+  } else {.
+    // Check for attempts count = zero (not a retake).
+    $retake = $numattempts == 0 ? 0 : 1;
   }
 }
 $haspermission = has_capability('mod/cpassignment:preview', $modulecontext);
 $canattempt = ($haspermission && ($attemptsexceeded == 0));
 
-$status = 'attempts ' . count($attempts) . ' exc: ' . $attemptsexceeded .
+// debugging
+$status = 'attempts ' . $numattempts . ' exc: ' . $attemptsexceeded .
         ' can: ' . $canattempt . ' ret: '. $retake . ': ';
 
 if ($canattempt) {
@@ -131,8 +134,8 @@ if ($canattempt) {
                     $status .= $renderer->attemptbutton($moduleinstance,
                             get_string('reattempt', constants::M_FRANKY));
                 }
+                // If it has been graded we show the feedback here:
             }
-
         }
     } else { // retake = 0.
         $status .= 'new attempt ';
