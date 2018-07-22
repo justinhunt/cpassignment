@@ -9,6 +9,7 @@
 namespace mod_cpassignment\output;
 
 use \mod_cpassignment\constants;
+use \mod_cpassignment\utils;
 
 class renderer extends \plugin_renderer_base {
 
@@ -66,13 +67,13 @@ class renderer extends \plugin_renderer_base {
     /**
      *  Show a single button.
      */
-    public function reattemptbutton($moduleinstance, $buttonlabel){
+    public function attemptbutton($moduleinstance, $buttonlabel){
 
-        $button = $this->output->single_button(new \moodle_url(constants::M_URL . '/view.php',
-            array('n'=>$moduleinstance->id,'retake'=>1)),
-            $buttonlabel);
+        $button = $this->output->single_button(new \moodle_url(constants::M_URL .
+                '/view.php', array('n' => $moduleinstance->id, 'retake' => 1)),
+                $buttonlabel);
 
-        $ret = \html_writer::div($button ,constants::M_CLASS  . '_afterattempt_cont');
+        $ret = \html_writer::div($button, constants::M_CLASS  . '_afterattempt_cont');
         return $ret;
     }
 
@@ -82,6 +83,11 @@ class renderer extends \plugin_renderer_base {
     public function exceededattempts($moduleinstance){
         $message = get_string("exceededattempts",constants::M_LANG,$moduleinstance->maxattempts);
         $ret = \html_writer::div($message ,constants::M_CLASS  . '_afterattempt_cont');
+        return $ret;
+
+    }
+    public function cannotattempt($reason) {
+        $ret = \html_writer::div($reason ,constants::M_CLASS  . '_afterattempt_cont');
         return $ret;
 
     }
@@ -95,7 +101,7 @@ class renderer extends \plugin_renderer_base {
     /**
      *  Show instructions/instructions
      */
-    public function show_instructions($moduleinstance, $showtext) {
+    public function show_instructions($moduleinstance, $showtext, $status) {
         $thetitle =  $this->output->heading($moduleinstance->name, 3, 'main');
         $displaytext =  \html_writer::div($thetitle,
                 constants::M_CLASS  . '_center');
@@ -103,6 +109,11 @@ class renderer extends \plugin_renderer_base {
 
         // Show the text according to the layout in the editor.
         $displaytext .= \html_writer::div($showtext);
+
+        // Add html string to show where we are in the activity.
+        // Also will contain buttons.
+        $displaytext .= '<br>' . $status . '<br>';
+
         $displaytext .= $this->output->box_end();
 
         $ret = \html_writer::div($displaytext,
@@ -118,40 +129,11 @@ class renderer extends \plugin_renderer_base {
     public function show_uploadsuccess($moduleinstance) {
         $title = '';
         $content=get_string('uploadsuccessmessage',constants::M_LANG);
-        $modalcontent = $this->fetch_modal_content($title,$content);
+        $modalcontent = utils::fetch_modal_content($title,$content);
         $modal_attributes = array('id'=>constants::M_CLASS  . '_uploadsuccess', 'role'=>'dialog','aria-hidden'=>'true','tab-index'=>'-1');
         $modal =  \html_writer::div($modalcontent, constants::M_CLASS  . '_uploadsuccess hidden modal fade',$modal_attributes);
         return $modal;
     }
-
-    /**
-     *  A template to hold the content of a modal
-     */
-    public function fetch_modal_content($title,$message) {
-
-        $modalcontent=  '<div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">';
-        $modalcontent .=  $title;
-        $modalcontent .= '</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">';
-        $modalcontent .=  $message;
-        $modalcontent .=  '</div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>';
-
-        return $modalcontent;
-    }
-
     /**
      *  General purpose cancel button, returns to course page.
      */
@@ -218,7 +200,7 @@ class renderer extends \plugin_renderer_base {
 
         // Add a button for user to nav back to view.
         // Can add a different label if required.
-        $displaytext .= self::reattemptbutton($themodule,
+        $displaytext .= self::attemptbutton($themodule,
             get_string('attempt_completed', constants::M_FRANKY));
         $ret = \html_writer::div($displaytext,constants::M_FINISHED_CONTAINER,array('id'=>constants::M_FINISHED_CONTAINER));
 
@@ -228,7 +210,7 @@ class renderer extends \plugin_renderer_base {
     /**
      * Show error (but when?)
      */
-    public function show_error($themodule,$cm){
+    public function show_error($themodule, $cm){
         $displaytext = $this->output->box_start();
         $displaytext .= $this->output->heading(get_string('errorheader',constants::M_LANG), 3, 'main');
         $displaytext .=  \html_writer::div(get_string('uploadconverterror',constants::M_LANG),'',array());

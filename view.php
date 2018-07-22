@@ -58,89 +58,104 @@ $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('cpassignment', $moduleinstance);
 $event->trigger();
 
-
-//if we got this far, we can consider the activity "viewed"
+// If we got this far, we can consider the activity "viewed"
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
 //are we a teacher or a student?
 $mode= "view";
 
-/// Set up the page header
+// Set up the page header.
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 $PAGE->set_pagelayout('course');
 
-
-//Get an admin settings
+// Get an admin settings.
 $config = get_config(constants::M_FRANKY);
 
-//Get our renderers
+// Get our renderers.
 $renderer = $PAGE->get_renderer('mod_cpassignment');
 $submissionrenderer = $PAGE->get_renderer(constants::M_FRANKY,'submission');
 
-//if we are in review mode, lets review
-$attempts = $DB->get_records(constants::M_USERTABLE,array('userid'=>$USER->id,'cpassignmentid'=>$moduleinstance->id),'id DESC');
-
-//can attempt ?
-$canattempt = has_capability('mod/cpassignment:preview',$modulecontext);
-if(!$canattempt || $moduleinstance->maxattempts > 0){
-	$canattempt=true;
-	$attempts =  $DB->get_records(constants::M_USERTABLE,array('userid'=>$USER->id, constants::M_MODNAME.'id'=>$moduleinstance->id));
-	if($attempts && count($attempts)>=$moduleinstance->maxattempts){
-		$canattempt=false;
-	}
-}
-
-//reset our retake flag if we cant reatempt
-if(!$canattempt){$retake=0;}
-
-//display previous attempts if we have them
-if($attempts && $retake==0){
-		//if we are teacher we see tabs. If student we just see the quiz
-		if(has_capability('mod/cpassignment:preview',$modulecontext)){
-			echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', constants::M_LANG));
-		}else{
-			echo $renderer->notabsheader();
-		}
-		$latestattempt = array_shift($attempts);
-
-		// show results if graded
-		if ($latestattempt->sessiontime==null) {
-			echo $renderer->show_ungradedyet();
-		} else {
-			$submission = new \mod_cpassignment\submission($latestattempt->id,$modulecontext->id);
-			$reviewmode =true;
-			$submission->prepare_javascript($reviewmode);
-			echo $submissionrenderer->render_submission($submission);
-		}
-
-		// Show  button or a label depending on attempts made.
-		if ($canattempt) {
-			echo $renderer->reattemptbutton($moduleinstance,
-                    get_string('reattempt',constants::M_FRANKY));
-		}else{
-			echo $renderer->exceededattempts($moduleinstance);
-		}
-		echo $renderer->footer();
-		return;
-}
-
-//From here we actually display the page.
-
-//if we are teacher we see tabs. If student we just see the activity
+// Student or teacher view?
 if(has_capability('mod/cpassignment:preview',$modulecontext)){
-	echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', constants::M_LANG));
-}else{
-	echo $renderer->notabsheader();
+    echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view',
+        constants::M_LANG));
+} else {
+    echo $renderer->notabsheader();
 }
 
-//fetch token
+// Can this be attempted?
+$attempts = $DB->get_records(constants::M_USERTABLE,array('userid'=>$USER->id,
+        constants::M_MODNAME.'id' => $moduleinstance->id), 'id DESC');
+$max = $moduleinstance->maxattempts;
+$attemptsexceeded = 0;
+if ($max != 0) {
+  if ($count($attempts >= $max)) {
+    $attemptsexceeded = 1;
+  } else {
+    $retake = 1;
+  }
+}
+$haspermission = has_capability('mod/cpassignment:preview', $modulecontext);
+$canattempt = ($haspermission && ($attemptsexceeded == 0));
+
+$status = 'attempts ' . count($attempts) . ' exc: ' . $attemptsexceeded .
+        ' can: ' . $canattempt . ' ret: '. $retake . ': ';
+
+if ($canattempt) {
+    // Is this a retake? We came from the try again or finish grading button.
+    if ($retake == 1) {
+        $status .= 'retake ';
+        // Get the latest attempt, if it exists
+        if (!empty($attempts)) {
+            $status .= 'not empty ';
+            $latestattempt = array_shift($attempts);
+            // Graded yet?
+            if ($latestattempt->sessiontime == null) {
+                echo $renderer->show_ungradedyet();
+                $status .= 'not graded yet ';
+            } else {
+                // Show the previous submission.
+                // $status .= 'show previous ';
+                // echo $renderer->show_instructions($moduleinstance, '', $status);
+                $submission = new \mod_cpassignment\submission($latestattempt->id,
+                        $modulecontext->id);
+                $reviewmode = true;
+                $submission->prepare_javascript($reviewmode);
+                echo $submissionrenderer->render_submission($submission);
+                // Can try again?
+                if ($attemptsexceeded != 0) {
+                    $status .= 'reattempt ';
+                    $status .= $renderer->attemptbutton($moduleinstance,
+                            get_string('reattempt', constants::M_FRANKY));
+                }
+            }
+
+        }
+    } else { // retake = 0.
+        $status .= 'new attempt ';
+        $status .= $renderer->attemptbutton($moduleinstance,
+                get_string('firstattempt', constants::M_FRANKY));
+    }
+
+} else {
+    // Can't attempt - say why.
+    if (!$haspermission) {
+        $status .= 'no permission ';
+        echo $renderer->cannotattempt(get_string('hasnopermission', constants::M_FRANKY));
+    } else if ($attemptsexceeded) {
+        $status .= 'no attempts ';
+        echo $renderer->exceededattempts($moduleinstance);
+    } else {
+        $status .= 'unkown ';
+        echo $renderer->cannotattempt(get_string('unknown', constants::M_FRANKY));
+    }
+}
+
+// Fetch token.
 $token = \mod_cpassignment\utils::fetch_token($config->apiuser,$config->apisecret);
-
-
-//show all the main parts. Many will be hidden and displayed by JS
 
 // Process plugin files for standard editor component.
 $instructions = file_rewrite_pluginfile_urls($moduleinstance->instructions,
@@ -150,20 +165,18 @@ $finished = file_rewrite_pluginfile_urls($moduleinstance->finished,
     'pluginfile.php', $modulecontext->id, constants::M_MODNAME,
     constants::M_FILEAREA_FINISHED, $moduleinstance->id);
 
-echo $renderer->show_instructions($moduleinstance, $instructions);
+// Show all the main parts. Many will be hidden and displayed by JS.
+echo $renderer->show_instructions($moduleinstance, $instructions, $status);
 echo $renderer->show_finished($moduleinstance, $cm, $finished);
 echo $renderer->show_error($moduleinstance,$cm);
 //echo $renderer->show_passage($moduleinstance,$cm);
 echo $renderer->show_recorder($moduleinstance,$token);
-
 echo $renderer->show_uploadsuccess($moduleinstance);
-
 echo $renderer->show_progress($moduleinstance,$cm);
-
 echo $renderer->cancelbutton($cm);
 
-//the module AMD code
+// The module AMD code.
 echo $renderer->fetch_activity_amd($cm, $moduleinstance);
 
-// Finish the page
+// Finish the page.
 echo $renderer->footer();

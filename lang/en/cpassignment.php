@@ -174,6 +174,11 @@ $string['nodataavailable'] = 'No Data Available Yet';
 $string['saveandnext'] = 'Save .... and next';
 $string['reattempt'] = 'Try Again';
 $string['notgradedyet'] = 'Your last submission has not been graded yet';
+$string['firstattempt'] = 'Start attempt';
+$string['hasnopermission'] = 'You have no permission to view the activity.';
+$string['hasnoattempts'] = 'You have used up all your attempts';
+$string['unknown'] = 'An unknown error occurred';
+
 // $string['language'] = 'TTS Language';
 $string['deleteattemptconfirm'] = "Are you sure that you want to delete this attempt?";
 $string['deletenow']='';
