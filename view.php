@@ -86,22 +86,25 @@ if(has_capability('mod/cpassignment:preview',$modulecontext)){
     echo $renderer->notabsheader();
 }
 
-// Can this be attempted?
+// Do we have attempts?
 $attempts = $DB->get_records(constants::M_USERTABLE,array('userid'=>$USER->id,
         constants::M_MODNAME.'id' => $moduleinstance->id), 'id DESC');
 $numattempts = count($attempts);
+
+// How many allowed?
 $max = $moduleinstance->maxattempts;
 $attemptsexceeded = 0;
-if ($max != 0) {
-  if ($numattempts >= $max)) {
+
+if ( ($max != 0)  && ($numattempts >= $max) ) {
     $attemptsexceeded = 1;
-  } else {.
-    // Check for attempts count = zero (not a retake).
-    $retake = $numattempts == 0 ? 0 : 1;
   }
-}
+
+// Are we allowed?
 $haspermission = has_capability('mod/cpassignment:preview', $modulecontext);
 $canattempt = ($haspermission && ($attemptsexceeded == 0));
+
+// Check for attempts count = zero (not a retake).
+$retake = ($numattempts == 0) ? 0 : 1;
 
 // debugging
 $status = 'attempts ' . $numattempts . ' exc: ' . $attemptsexceeded .
@@ -110,6 +113,7 @@ $status = 'attempts ' . $numattempts . ' exc: ' . $attemptsexceeded .
 if ($canattempt) {
     // Is this a retake? We came from the try again or finish grading button.
     if ($retake == 1) {
+        // TRY page.
         $status .= 'retake ';
         // Get the latest attempt, if it exists
         if (!empty($attempts)) {
@@ -134,10 +138,10 @@ if ($canattempt) {
                     $status .= $renderer->attemptbutton($moduleinstance,
                             get_string('reattempt', constants::M_FRANKY));
                 }
-                // If it has been graded we show the feedback here:
+                // It has been graded we show the feedback here:
             }
-        }
-    } else { // retake = 0.
+        } // Don't need an else here, if numattempts = 0, so does retake.
+    } else { // retake = 0. TOP page.
         $status .= 'new attempt ';
         $status .= $renderer->attemptbutton($moduleinstance,
                 get_string('firstattempt', constants::M_FRANKY));
