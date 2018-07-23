@@ -41,6 +41,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
             dd.recorderid = dd.activitydata.recorderid;
             dd.sorryboxid = "sorryboxid-would-go-here"//props.widgetid + '_sorrybox';
             dd.successmessageid = dd.moduleclass  + '_uploadsuccess';
+            dd.startbuttonid = dd.moduleclass  + '_startbutton';
 
 
             //if the browser doesn't support html5 recording.
@@ -61,17 +62,28 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
 
             var controls ={
 
-                hider: $('.' + opts['hider']),
-                introbox: $('.' + 'mod_intro_box'),
-                progresscontainer: $('.' +  opts['progresscontainer']),
-                finishedcontainer: $('.' +  opts['finishedcontainer']),
-                errorcontainer: $('.' +  opts['errorcontainer']),
+                finishedcontainer: $('.' +  opts['finishedcontainer']), //the text showed after finish
+                errorcontainer: $('.' +  opts['errorcontainer']), //any errors
                 //passagecontainer: $('.' +  opts['passagecontainer']),
-                recordingcontainer: $('.' +  opts['recordingcontainer']),
-                recordercontainer: $('.' +  opts['recordercontainer']),
-                instructionscontainer: $('.' +  opts['instructionscontainer'])
+                recordingcontainer: $('.' +  opts['recordingcontainer']), //the recorder container
+                recordercontainer: $('.' +  opts['recordercontainer']),  //the recorder container
+                instructionscontainer: $('.' +  opts['instructionscontainer']), //the activity instructions container
+                startbuttoncontainer: $('.' +  opts['moduleclass'] + '_startbuttoncontainer'),  //the start button container
+                gradingattemptcontainer: $('.' +  opts['moduleclass'] + '_grading_attempt_cont'),  //the attempt data (current submission) container
+                currentfeedbackcontainer: $('.' +  opts['moduleclass'] + '_current_feedback_cont'), // //the feedback container
+                attemptstatuscontainer: $('.' +  opts['moduleclass'] + '_attempt_status_cont'), //the attempt status message containter
+                startbutton: $('#' +  opts['moduleclass'] + '_startbutton') //the start button
             };
             this.controls = controls;
+
+            switch(opts['pagemode']){
+                case 'summary':
+                    this.dosummarylayout();
+                    break;
+                case 'attempt':
+                default:
+
+            }
         },
 
         beginall: function(){
@@ -93,15 +105,13 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
             //originates from the recording:started event
             //See https://api.poodll.com
             var on_recording_start= function(eventdata){
-                dd.dopassagelayout();
-                //dd.controls.passagecontainer.show(1000,dd.beginall);
+                //do something
             };
 
             //originates from the recording:ended event
             //See https://api.poodll.com
             var on_recording_end= function(eventdata){
                 //do not do anything here
-                //dd.douploadlayout();
             };
 
             //data sent here originates from the awaiting_processing event
@@ -125,7 +135,10 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
             var dd = this;
 			//events for other controls on the page
             //ie not recorders
-            //dd.controls.passagecontainer.click(function(){log.debug('clicked');})
+            dd.controls.startbutton.click(function(){
+                    dd.dorecordinglayout();
+                }
+            );
         },
 
         send_submission: function(filename){
@@ -171,39 +184,52 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
         },
 
 
-        dopassagelayout: function(){
+        dorecordinglayout: function(){
             var m = this;
-            m.controls.introbox.hide();
-            //m.controls.instructionscontainer.hide();
             m.controls.instructionscontainer.show();
-            if(m.controls.allowearlyexit){
-              m.controls.stopbutton.hide();
-            }
+            m.controls.startbuttoncontainer.hide();
+            m.controls.gradingattemptcontainer.hide();
+            m.controls.attemptstatuscontainer.hide();
+            m.controls.currentfeedbackcontainer.hide();
+            m.controls.recordingcontainer.show();
         },
-        douploadlayout: function(){
+
+
+        dosummarylayout: function(){
             var m = this;
-            //m.controls.passagecontainer.addClass('mod_cpassignment_passage_finished');
-            m.controls.hider.fadeIn('fast');
-            m.controls.progresscontainer.fadeIn('fast');
+            m.controls.instructionscontainer.show();
+            // m.controls.passagecontainer.hide();
+            m.controls.recordingcontainer.hide();
+            m.controls.finishedcontainer.hide();
+
+            m.controls.startbuttoncontainer.show();
+            m.controls.gradingattemptcontainer.show();
+            m.controls.attemptstatuscontainer.show();
+            m.controls.currentfeedbackcontainer.show()
+
         },
 
         dofinishedlayout: function(){
             var m = this;
-            m.controls.hider.fadeOut('fast');
-            m.controls.progresscontainer.fadeOut('fast');
             m.controls.instructionscontainer.hide();
            // m.controls.passagecontainer.hide();
-            m.controls.recordingcontainer.hide();
+            m.controls.recordingcontainer.show();
             m.controls.finishedcontainer.show();
+            m.controls.startbuttoncontainer.hide();
+            m.controls.gradingattemptcontainer.hide();
+            m.controls.attemptstatuscontainer.hide();
+            m.controls.currentfeedbackcontainer.hide();
 
         },
         doerrorlayout: function(){
             var m = this;
-            m.controls.hider.fadeOut('fast');
-            m.controls.progresscontainer.fadeOut('fast');
             //m.controls.passagecontainer.hide();
             m.controls.recordingcontainer.hide();
             m.controls.errorcontainer.show();
+            m.controls.startbuttoncontainer.hide();
+            m.controls.gradingattemptcontainer.hide();
+            m.controls.attemptstatuscontainer.hide();
+            m.controls.currentfeedbackcontainer.hide();
         }
     };//end of returned object
 });//total end
