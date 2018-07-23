@@ -20,7 +20,7 @@ class submission_renderer extends \plugin_renderer_base {
         $this->submission = $submission;
         $ret = $this->render_attempt_data($submission);
 
-        //$ret .= $this->render_current_feedback($submission);
+        $ret .= $this->render_current_feedback($submission);
 
         return $ret;
     }

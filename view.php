@@ -103,46 +103,39 @@ if ( ($max != 0)  && ($numattempts >= $max) ) {
 $haspermission = has_capability('mod/cpassignment:preview', $modulecontext);
 $canattempt = ($haspermission && ($attemptsexceeded == 0));
 
-// Check for attempts count = zero (not a retake).
-$retake = ($numattempts == 0) ? 0 : 1;
+// Check for attempts count = zero (not a retake).  Do we need the parameter?
+// Do we need retake either?  Just base on numattempts??  Doh.
+// $retake = ($numattempts == 0) ? 0 : 1;
 
-// debugging
-$status = 'attempts ' . $numattempts . ' exc: ' . $attemptsexceeded .
-        ' can: ' . $canattempt . ' ret: '. $retake . ': ';
-
+// debugging (but will use to add html on to show_instructions).
+$status = '';
+//$status = 'attempts ' . $numattempts . ' exc: ' . $attemptsexceeded .
+//        ' can: ' . $canattempt . ' ret: '. $retake . ': ';
 if ($canattempt) {
     // Is this a retake? We came from the try again or finish grading button.
-    if ($retake == 1) {
+    if ($numattempts > 0) {
         // TRY page.
-        $status .= 'retake ';
-        // Get the latest attempt, if it exists
-        if (!empty($attempts)) {
-            $status .= 'not empty ';
-            $latestattempt = array_shift($attempts);
-            // Graded yet?
-            if ($latestattempt->sessiontime == null) {
-                echo $renderer->show_ungradedyet();
-                $status .= 'not graded yet ';
-            } else {
-                // Show the previous submission.
-                // $status .= 'show previous ';
-                // echo $renderer->show_instructions($moduleinstance, '', $status);
-                $submission = new \mod_cpassignment\submission($latestattempt->id,
-                        $modulecontext->id);
-                $reviewmode = true;
-                $submission->prepare_javascript($reviewmode);
-                echo $submissionrenderer->render_submission($submission);
-                // Can try again?
-                if ($attemptsexceeded != 0) {
-                    $status .= 'reattempt ';
-                    $status .= $renderer->attemptbutton($moduleinstance,
-                            get_string('reattempt', constants::M_FRANKY));
-                }
-                // It has been graded we show the feedback here:
+        // Get the latest attempt, if it exists.
+        $latestattempt = array_shift($attempts);
+        $submission = new \mod_cpassignment\submission($latestattempt->id, $modulecontext->id);
+        $reviewmode = true;
+        $submission->prepare_javascript($reviewmode);
+
+        // Submission html (might need tweaking).
+        $status .= $submissionrenderer->render_submission($submission);
+
+        // Graded yet? TRY page awaiting grading
+        if ($latestattempt->sessiontime == null) {
+            $status .= $renderer->show_ungradedyet();
+        } else {
+
+            // TRY page with submission graded
+            if ($attemptsexceeded != 0) {
+                $status .= $renderer->attemptbutton($moduleinstance,
+                        get_string('reattempt', constants::M_FRANKY));
             }
-        } // Don't need an else here, if numattempts = 0, so does retake.
-    } else { // retake = 0. TOP page.
-        $status .= 'new attempt ';
+        }
+    } else { // numattempts = 0. TOP page.
         $status .= $renderer->attemptbutton($moduleinstance,
                 get_string('firstattempt', constants::M_FRANKY));
     }
