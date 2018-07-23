@@ -119,24 +119,31 @@ if ($canattempt) {
         $latestattempt = array_shift($attempts);
         $submission = new \mod_cpassignment\submission($latestattempt->id, $modulecontext->id);
         $reviewmode = true;
-        $submission->prepare_javascript($reviewmode);
+
+        //We probably do not need this. Until we have a flashy submission/transcript/text reader widget
+        //$submission->prepare_javascript($reviewmode);
 
         // Submission html (might need tweaking).
         $status .= $submissionrenderer->render_submission($submission);
 
         // Graded yet? TRY page awaiting grading
+        //JUSTIN comment ... do we need to stop them re-attempting if ungraded ? I do not think so ..
         if ($latestattempt->sessiontime == null) {
             $status .= $renderer->show_ungradedyet();
-        } else {
+        }
+        //JUSTIN comment
+        //} else {
 
             // TRY page with submission graded
-            if ($attemptsexceeded != 0) {
-                $status .= $renderer->attemptbutton($moduleinstance,
+            if (!$attemptsexceeded) {
+                $status .= $renderer->startbutton($moduleinstance,
                         get_string('reattempt', constants::M_FRANKY));
             }
-        }
+        //JUSTIN comment
+        //}
+
     } else { // numattempts = 0. TOP page.
-        $status .= $renderer->attemptbutton($moduleinstance,
+        $status .= $renderer->startbutton($moduleinstance,
                 get_string('firstattempt', constants::M_FRANKY));
     }
 
@@ -172,11 +179,11 @@ echo $renderer->show_error($moduleinstance,$cm);
 //echo $renderer->show_passage($moduleinstance,$cm);
 echo $renderer->show_recorder($moduleinstance,$token);
 echo $renderer->show_uploadsuccess($moduleinstance);
-echo $renderer->show_progress($moduleinstance,$cm);
 echo $renderer->cancelbutton($cm);
 
 // The module AMD code.
-echo $renderer->fetch_activity_amd($cm, $moduleinstance);
+$pagemode="summary";
+echo $renderer->fetch_activity_amd($cm, $moduleinstance, $pagemode);
 
 // Finish the page.
 echo $renderer->footer();

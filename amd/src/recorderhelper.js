@@ -17,6 +17,7 @@ Relationships between the recorder and the surrounding elements should be manage
             on_audio_processing){
 
             var that = this;
+
             cloudpoodll.init(opts['recorderid'],
 
                 function(message){

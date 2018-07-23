@@ -64,6 +64,18 @@ class renderer extends \plugin_renderer_base {
         return $this->output->header();
     }
 
+
+    /**
+     *  Show a single button.
+     */
+    public function startbutton($moduleinstance, $buttonlabel){
+
+        $buttonclass =constants::M_CLASS  . '_startbutton';
+        $button = \html_writer::link('#',$buttonlabel,array('class'=>'btn btn-primary ' . $buttonclass,'type'=>'button','id'=>$buttonclass));
+        $ret = \html_writer::div($button, constants::M_CLASS  . '_startbuttoncontainer hide');
+        return $ret;
+    }
+
     /**
      *  Show a single button.
      */
@@ -73,7 +85,7 @@ class renderer extends \plugin_renderer_base {
                 '/view.php', array('n' => $moduleinstance->id, 'retake' => 1)),
                 $buttonlabel);
 
-        $ret = \html_writer::div($button, constants::M_CLASS  . '_afterattempt_cont');
+        $ret = \html_writer::div($button, constants::M_CLASS  . '_attempt_status_cont');
         return $ret;
     }
 
@@ -82,19 +94,19 @@ class renderer extends \plugin_renderer_base {
      */
     public function exceededattempts($moduleinstance){
         $message = get_string("exceededattempts",constants::M_LANG,$moduleinstance->maxattempts);
-        $ret = \html_writer::div($message ,constants::M_CLASS  . '_afterattempt_cont');
+        $ret = \html_writer::div($message ,constants::M_CLASS  . '_attempt_status_cont');
         return $ret;
 
     }
     public function cannotattempt($reason) {
-        $ret = \html_writer::div($reason ,constants::M_CLASS  . '_afterattempt_cont');
+        $ret = \html_writer::div($reason ,constants::M_CLASS  . '_attempt_status_cont');
         return $ret;
 
     }
 
     public function show_ungradedyet(){
         $message = get_string("notgradedyet",constants::M_LANG);
-        $ret = \html_writer::div($message ,constants::M_CLASS  . '_ungraded_cont');
+        $ret = \html_writer::div($message ,constants::M_CLASS  . '_attempt_status_cont');
         return $ret;
     }
 
@@ -135,15 +147,14 @@ class renderer extends \plugin_renderer_base {
         return $modal;
     }
     /**
-     *  General purpose cancel button, returns to course page.
+     *  General purpose cancel button, returns to activity top page.
      */
     public function cancelbutton($cm) {
 
         $button = $this->output->single_button(
-                new \moodle_url('../../course/view.php',
-                array('id' => $cm->course)),
+                new \moodle_url('/mod/cpassignment/view.php',
+                array('id' => $cm->id)),
                 get_string('cancel'));
-
         $ret = \html_writer::div($button, constants::M_CLASS  . '_cancelbutton');
         return $ret;
     }
@@ -173,18 +184,6 @@ class renderer extends \plugin_renderer_base {
         return $ret;
     }
 
-    /**
-     *  Show a progress circle overlay while uploading
-     */
-    public function show_progress($themodule,$cm){
-        $hider =  \html_writer::div('',constants::M_HIDER,array('id'=>constants::M_HIDER));
-        $message =  \html_writer::tag('h4',get_string('processing',constants::M_LANG),array());
-        $spinner =  \html_writer::tag('i','',array('class'=>'fa fa-spinner fa-5x fa-spin'));
-        $progressdiv = \html_writer::div($message . $spinner ,constants::M_PROGRESS_CONTAINER,
-            array('id'=>constants::M_PROGRESS_CONTAINER));
-        $ret = $hider . $progressdiv;
-        return $ret;
-    }
 
     /**
      * Show the completion message in the activity settings
@@ -235,14 +234,13 @@ class renderer extends \plugin_renderer_base {
         $recordingdiv = \html_writer::div($containerdiv ,constants::M_RECORDING_CONTAINER);
 
         //prepare output
-        $ret = "";
-        $ret .=$recordingdiv;
+        $ret =$recordingdiv;
         //return it
         return $ret;
     }
 
 
-    function fetch_activity_amd($cm, $moduleinstance){
+    function fetch_activity_amd($cm, $moduleinstance, $pagemode='summary'){
         global $USER;
         //any html we want to return to be sent to the page
         $ret_html = '';
@@ -258,9 +256,8 @@ class renderer extends \plugin_renderer_base {
         //activity html ids
         //$recopts['passagecontainer'] = constants::M_PASSAGE_CONTAINER;
         $recopts['instructionscontainer'] = constants::M_INSTRUCTIONS_CONTAINER;
-        $recopts['progresscontainer'] = constants::M_PROGRESS_CONTAINER;
         $recopts['finishedcontainer'] = constants::M_FINISHED_CONTAINER;
-        $recopts['hider']=constants::M_HIDER;
+        $recopts['pagemode']=$pagemode;
         $recopts['moduleclass']=constants::M_CLASS;
 
 
