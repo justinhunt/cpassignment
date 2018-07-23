@@ -105,15 +105,13 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
             //originates from the recording:started event
             //See https://api.poodll.com
             var on_recording_start= function(eventdata){
-                dd.dopassagelayout();
-                //dd.controls.passagecontainer.show(1000,dd.beginall);
+                //do something
             };
 
             //originates from the recording:ended event
             //See https://api.poodll.com
             var on_recording_end= function(eventdata){
                 //do not do anything here
-                //dd.douploadlayout();
             };
 
             //data sent here originates from the awaiting_processing event
@@ -138,7 +136,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
 			//events for other controls on the page
             //ie not recorders
             dd.controls.startbutton.click(function(){
-                    dd.dopassagelayout();
+                    dd.dorecordinglayout();
                 }
             );
         },
@@ -186,7 +184,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
         },
 
 
-        dopassagelayout: function(){
+        dorecordinglayout: function(){
             var m = this;
             m.controls.instructionscontainer.show();
             m.controls.startbuttoncontainer.hide();
@@ -195,13 +193,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
             m.controls.currentfeedbackcontainer.hide();
             m.controls.recordingcontainer.show();
         },
-        douploadlayout: function(){
-            var m = this;
-            m.controls.startbuttoncontainer.hide();
-            m.controls.gradingattemptcontainer.hide();
-            m.controls.attemptstatuscontainer.hide();
-            m.controls.currentfeedbackcontainer.hide();
-        },
+
 
         dosummarylayout: function(){
             var m = this;
