@@ -90,7 +90,7 @@ class gradenowform extends \moodleform{
                 null, $edfileoptions);
         $mform->setDefault('feedbacktext_editor',
                 array('text'=>'', 'format' => FORMAT_HTML));
-        $mform->setType('feedbacktext_editor',PARAM_RAW);
+        $mform->setType('feedbacktext_editor', PARAM_RAW);
 
         $mediabuttonarray = array();
 

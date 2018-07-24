@@ -244,5 +244,6 @@ class mod_cpassignment_mod_form extends moodleform_mod {
             }
         }
     }
+
 }
 

@@ -147,6 +147,7 @@ $string['defaultsettings'] ='Default Settings';
 $string['exceededattempts'] ='You have completed the maximum {$a} attempts.';
 $string['cpassignmenttask'] ='Cloud Poodll Assignment Task';
 $string['attempt_completed'] ='Finish';
+$string['currentgrade'] = 'Current grade: ';
 
 //$string['passagelabel'] ='Reading Passage';
 

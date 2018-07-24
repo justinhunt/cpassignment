@@ -19,7 +19,7 @@ class submission_renderer extends \plugin_renderer_base {
 
         $this->submission = $submission;
         $ret = $this->render_attempt_data($submission);
-
+        $ret .= $this->render_attempt_grade($submission);
         $ret .= $this->render_current_feedback($submission);
 
         return $ret;
@@ -59,6 +59,18 @@ class submission_renderer extends \plugin_renderer_base {
         $ret .= '<br>' . \html_writer::end_div(); // Attempt container.
 
         return $ret;
+    }
+    public function render_attempt_grade($submission) {
+
+        $showgrade = $submission->fetch('showgrade');
+        if ($showgrade) {
+            $maxgrade = $submission->fetch('grade');
+            $currentgrade = $submission->fetch('sessionscore');
+            $displaygrade = $currentgrade . ' / ' . $maxgrade;
+            return get_string('currentgrade', constants::M_LANG) . $displaygrade;
+        }
+
+        return '';
     }
     /**
      * renders the user's media submission
@@ -176,7 +188,7 @@ class submission_renderer extends \plugin_renderer_base {
 
             $text = file_rewrite_pluginfile_urls($text,
                     'pluginfile.php', $contextid, constants::M_FRANKY,
-                    'feedbacktext',$attemptid);
+                    'feedbacktext', $attemptid);
 
             $ret .= \html_writer::div(format_text($text),
                     constants::M_GRADING_PLAYER_CONTAINER,

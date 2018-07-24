@@ -28,9 +28,8 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 use \mod_cpassignment\constants;
 
-$id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$retake = optional_param('retake', 0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // cpassignment instance ID - it should be named as the first character of the module
+$id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
+$n  = optional_param('n', 0, PARAM_INT);  // cpassignment instance ID.
 
 if ($id) {
     $cm         = get_coursemodule_from_id('cpassignment', $id, 0, false, MUST_EXIST);
@@ -103,16 +102,12 @@ if ( ($max != 0)  && ($numattempts >= $max) ) {
 $haspermission = has_capability('mod/cpassignment:preview', $modulecontext);
 $canattempt = ($haspermission && ($attemptsexceeded == 0));
 
-// Check for attempts count = zero (not a retake).  Do we need the parameter?
-// Do we need retake either?  Just base on numattempts??  Doh.
-// $retake = ($numattempts == 0) ? 0 : 1;
-
-// debugging (but will use to add html on to show_instructions).
+// Status content is added to instructions.
 $status = '';
 //$status = 'attempts ' . $numattempts . ' exc: ' . $attemptsexceeded .
 //        ' can: ' . $canattempt . ' ret: '. $retake . ': ';
 if ($canattempt) {
-    // Is this a retake? We came from the try again or finish grading button.
+    // Is this a retake?
     if ($numattempts > 0) {
         // TRY page.
         // Get the latest attempt, if it exists.
@@ -127,7 +122,7 @@ if ($canattempt) {
         $status .= $submissionrenderer->render_submission($submission);
 
         // Graded yet? TRY page awaiting grading
-        //JUSTIN comment ... do we need to stop them re-attempting if ungraded ? I do not think so ..
+        // JUSTIN comment ... do we need to stop them re-attempting if ungraded ? I do not think so ..
         if ($latestattempt->sessiontime == null) {
             $status .= $renderer->show_ungradedyet();
         }
@@ -162,15 +157,18 @@ if ($canattempt) {
 }
 
 // Fetch token.
-$token = \mod_cpassignment\utils::fetch_token($config->apiuser,$config->apisecret);
+$token = \mod_cpassignment\utils::fetch_token($config->apiuser,
+        $config->apisecret);
 
 // Process plugin files for standard editor component.
 $instructions = file_rewrite_pluginfile_urls($moduleinstance->instructions,
-    'pluginfile.php', $modulecontext->id, constants::M_MODNAME,
-    constants::M_FILEAREA_INSTRUCTIONS, $moduleinstance->id);
+        'pluginfile.php', $modulecontext->id, constants::M_FRANKY,
+        constants::M_FILEAREA_INSTRUCTIONS, 0);
+$instructions = format_text($instructions);
 $finished = file_rewrite_pluginfile_urls($moduleinstance->finished,
-    'pluginfile.php', $modulecontext->id, constants::M_MODNAME,
-    constants::M_FILEAREA_FINISHED, $moduleinstance->id);
+        'pluginfile.php', $modulecontext->id, constants::M_FRANKY,
+        constants::M_FILEAREA_FINISHED, 0);
+$finished = format_text($finished);
 
 // Show all the main parts. Many will be hidden and displayed by JS.
 echo $renderer->show_instructions($moduleinstance, $instructions, $status);

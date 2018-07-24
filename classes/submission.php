@@ -90,7 +90,12 @@ class submission{
             case 'mediatype':
                 $ret = $this->activitydata->mediatype;
                 break;
-
+            case 'showgrade':
+                $ret = $this->activitydata->showgrade;
+                break;
+            case 'grade':
+                $ret = $this->activitydata->grade;
+                break;
 			case 'userfullname':
 				$user = $DB->get_record('user',array('id'=>$this->attemptdata->userid));
 				$ret = fullname($user);

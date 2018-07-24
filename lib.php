@@ -383,11 +383,10 @@ function cpassignment_get_editornames(){
  */
 function cpassignment_add_instance(stdClass $themodule, mod_cpassignment_mod_form $mform = null) {
     global $DB;
-
     $themodule->timecreated = time();
-	$themodule = cpassignment_process_editors($themodule,$mform);
+    $themodule = cpassignment_process_editors($themodule,$mform);
     $instanceid = $DB->insert_record(constants::M_TABLE, $themodule);
-	return $instanceid;
+    return $instanceid;
 }
 
 
