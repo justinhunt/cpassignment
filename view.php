@@ -99,7 +99,7 @@ if ( ($max != 0)  && ($numattempts >= $max) ) {
   }
 
 // Are we allowed?
-$haspermission = has_capability('mod/cpassignment:preview', $modulecontext);
+$haspermission = has_capability('mod/cpassignment:view', $modulecontext);
 $canattempt = ($haspermission && ($attemptsexceeded == 0));
 
 // Status content is added to instructions.
@@ -111,6 +111,8 @@ if ($canattempt) {
     if ($numattempts > 0) {
         // TRY page.
         // Get the latest attempt, if it exists.
+
+        /*  We will need this code later to show one attempt
         $latestattempt = array_shift($attempts);
         $submission = new \mod_cpassignment\submission($latestattempt->id, $modulecontext->id);
         $reviewmode = true;
@@ -125,17 +127,16 @@ if ($canattempt) {
         // JUSTIN comment ... do we need to stop them re-attempting if ungraded ? I do not think so ..
         if ($latestattempt->sessiontime == null) {
             $status .= $renderer->show_ungradedyet();
-        }
-        //JUSTIN comment
-        //} else {
+        */
+        // List the user attempts so far.  Allow one to be selected as the submission.
+        $status .= $renderer->listattemptsbutton($moduleinstance, get_string('listattempts', constants::M_FRANKY));
 
-            // TRY page with submission graded
-            if (!$attemptsexceeded) {
-                $status .= $renderer->startbutton($moduleinstance,
-                        get_string('reattempt', constants::M_FRANKY));
-            }
-        //JUSTIN comment
-        //}
+        // Try again button, if applicable.
+        /* Might need later, but could probably have on grading submit by user page.
+        if (!$attemptsexceeded) {
+            $status .= $renderer->startbutton($moduleinstance,
+                    get_string('reattempt', constants::M_FRANKY));
+        */
 
     } else { // numattempts = 0. TOP page.
         $status .= $renderer->startbutton($moduleinstance,
@@ -145,14 +146,12 @@ if ($canattempt) {
 } else {
     // Can't attempt - say why.
     if (!$haspermission) {
-        $status .= 'no permission ';
-        echo $renderer->cannotattempt(get_string('hasnopermission', constants::M_FRANKY));
+        echo '<p>' . get_string('hasnopermission', constants::M_FRANKY) . '</p>';
     } else if ($attemptsexceeded) {
-        $status .= 'no attempts ';
-        echo $renderer->exceededattempts($moduleinstance);
+        echo '<p>' . get_string("exceededattempts", constants::M_LANG,
+                $moduleinstance->maxattempts) . '</p>';
     } else {
-        $status .= 'unkown ';
-        echo $renderer->cannotattempt(get_string('unknown', constants::M_FRANKY));
+        echo '<p>' . get_string('unknown', constants::M_FRANKY) . '</p>';
     }
 }
 
@@ -177,7 +176,7 @@ echo $renderer->show_error($moduleinstance,$cm);
 //echo $renderer->show_passage($moduleinstance,$cm);
 echo $renderer->show_recorder($moduleinstance,$token);
 echo $renderer->show_uploadsuccess($moduleinstance);
-echo $renderer->cancelbutton($cm);
+//echo $renderer->cancelbutton($cm);
 
 // The module AMD code.
 $pagemode="summary";

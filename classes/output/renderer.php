@@ -64,7 +64,6 @@ class renderer extends \plugin_renderer_base {
         return $this->output->header();
     }
 
-
     /**
      *  Show a single button.
      */
@@ -88,20 +87,17 @@ class renderer extends \plugin_renderer_base {
         $ret = \html_writer::div($button, constants::M_CLASS  . '_attempt_status_cont');
         return $ret;
     }
-
     /**
-     *
+     *  Show button to list user attempts.
      */
-    public function exceededattempts($moduleinstance){
-        $message = get_string("exceededattempts",constants::M_LANG,$moduleinstance->maxattempts);
-        $ret = \html_writer::div($message ,constants::M_CLASS  . '_attempt_status_cont');
-        return $ret;
+    public function listattemptsbutton($moduleinstance, $buttonlabel){
 
-    }
-    public function cannotattempt($reason) {
-        $ret = \html_writer::div($reason ,constants::M_CLASS  . '_attempt_status_cont');
-        return $ret;
+        $button = $this->output->single_button(new \moodle_url(constants::M_URL .
+                '/grading.php', array('n' => $moduleinstance->id, 'action' => 'submitbyuser',
+                'class '=> 'btn btn-primary ')), $buttonlabel);
 
+        $ret = \html_writer::div($button, constants::M_CLASS  . '_attempt_status_cont');
+        return $ret;
     }
 
     public function show_ungradedyet(){

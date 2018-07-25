@@ -106,6 +106,7 @@ $string['cpassignment:preview'] = 'Can preview Cloud Poodll Assignment activitie
 $string['cpassignment:submit'] = 'Can submit Cloud Poodll Assignment attempts';
 $string['privacy:metadata'] = 'The Poodll Cloud Poodll Assignment plugin does store personal data.';
 
+// Reporting
 $string['id']='ID';
 $string['name']='Name';
 $string['timecreated']='Time Created';
@@ -114,6 +115,7 @@ $string['attemptsheading']='Attempts Report';
 $string['attemptsbyuserheading']='User Attempts Report';
 $string['gradingheading']='Grading latest attempts for each user.';
 $string['gradingbyuserheading']='Grading all attempts for: {$a}';
+$string['submitbyuserheading']='Showing attempts for: {$a}';
 $string['totalattempts']='Attempts';
 $string['overview']='Overview';
 $string['overview_help']='Overview Help';
@@ -148,6 +150,8 @@ $string['exceededattempts'] ='You have completed the maximum {$a} attempts.';
 $string['cpassignmenttask'] ='Cloud Poodll Assignment Task';
 $string['attempt_completed'] ='Finish';
 $string['currentgrade'] = 'Current grade: ';
+$string['status'] = 'Status';
+$string['submitnow'] = 'Submit for grading';
 
 //$string['passagelabel'] ='Reading Passage';
 
@@ -197,3 +201,4 @@ $string['attemptname']='Name: {$a}';
 $string['showingtranscript']='Transcript: ';
 $string['feedback']='Feedback';
 $string['uploadsuccessmessage']='Your recording has been submitted. Thank you';
+$string['listattempts'] = 'View all attempts';

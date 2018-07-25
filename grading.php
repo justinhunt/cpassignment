@@ -229,6 +229,17 @@ switch ($action){
 		$formdata->modulecontextid = $modulecontext->id;
 		break;
 
+    case 'submitbyuser':  // Allows user to select an attempt to be submitted for grading.
+        $report = new \mod_cpassignment\report\submitbyuser();
+        //formdata should only have simple values, not objects
+        //later it gets turned into urls for the export buttons
+        $formdata = new stdClass();
+        $formdata->cpassignmentid = $moduleinstance->id;
+        $formdata->userid = $userid;
+        $formdata->modulecontextid = $modulecontext->id;
+        break;
+
+
 	default:
 		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_LANG));
 		echo "unknown action.";

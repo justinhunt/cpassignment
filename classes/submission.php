@@ -41,7 +41,7 @@ class submission{
 	protected $activitydata = null;
 
 	function __construct($attemptid, $modulecontextid=0) {
-		global $DB;
+		global $DB, $USER;
        $this->attemptid = $attemptid;
 	   $this->modulecontextid = $modulecontextid;
 	   $attemptdata = $DB->get_record(constants::M_USERTABLE,array('id'=>$attemptid));

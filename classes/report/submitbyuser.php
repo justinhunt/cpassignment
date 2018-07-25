@@ -10,11 +10,11 @@ namespace mod_cpassignment\report;
 
 use \mod_cpassignment\constants;
 
-class attempts extends basereport
+class submitbyuser extends basereport
 {
 
-    protected $report="attempts";
-    protected $fields = array('id','username','mediafile','grade_p','timecreated','deletenow');
+    protected $report="submitbyuser";
+    protected $fields = array('id', 'username', 'mediafile', 'status', 'timecreated', 'submit');
     protected $headingdata = null;
     protected $qcache=array();
     protected $ucache=array();
@@ -43,22 +43,25 @@ class attempts extends basereport
                     $ret = get_string('submitted', constants::M_LANG);
                 }
                 break;
-                break;
 
-            case 'grade_p':
-                $ret = $record->sessionscore;
+            case 'status':
+                $ret = $record->status;
                 break;
 
             case 'timecreated':
                 $ret = date("Y-m-d H:i:s", $record->timecreated);
                 break;
 
-            case 'deletenow':
+            case 'submit':
+                /*
                 $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
                     array('action' => 'delete', 'n' => $record->cpassignmentid, 'attemptid' => $record->id, 'source' => $this->report));
                 $btn = new \single_button($url, get_string('delete'), 'post');
                 $btn->add_confirm_action(get_string('deleteattemptconfirm', constants::M_LANG));
                 $ret = $OUTPUT->render($btn);
+                */
+                // Here we want to change the status field to M_SUBMITSTATUS_SELECTED
+                $ret = '';
                 break;
 
             default:
@@ -75,9 +78,7 @@ class attempts extends basereport
         $record = $this->headingdata;
         $ret='';
         if(!$record){return $ret;}
-        //$ec = $this->fetch_cache(constants::M_TABLE,$record->englishcentralid);
-        return get_string('attemptsheading',constants::M_LANG);
-
+        return get_string('attemptsheading', constants::M_LANG);
     }
 
     public function process_raw_data($formdata){
@@ -100,5 +101,4 @@ class attempts extends basereport
         }
         return true;
     }
-
 }
