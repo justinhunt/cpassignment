@@ -75,10 +75,12 @@ class submitbyuser extends basereport
     }
 
     public function fetch_formatted_heading(){
+        global $USER;
+
         $record = $this->headingdata;
         $ret='';
         if(!$record){return $ret;}
-        return get_string('attemptsheading', constants::M_LANG);
+        return get_string('userattemptsheading', constants::M_LANG, fullname($USER));
     }
 
     public function process_raw_data($formdata){
@@ -88,7 +90,7 @@ class submitbyuser extends basereport
         $this->headingdata = new \stdClass();
 
         $emptydata = array();
-        $alldata = $DB->get_records(constants::M_USERTABLE,array('cpassignmentid'=>$formdata->cpassignmentid));
+        $alldata = $DB->get_records(constants::M_USERTABLE,array('cpassignmentid'=>$formdata->cpassignmentid,'userid'=>$formdata->userid));
 
         if($alldata){
             foreach($alldata as $thedata){

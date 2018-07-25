@@ -83,7 +83,7 @@
 	color: blue;
 }
 
-.mod_cpassignment_attempt_status_cont,
+.mod_cpassignment_attempt_status_cont {
 	margin-left: auto;
 	margin-right: auto;
 	width: 40%;

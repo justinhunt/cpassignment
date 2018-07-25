@@ -235,7 +235,7 @@ switch ($action){
         //later it gets turned into urls for the export buttons
         $formdata = new stdClass();
         $formdata->cpassignmentid = $moduleinstance->id;
-        $formdata->userid = $userid;
+        $formdata->userid = $USER->id;
         $formdata->modulecontextid = $modulecontext->id;
         break;
 
