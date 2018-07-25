@@ -101,6 +101,7 @@ $string['cpassignment:itemview'] = 'View items';
 $string['cpassignment:itemedit'] = 'Edit items';
 $string['cpassignment:tts'] = 'Can use Text To Speech(tts)';
 $string['cpassignment:manageattempts'] = 'Can manage Cloud Poodll Assignment attempts';
+$string['cpassignment:manageownattempts'] = 'Can manage their own Cloud Poodll Assignment attempts';
 $string['cpassignment:manage'] = 'Can manage Cloud Poodll Assignment instances';
 $string['cpassignment:preview'] = 'Can preview Cloud Poodll Assignment activities';
 $string['cpassignment:submit'] = 'Can submit Cloud Poodll Assignment attempts';
@@ -117,12 +118,15 @@ $string['attemptsbyuserheading']='User Attempts Report';
 $string['gradingheading']='Grading latest attempts for each user.';
 $string['gradingbyuserheading']='Grading all attempts for: {$a}';
 $string['submitbyuserheading']='Showing attempts for: {$a}';
+$string['submitbyuserconfirm']='Please confirm: submit attempt?';
+$string['alreadysubmitted'] = 'Cannot re-submit';
 $string['totalattempts']='Attempts';
 $string['overview']='Overview';
 $string['overview_help']='Overview Help';
 $string['view']='View';
 $string['submit']='Submit';
 $string['returncourse']='Finish';
+$string['returnview']='Return to assignment page';
 $string['preview']='Preview';
 $string['viewreports']='View Reports';
 $string['reports']='Reports';
@@ -154,6 +158,9 @@ $string['attempt_completed'] ='Finish';
 $string['currentgrade'] = 'Current grade: ';
 $string['status'] = 'Status';
 $string['submitnow'] = 'Submit for grading';
+$string['unknown'] = 'unknown';
+$string['submitted'] = 'submitted';
+
 
 //$string['passagelabel'] ='Reading Passage';
 

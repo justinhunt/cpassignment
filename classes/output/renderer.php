@@ -70,21 +70,8 @@ class renderer extends \plugin_renderer_base {
     public function startbutton($moduleinstance, $buttonlabel){
 
         $buttonclass =constants::M_CLASS  . '_startbutton';
-        $button = \html_writer::link('#',$buttonlabel,array('class'=>'btn btn-primary ' . $buttonclass,'type'=>'button','id'=>$buttonclass));
+        $button = \html_writer::link('#', $buttonlabel, array('class'=>'btn btn-primary ' . $buttonclass,'type'=>'button','id'=>$buttonclass));
         $ret = \html_writer::div($button, constants::M_CLASS  . '_startbuttoncontainer hide');
-        return $ret;
-    }
-
-    /**
-     *  Show a single button.
-     */
-    public function attemptbutton($moduleinstance, $buttonlabel){
-
-        $button = $this->output->single_button(new \moodle_url(constants::M_URL .
-                '/view.php', array('n' => $moduleinstance->id, 'retake' => 1)),
-                $buttonlabel);
-
-        $ret = \html_writer::div($button, constants::M_CLASS  . '_attempt_status_cont');
         return $ret;
     }
     /**
@@ -94,7 +81,7 @@ class renderer extends \plugin_renderer_base {
 
         $button = $this->output->single_button(new \moodle_url(constants::M_URL .
                 '/grading.php', array('n' => $moduleinstance->id, 'action' => 'submitbyuser',
-                'class '=> 'btn btn-primary ')), $buttonlabel);
+                'class '=> 'btn btn-primary')), $buttonlabel);
 
         $ret = \html_writer::div($button, constants::M_CLASS  . '_attempt_status_cont');
         return $ret;
@@ -184,19 +171,21 @@ class renderer extends \plugin_renderer_base {
     /**
      * Show the completion message in the activity settings
      */
-    public function show_finished($themodule, $cm, $showtext) {
+    public function show_finished($themodule, $showtext) {
         $thetitle =  $this->output->heading($themodule->name, 3, 'main');
         $displaytext =  \html_writer::div($thetitle,
                 constants::M_CLASS  . '_center');
         $displaytext .= $this->output->box_start();
         $displaytext .=  \html_writer::div($showtext,
                  constants::M_CLASS  . '_center');
-        $displaytext .= $this->output->box_end();
 
         // Add a button for user to nav back to view.
-        // Can add a different label if required.
-        $displaytext .= self::attemptbutton($themodule,
-            get_string('attempt_completed', constants::M_FRANKY));
+        $displaytext .= $this->output->single_button(new \moodle_url(constants::M_URL .
+                '/view.php', array('n' => $themodule->id)),
+                get_string('attempt_completed', constants::M_LANG));
+
+        $displaytext .= $this->output->box_end();
+
         $ret = \html_writer::div($displaytext,constants::M_FINISHED_CONTAINER,array('id'=>constants::M_FINISHED_CONTAINER));
 
         return $ret;

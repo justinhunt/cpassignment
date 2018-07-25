@@ -213,7 +213,7 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
             var m = this;
             m.controls.instructionscontainer.hide();
            // m.controls.passagecontainer.hide();
-            m.controls.recordingcontainer.show();
+            m.controls.recordingcontainer.hide();  // don't need any more.
             m.controls.finishedcontainer.show();
             m.controls.startbuttoncontainer.hide();
             m.controls.gradingattemptcontainer.hide();

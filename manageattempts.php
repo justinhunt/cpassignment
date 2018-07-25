@@ -29,7 +29,7 @@ use \mod_cpassignment\constants;
 
 global $USER,$DB;
 
-// first get the nfo passed in to set up the page
+// first get the info passed in to set up the page
 $attemptid = optional_param('attemptid',0 ,PARAM_INT);
 $source = optional_param('source','attempts',PARAM_TEXT);
 $n     = required_param('n', PARAM_INT);         // instance ID
@@ -40,7 +40,7 @@ $moduleinstance  = $DB->get_record('cpassignment', array('id' => $n), '*', MUST_
 $course     = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
 $cm         = get_coursemodule_from_instance('cpassignment', $moduleinstance->id, $course->id, false, MUST_EXIST);
 
-
+$usercontext = context_user::instance($USER->id);
 
 //set up the page object url
 $PAGE->set_url('/mod/cpassignment/manageattempts.php', array('attemptid'=>$attemptid, 'n'=>$n,'action'=>$action));
@@ -48,7 +48,14 @@ $PAGE->set_url('/mod/cpassignment/manageattempts.php', array('attemptid'=>$attem
 //make sure we are logged in and can see this form
 require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
-require_capability('mod/cpassignment:manageattempts', $context);
+
+// Do we need to check if this user is looking at their own attempts only?
+// In principle they should be since that's all they see on the submitbyuser page
+if ($action == 'submitbyuser') {
+    require_capability('mod/cpassignment:manageownattempts', $usercontext);
+} else {
+    require_capability('mod/cpassignment:manageattempts', $context);
+}
 
 //set up the page object
 /*
@@ -59,7 +66,7 @@ $PAGE->set_pagelayout('course');
 */
 
 //is the attempt if OK?
-if ($action=='delete' && $attemptid > 0) {
+if ( (($action=='delete') || ($action=='submitbyuser')) && $attemptid > 0) {
     $attempt = $DB->get_record(constants::M_USERTABLE, array('id'=>$attemptid,'cpassignmentid' => $cm->instance), '*', MUST_EXIST);
 	if(!$attempt){
 		print_error('could not find attempt of id:' . $attemptid);
@@ -79,6 +86,9 @@ switch($source){
 	case 'gradingbyuser':
 		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('action'=>'gradingbyuser','userid'=>$attempt->userid,'n'=>$n));
 		break;
+	case 'submitbyuser':
+		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('action'=>'submitbyuser','userid'=>$attempt->userid,'n'=>$n));
+		break;
 }
 //handle delete actions
 switch($action){
@@ -96,6 +106,18 @@ switch($action){
 		redirect($redirecturl);
 		return;
 
+    case 'submitbyuser': // Change the status field
+		require_sesskey();
+		if (!$DB->set_field(constants::M_USERTABLE, 'status', constants::M_SUBMITSTATUS_SELECTED,
+			    array('id' => $attemptid))) {
+			print_error("Could not delete attempt");
+		}
+		//delete AI grades for this attempt too
+		// No such table yet...
+        // $DB->delete_records(constants::M_AITABLE, array('attemptid'=>$attemptid));
+
+		redirect($redirecturl);
+		return;
 
 	/////// Delete ALL attempts ////////
 	case 'deleteall':

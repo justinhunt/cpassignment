@@ -237,6 +237,7 @@ switch ($action){
         $formdata->cpassignmentid = $moduleinstance->id;
         $formdata->userid = $USER->id;
         $formdata->modulecontextid = $modulecontext->id;
+        $formdata->returnpage = 'view';
         break;
 
 
@@ -284,6 +285,6 @@ switch($format){
 		echo $pagingbar;
 		echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
 		echo $pagingbar;
-		echo $reportrenderer->show_grading_footer($moduleinstance,$cm,$formdata);
+		echo $reportrenderer->show_grading_footer($moduleinstance, $cm, $formdata);
 		echo $renderer->footer();
 }

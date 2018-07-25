@@ -9,30 +9,33 @@
 namespace mod_cpassignment\report;
 
 use \mod_cpassignment\constants;
+use \mod_cpassignment\utils;
 
 class submitbyuser extends basereport
 {
 
     protected $report="submitbyuser";
-    protected $fields = array('id', 'username', 'mediafile', 'status', 'timecreated', 'submit');
+    protected $fields = array('id', 'mediafile', 'status', 'timecreated', 'submit');
     protected $headingdata = null;
     protected $qcache=array();
     protected $ucache=array();
 
+    // When selecting an attempt for submission, check it hasn't already been done.
+    private $submitted;
 
-    public function fetch_formatted_field($field, $record, $withlinks)
-    {
+    public function fetch_formatted_field($field, $record, $withlinks) {
         global $DB, $CFG, $OUTPUT;
+
         switch ($field) {
             case 'id':
                 $ret = $record->id;
                 break;
-
+            /*
             case 'username':
                 $user = $this->fetch_cache('user', $record->userid);
                 $ret = fullname($user);
                 break;
-
+            */
             case 'mediafile':
                 if ($withlinks) {
 
@@ -45,7 +48,12 @@ class submitbyuser extends basereport
                 break;
 
             case 'status':
-                $ret = $record->status;
+                if ($record->status == constants::M_SUBMITSTATUS_SELECTED) {
+                        $ret = get_string('submitted', constants::M_LANG);
+                } else {
+
+                    $ret = '';
+                }
                 break;
 
             case 'timecreated':
@@ -53,15 +61,17 @@ class submitbyuser extends basereport
                 break;
 
             case 'submit':
-                /*
-                $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
-                    array('action' => 'delete', 'n' => $record->cpassignmentid, 'attemptid' => $record->id, 'source' => $this->report));
-                $btn = new \single_button($url, get_string('delete'), 'post');
-                $btn->add_confirm_action(get_string('deleteattemptconfirm', constants::M_LANG));
-                $ret = $OUTPUT->render($btn);
-                */
-                // Here we want to change the status field to M_SUBMITSTATUS_SELECTED
-                $ret = '';
+                // The button only appears when an assignment can be submitted
+                if (!$this->submitted) {
+                    $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
+                            array('action' => 'submitbyuser', 'n' => $record->cpassignmentid,
+                            'attemptid' => $record->id, 'source' => $this->report));
+                    $btn = new \single_button($url, get_string('submit'), 'post');
+                    $btn->add_confirm_action(get_string('submitbyuserconfirm', constants::M_LANG));
+                    $ret = $OUTPUT->render($btn);
+                } else {
+                    $ret = '';
+                }
                 break;
 
             default:
@@ -80,7 +90,8 @@ class submitbyuser extends basereport
         $record = $this->headingdata;
         $ret='';
         if(!$record){return $ret;}
-        return get_string('userattemptsheading', constants::M_LANG, fullname($USER));
+        return get_string('submitbyuserheading', constants::M_LANG, fullname($USER));
+
     }
 
     public function process_raw_data($formdata){
@@ -93,8 +104,12 @@ class submitbyuser extends basereport
         $alldata = $DB->get_records(constants::M_USERTABLE,array('cpassignmentid'=>$formdata->cpassignmentid,'userid'=>$formdata->userid));
 
         if($alldata){
+            $this->submitted = false;
             foreach($alldata as $thedata){
                 $thedata->mediaurl  = $thedata->filename;
+                if ($thedata->status == constants::M_SUBMITSTATUS_SELECTED) {
+                    $this->submitted = true;
+                }
                 $this->rawdata[] = $thedata;
             }
             $this->rawdata= $alldata;

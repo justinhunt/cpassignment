@@ -159,10 +159,16 @@ class report_renderer extends \plugin_renderer_base {
         return $this->output->paging_bar($totalcount,$paging->pageno,$paging->perpage,$baseurl,$pagevar);
     }
 
-    function show_grading_footer($moduleinstance,$cm,$formdata){
+    function show_grading_footer($moduleinstance, $cm, $formdata) {
         // print's a popup link to your custom page
-        $link = new \moodle_url(constants::M_URL . '/grading.php',array('id'=>$cm->id,'n'=>$moduleinstance->id));
-        $ret =  \html_writer::link($link, get_string('returntogradinghome',constants::M_LANG));
+        if ($formdata->returnpage == 'view') {
+            $link = new \moodle_url(constants::M_URL . '/view.php',array('n'=>$moduleinstance->id));
+            $ret =  \html_writer::link($link, get_string('returnview',constants::M_LANG));
+        } else {
+            $link = new \moodle_url(constants::M_URL . '/grading.php',array('id'=>$cm->id,'n'=>$moduleinstance->id));
+            $ret =  \html_writer::link($link, get_string('returntogradinghome',constants::M_LANG));
+        }
+
         return $ret;
     }
 
