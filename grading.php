@@ -148,9 +148,9 @@ switch ($action){
 	case 'gradenow':
 
 		$submission = new \mod_cpassignment\submission($attemptid,$modulecontext->id);
-		//prepare JS for the submission.php page
-        //this inits the js for the audio players on the list of submissions
-        $PAGE->requires->js_call_amd("mod_cpassignment/gradenowhelper", 'init', array());
+        //this inits the js for the grading page
+        $opts=array('modulecssclass'=>constants::M_CLASS);
+        $PAGE->requires->js_call_amd("mod_cpassignment/gradenowhelper", 'init', array($opts));
 
         //load data
 		$data=array(
@@ -178,25 +178,45 @@ switch ($action){
         $audiorecid = constants::M_RECORDERID . '_' .
                 constants::M_GRADING_FORM_FEEDBACKAUDIO;
 
+        $videorecid = constants::M_RECORDERID . '_' .
+            constants::M_GRADING_FORM_FEEDBACKVIDEO;
+
+        //prepare audio feedback recorder, modal and trigger button
         $audiorecorderhtml = \mod_cpassignment\utils::fetch_recorder(
                 $moduleinstance,$audiorecid, $token,
                 constants::M_GRADING_FORM_FEEDBACKAUDIO,
                 $timelimit,'audio','bmr');
+        $amodalcontent = \mod_cpassignment\utils::fetch_modal_content(
+            get_string('feedbackaudiolabel',constants::M_LANG),
+            $audiorecorderhtml
+                );
+        $amodalcontainer = \mod_cpassignment\utils::fetch_modal_container(
+            $amodalcontent,
+            'arec_feedback_container'
+        );
+        $afeedbackbutton = $renderer->js_trigger_button('afeedbackstart', true, get_string('feedbackaudiolabel',constants::M_LANG));
 
-        $videorecid = constants::M_RECORDERID . '_' .
-                constants::M_GRADING_FORM_FEEDBACKVIDEO;
-
+        //prepare video feedback recorder, modal and trigger button
         $videorecorderhtml = \mod_cpassignment\utils::fetch_recorder(
                 $moduleinstance,$videorecid, $token,
                 constants::M_GRADING_FORM_FEEDBACKVIDEO,
                 $timelimit,'video','bmr');
+        $vmodalcontent = \mod_cpassignment\utils::fetch_modal_content(
+            get_string('feedbackvideolabel',constants::M_LANG),
+            $videorecorderhtml
+        );
+        $vmodalcontainer = \mod_cpassignment\utils::fetch_modal_container(
+            $vmodalcontent,
+            'vrec_feedback_container'
+        );
+        $vfeedbackbutton = $renderer->js_trigger_button('vfeedbackstart',true, get_string('feedbackvideolabel',constants::M_LANG));
 
         // Create form.
 		$gradenowform = new \mod_cpassignment\gradenowform(null,
                 array('shownext'=>$nextid !== false,
                 'context' => $modulecontext,'token' => $token,
-               // 'audiorecorderhtml' => $audiorecorderhtml,
-               // 'videorecorderhtml' => $videorecorderhtml,
+                'audiorecorderhtml' => $amodalcontainer . $afeedbackbutton,
+                'videorecorderhtml' => $vmodalcontainer .  $vfeedbackbutton,
                 'maxgrade' => $moduleinstance->grade));
 
 		// Prepare text editor.
@@ -266,6 +286,7 @@ switch ($action){
 //so we need our audio player loaded
 //here we set up any info we need to pass into javascript
 $aph_opts =Array();
+$aph_opts['mediatype'] = $moduleinstance->mediatype;
 $aph_opts['hiddenplayerclass'] = constants::M_HIDDEN_PLAYER;
 $aph_opts['hiddenplayerbuttonclass'] = constants::M_HIDDEN_PLAYER_BUTTON;
 $aph_opts['hiddenplayerbuttonactiveclass'] =constants::M_HIDDEN_PLAYER_BUTTON_ACTIVE;
@@ -294,7 +315,15 @@ switch($format){
 		$allrowscount = $report->fetch_all_rows_count();
 		$pagingbar = $reportrenderer->show_paging_bar($allrowscount, $paging,$PAGE->url);
 		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_LANG));
-		echo $submissionrenderer->render_hiddenaudioplayer();
+        switch($moduleinstance->mediatype)
+        {
+            case 'video':
+                echo $submissionrenderer->render_hiddenvideoplayer();
+                break;
+            case 'audio':
+            default:
+                echo $submissionrenderer->render_hiddenaudioplayer();
+        }
 		echo $extraheader;
 		echo $pagingbar;
 		echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());

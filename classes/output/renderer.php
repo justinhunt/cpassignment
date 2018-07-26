@@ -67,11 +67,14 @@ class renderer extends \plugin_renderer_base {
     /**
      *  Show a single button.
      */
-    public function startbutton($moduleinstance, $buttonlabel){
+    public function js_trigger_button($buttontag, $visible, $buttonlabel){
 
-        $buttonclass =constants::M_CLASS  . '_startbutton';
+        $buttonclass =constants::M_CLASS  . '_' . $buttontag;
+        $containerclass = $buttonclass . 'container';
         $button = \html_writer::link('#', $buttonlabel, array('class'=>'btn btn-primary ' . $buttonclass,'type'=>'button','id'=>$buttonclass));
-        $ret = \html_writer::div($button, constants::M_CLASS  . '_startbuttoncontainer hide');
+        $visibleclass = '';
+        if(!$visible){$visibleclass = 'hide';}
+        $ret = \html_writer::div($button, $containerclass . ' ' .  $visibleclass);
         return $ret;
     }
     /**
@@ -125,10 +128,10 @@ class renderer extends \plugin_renderer_base {
         $title = '';
         $content=get_string('uploadsuccessmessage',constants::M_LANG);
         $modalcontent = utils::fetch_modal_content($title,$content);
-        $modal_attributes = array('id'=>constants::M_CLASS  . '_uploadsuccess', 'role'=>'dialog','aria-hidden'=>'true','tab-index'=>'-1');
-        $modal =  \html_writer::div($modalcontent, constants::M_CLASS  . '_uploadsuccess hidden modal fade',$modal_attributes);
+        $modal= utils::fetch_modal_container($modalcontent,'uploadsuccess');
         return $modal;
     }
+
     /**
      *  General purpose cancel button, returns to activity top page.
      */

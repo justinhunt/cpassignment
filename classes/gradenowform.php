@@ -45,12 +45,15 @@ class gradenowform extends \moodleform{
 
         $mform = $this->_form;
         $context = $this->_customdata['context'];
-//        $audiorecorderhtml = $this->_customdata['audiorecorderhtml'];
-//        $videorecorderhtml = $this->_customdata['videorecorderhtml'];
         $shownext = $this->_customdata['shownext'];
         $maxgrade = $this->_customdata['maxgrade'];
 
-		//$mform->addElement('header','General','');
+        $audiorecorderhtml = $this->_customdata['audiorecorderhtml'];
+        $videorecorderhtml = $this->_customdata['videorecorderhtml'];
+        $mform->addElement('hidden', 'feedbackaudio',null,
+            array('class'=>constants::M_GRADING_FORM_FEEDBACKAUDIO,'id'=>constants::M_GRADING_FORM_FEEDBACKAUDIO));
+        $mform->addElement('hidden', 'feedbackvideo',null,
+            array('class'=>constants::M_GRADING_FORM_FEEDBACKVIDEO,'id'=>constants::M_GRADING_FORM_FEEDBACKVIDEO));
 
         // adding the hidden fields which recorders write to and other bits we might/will use
 		$mform->addElement('hidden', 'action');
@@ -58,10 +61,7 @@ class gradenowform extends \moodleform{
 		$mform->addElement('hidden', 'n');
         $mform->addElement('hidden', 'sessiontime',null,
 				array('class'=>constants::M_GRADING_FORM_SESSIONTIME,'id'=>constants::M_GRADING_FORM_SESSIONTIME));
-		$mform->addElement('hidden', 'feedbackaudio',null,
-				array('class'=>constants::M_GRADING_FORM_FEEDBACKAUDIO,'id'=>constants::M_GRADING_FORM_FEEDBACKAUDIO));
-        $mform->addElement('hidden', 'feedbackvideo',null,
-            array('class'=>constants::M_GRADING_FORM_FEEDBACKVIDEO,'id'=>constants::M_GRADING_FORM_FEEDBACKVIDEO));
+
 
 		$mform->setType('action',PARAM_TEXT);
 		$mform->setType('attemptid',PARAM_INT);
@@ -92,12 +92,16 @@ class gradenowform extends \moodleform{
                 array('text'=>'', 'format' => FORMAT_HTML));
         $mform->setType('feedbacktext_editor', PARAM_RAW);
 
-        $mediabuttonarray = array();
 
+        $mform->addElement('static', 'fbaudio',
+            get_string('feedbackaudiolabel', constants::M_LANG),$audiorecorderhtml );
+        $mform->addElement('static', 'fbvideo',
+            get_string('feedbackvideolabel', constants::M_LANG),$videorecorderhtml );
+
+        $mediabuttonarray = array();
         // Feedback audio.  These are no longer optional.
         $mediabuttonarray[] = $mform->createElement('submit', 'btn_fbaudio',
                 get_string('feedbackaudiolabel', constants::M_LANG));
-
         // Feedback video.
         $mediabuttonarray[] = $mform->createElement('submit', 'btn_fbvideo',
                 get_string('feedbackvideolabel', constants::M_LANG));
