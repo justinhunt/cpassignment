@@ -124,11 +124,10 @@ class submission_renderer extends \plugin_renderer_base {
         $videoplayer = \html_writer::tag('video','',array('src'=>'','id'=>constants::M_HIDDEN_VIDEO_PLAYER,'class'=>constants::M_HIDDEN_VIDEO_PLAYER, 'controls'=>'true'));
         $content=$videoplayer;
         $modalcontent = utils::fetch_modal_content($title,$content);
-
-        $modal_attributes = array('id'=>constants::M_CLASS  . '_hiddenvideocontainer', 'role'=>'dialog','aria-hidden'=>'true','tab-index'=>'-1');
-        $modal =  \html_writer::div($modalcontent, constants::M_CLASS  . '_hiddenvideocontainer hidden modal fade',$modal_attributes);
+        $modal = utils::fetch_modal_container($modalcontent,'hiddenvideocontainer');
         return $modal;
     }
+
     // Render any existing feedback.
     public function render_feedbackaudio($mediaurl){
 

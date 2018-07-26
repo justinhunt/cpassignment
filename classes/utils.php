@@ -242,10 +242,20 @@ class utils{
         return $recorderdiv;
     }
 
+    //puts the content passed in, into div containers that Bootstrap will recognize as a modal (hidden on load etc)
+    public static function fetch_modal_container($modalcontent,$containertag){
+        $containerid = constants::M_CLASS  . '_' . $containertag;
+        //this is the modal container that hides it. The id is used to trigger the modal. The trigger code is not set up here.
+        $modal_attributes = array('id'=>$containerid, 'role'=>'dialog','aria-hidden'=>'true','tab-index'=>'-1');
+        $modal =  \html_writer::div($modalcontent, $containerid  . ' hidden modal fade',$modal_attributes);
+        return $modal;
+    }
+
+
     /**
-     *  A template to hold the content of a modal
+     *  A template to make the content of a modal(header/content/footer(+buttons)
      */
-    public static function fetch_modal_content($title,$message) {
+    public static function fetch_modal_content($title,$content) {
 
         $modalcontent=  '<div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -258,7 +268,7 @@ class utils{
                     </button>
                   </div>
                   <div class="modal-body">';
-        $modalcontent .=  $message;
+        $modalcontent .=  $content;
         $modalcontent .=  '</div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -133,11 +133,11 @@ if ($canattempt) {
         // Try again button, if applicable.
         // Might need later, but could probably have on grading submit by user page.
         if (!$attemptsexceeded) {
-            $status .= $renderer->startbutton($moduleinstance,
+            $status .= $renderer->js_trigger_button('startbutton',false,
                     get_string('reattempt', constants::M_FRANKY));
         }
     } else { // numattempts = 0. TOP page.
-        $status .= $renderer->startbutton($moduleinstance,
+        $status .= $renderer->js_trigger_button('startbutton',false,
                 get_string('firstattempt', constants::M_FRANKY));
     }
 
