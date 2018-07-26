@@ -28,6 +28,7 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
 use \mod_cpassignment\constants;
+use \mod_cpassignment\utils;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // cpassignment instance ID
@@ -93,6 +94,17 @@ switch($action){
 			break;
 		} else {
 			$data = $mform->get_data();
+
+            if (!empty($data->btn_fbaudio)) {
+                // Do something with audio
+                echo utils::fetch_modal_content('audio', 'audio button clicked');
+            }
+
+            if (!empty($data->btn_fbvideo)) {
+                // Do something with video
+                 echo utils::fetch_modal_content('video', 'video button clicked');
+            }
+
 			$submission = new \mod_cpassignment\submission($attemptid,
                 $cm->id);
 			$submission->update($data);
@@ -217,6 +229,7 @@ switch ($action){
 		$formdata = new stdClass();
 		$formdata->cpassignmentid = $moduleinstance->id;
 		$formdata->modulecontextid = $modulecontext->id;
+        $formdata->returnpage = 'grading';
 		break;
 
 	case 'gradingbyuser':
@@ -227,6 +240,7 @@ switch ($action){
 		$formdata->cpassignmentid = $moduleinstance->id;
 		$formdata->userid = $userid;
 		$formdata->modulecontextid = $modulecontext->id;
+        $formdata->returnpage = 'grading';
 		break;
 
     case 'submitbyuser':  // Allows user to select an attempt to be submitted for grading.
