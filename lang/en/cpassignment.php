@@ -159,6 +159,7 @@ $string['currentgrade'] = 'Current grade: ';
 $string['status'] = 'Status';
 $string['submitnow'] = 'Submit for grading';
 $string['unknown'] = 'unknown';
+$string['gradeunavailable'] = 'Grade not available';
 $string['submitted'] = 'submitted';
 $string['notsubmitted'] = 'You have not submitted an attempt for grading yet, please try again or select an assignment via View all attempts';
 

@@ -6,9 +6,11 @@
 	margin-right: auto;
 }
 
+
 .mod_cpassignment_listbuttons input[type="submit"]{
-	width: 400px;
+    width: 400px;
 }
+
 
 .mod_cpassignment_actionbuttons {
 	display: flex;

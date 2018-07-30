@@ -120,9 +120,9 @@ if ($canattempt) {
         if ( $recordid) {
             //We probably do not need this. Until we have a flashy submission/transcript/text reader widget
             // $submission->prepare_javascript($reviewmode);
-
+            // We don't show any grading information if dis-allwoed in settings.
             $submission = new \mod_cpassignment\submission($recordid, $modulecontext->id);
-            $status .= $submissionrenderer->render_submission($submission);
+            $status .= $submissionrenderer->render_submission($submission, $moduleinstance->showgrade);
         } else {
             $status .= get_string('notsubmitted', constants::M_LANG);
         }

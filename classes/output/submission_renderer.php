@@ -15,13 +15,17 @@ class submission_renderer extends \plugin_renderer_base {
 
     protected $submission=null;
 
-    public function render_submission($submission) {
+    public function render_submission($submission, $showgrade) {
 
         $this->submission = $submission;
         $ret = $this->render_attempt_data($submission);
-        $ret .= $this->render_attempt_grade($submission);
-        $ret .= $this->render_current_feedback($submission);
-
+        // Student might not be allowed (set in insatnce setting).
+        if($showgrade) {
+            $ret .= $this->render_attempt_grade($submission);
+            $ret .= $this->render_current_feedback($submission);
+        } else {
+            $ret .= get_string('gradeunavailable', constants::M_LANG);
+        }
         return $ret;
     }
     /**

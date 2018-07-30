@@ -14,7 +14,7 @@ class attempts extends basereport
 {
 
     protected $report="attempts";
-    protected $fields = array('id','username','mediafile','grade_p','timecreated','deletenow');
+    protected $fields = array('id','username', 'status', 'mediafile','grade_p','timecreated','deletenow');
     protected $headingdata = null;
     protected $qcache=array();
     protected $ucache=array();
@@ -31,6 +31,15 @@ class attempts extends basereport
             case 'username':
                 $user = $this->fetch_cache('user', $record->userid);
                 $ret = fullname($user);
+                break;
+
+            case 'status':
+               if ($record->status == constants::M_SUBMITSTATUS_SELECTED) {
+                        $ret = get_string('submitted', constants::M_LANG);
+                } else {
+
+                    $ret = "-";
+                }
                 break;
 
             case 'mediafile':
