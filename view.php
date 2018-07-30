@@ -27,6 +27,7 @@
  */
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 use \mod_cpassignment\constants;
+use \mod_cpassignment\submission;
 
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // cpassignment instance ID.
@@ -111,23 +112,23 @@ if ($canattempt) {
     if ($numattempts > 0) {
         // TRY page.
         // Get the latest attempt, if it exists.
-
-        /*  We will need this code later to show one attempt, probably the submitted attempt, if any.
         $latestattempt = array_shift($attempts);
-        $submission = new \mod_cpassignment\submission($latestattempt->id, $modulecontext->id);
-        $reviewmode = true;
 
-        //We probably do not need this. Until we have a flashy submission/transcript/text reader widget
-        //$submission->prepare_javascript($reviewmode);
+        // If an attempt has been submitted by the user, show it
+        // and its status.
+        $recordid = submission::get_submitted_id($USER->id);
+        if ( $recordid) {
+            //We probably do not need this. Until we have a flashy submission/transcript/text reader widget
+            // $submission->prepare_javascript($reviewmode);
 
-        // Submission html (might need tweaking).
-        $status .= $submissionrenderer->render_submission($submission);
-
-        // Graded yet? TRY page awaiting grading
-        // JUSTIN comment ... do we need to stop them re-attempting if ungraded ? I do not think so ..
+            $submission = new \mod_cpassignment\submission($recordid, $modulecontext->id);
+            $status .= $submissionrenderer->render_submission($submission);
+        } else {
+            $status .= get_string('notsubmitted', constants::M_LANG);
+        }
         if ($latestattempt->sessiontime == null) {
             $status .= $renderer->show_ungradedyet();
-        */
+        }
         // List the user attempts so far.  Allow one to be selected as the submission.
         $status .= $renderer->listattemptsbutton($moduleinstance, get_string('listattempts', constants::M_FRANKY));
         // Try again button, if applicable.
@@ -136,6 +137,7 @@ if ($canattempt) {
             $status .= $renderer->js_trigger_button('startbutton',false,
                     get_string('reattempt', constants::M_FRANKY));
         }
+
     } else { // numattempts = 0. TOP page.
         $status .= $renderer->js_trigger_button('startbutton',false,
                 get_string('firstattempt', constants::M_FRANKY));

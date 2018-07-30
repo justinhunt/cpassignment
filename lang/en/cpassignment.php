@@ -160,7 +160,7 @@ $string['status'] = 'Status';
 $string['submitnow'] = 'Submit for grading';
 $string['unknown'] = 'unknown';
 $string['submitted'] = 'submitted';
-
+$string['notsubmitted'] = 'You have not submitted an attempt for grading yet, please try again or select an assignment via View all attempts';
 
 //$string['passagelabel'] ='Reading Passage';
 

@@ -58,7 +58,7 @@ const M_GRADELATEST= 2;
 const M_GRADEAVERAGE= 3;
 const M_GRADENONE= 4;
 
-const M_SUBMITSTATUS_UNKNOWN = 0;  // ? not currently used.
+const M_SUBMITSTATUS_UNKNOWN = 0;  // Can be used when user 'unsubmits' previously submitted
 const M_SUBMITSTATUS_WAITING = 1;  // Waiting to be graded.
 const M_SUBMITSTATUS_GRADED = 2;   // Graded by teacher.
 const M_SUBMITSTATUS_SELECTED = 3; // Selected as submission by student.

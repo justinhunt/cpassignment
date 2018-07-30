@@ -82,18 +82,6 @@ $capabilities = array(
 			),
 			'clonepermissionsfrom' => 'moodle/course:manageactivities'
 	),
-    'mod/cpassignment:manageownattempts' => array(
-            'riskbitmask' => RISK_XSS,
-            'captype' => 'write',
-            'contextlevel' => CONTEXT_USER,
-            'archetypes' => array(
-                    'teacher' => CAP_ALLOW,
-                    'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW,
-                    'student' => CAP_ALLOW
-            ),
-            'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
 
 	'mod/cpassignment:itemedit' => array(
 			'riskbitmask' => RISK_XSS,
@@ -158,5 +146,14 @@ $capabilities = array(
             'student' => CAP_ALLOW
         )
     ),
+
+    'mod/cpassignment:manageownattempts' => array(
+            //'riskbitmask' => RISK_XSS,
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_MODULE,
+            'legacy' => array(
+                    'student' => CAP_ALLOW
+            )
+    )
 );
 

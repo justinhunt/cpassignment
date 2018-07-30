@@ -97,7 +97,7 @@ class gradenowform extends \moodleform{
             get_string('feedbackaudiolabel', constants::M_LANG),$audiorecorderhtml );
         $mform->addElement('static', 'fbvideo',
             get_string('feedbackvideolabel', constants::M_LANG),$videorecorderhtml );
-
+        /*
         $mediabuttonarray = array();
         // Feedback audio.  These are no longer optional.
         $mediabuttonarray[] = $mform->createElement('submit', 'btn_fbaudio',
@@ -107,7 +107,7 @@ class gradenowform extends \moodleform{
                 get_string('feedbackvideolabel', constants::M_LANG));
 
         $mform->addGroup($mediabuttonarray, 'mbuttonar', '', array(' '), false);
-
+        */
         // add out buttons for submitting and cancelling
         $buttonarray=array();
         $buttonarray[] = &$mform->createElement('cancel');

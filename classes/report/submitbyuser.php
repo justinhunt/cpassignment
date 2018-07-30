@@ -61,17 +61,14 @@ class submitbyuser extends basereport
                 break;
 
             case 'submit':
-                // The button only appears when an assignment can be submitted
-                if (!$this->submitted) {
-                    $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
-                            array('action' => 'submitbyuser', 'n' => $record->cpassignmentid,
-                            'attemptid' => $record->id, 'source' => $this->report));
-                    $btn = new \single_button($url, get_string('submit'), 'post');
-                    $btn->add_confirm_action(get_string('submitbyuserconfirm', constants::M_LANG));
-                    $ret = $OUTPUT->render($btn);
-                } else {
-                    $ret = '';
-                }
+                // The submit button
+                $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
+                        array('action' => 'submitbyuser', 'n' => $record->cpassignmentid,
+                        'attemptid' => $record->id, 'source' => $this->report));
+                $btn = new \single_button($url, get_string('submit'), 'post');
+                $btn->add_confirm_action(get_string('submitbyuserconfirm',
+                        constants::M_LANG));
+                $ret = $OUTPUT->render($btn);
                 break;
 
             default:

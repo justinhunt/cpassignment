@@ -26,6 +26,7 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
 use \mod_cpassignment\constants;
+use \mod_cpassignment\submission;
 
 global $USER,$DB;
 
@@ -52,7 +53,7 @@ $context = context_module::instance($cm->id);
 // Do we need to check if this user is looking at their own attempts only?
 // In principle they should be since that's all they see on the submitbyuser page
 if ($action == 'submitbyuser') {
-    require_capability('mod/cpassignment:manageownattempts', $usercontext);
+    require_capability('mod/cpassignment:manageownattempts', $context);
 } else {
     require_capability('mod/cpassignment:manageattempts', $context);
 }
@@ -63,8 +64,8 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('course');
-*/
 
+*/
 //is the attempt if OK?
 if ( (($action=='delete') || ($action=='submitbyuser')) && $attemptid > 0) {
     $attempt = $DB->get_record(constants::M_USERTABLE, array('id'=>$attemptid,'cpassignmentid' => $cm->instance), '*', MUST_EXIST);
@@ -108,13 +109,17 @@ switch($action){
 
     case 'submitbyuser': // Change the status field
 		require_sesskey();
-		if (!$DB->set_field(constants::M_USERTABLE, 'status', constants::M_SUBMITSTATUS_SELECTED,
-			    array('id' => $attemptid))) {
-			print_error("Could not delete attempt");
+		$existsattemptid = submission::get_submitted_id($USER->id);
+		if ($existsattemptid) {
+			// Found one already submitted, change status back.
+		    $DB->set_field(constants::M_USERTABLE, 'status',
+		    	    constants::M_SUBMITSTATUS_UNKNOWN, array('id' => $existsattemptid));
+        }
+        // Set status of this one to submitted.
+		if (!$DB->set_field(constants::M_USERTABLE, 'status',
+		    	    constants::M_SUBMITSTATUS_SELECTED, array('id' => $attemptid))) {
+			print_error("Could not unsubmit an attempt");
 		}
-		//delete AI grades for this attempt too
-		// No such table yet...
-        // $DB->delete_records(constants::M_AITABLE, array('attemptid'=>$attemptid));
 
 		redirect($redirecturl);
 		return;

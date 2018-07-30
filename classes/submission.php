@@ -62,6 +62,11 @@ class submission{
 			return false;
 		}
    }
+   public static function get_submitted_id($userid){
+        global $DB;
+        return $DB->get_field(constants::M_USERTABLE, 'id', array('userid' => $userid,
+                'status' => constants::M_SUBMITSTATUS_SELECTED), IGNORE_MISSING);
+   }
 
    public function update($formdata){
 		global $DB;
