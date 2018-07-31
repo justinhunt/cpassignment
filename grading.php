@@ -147,7 +147,7 @@ switch ($action){
 
 	case 'gradenow':
 
-		$submission = new \mod_cpassignment\submission($attemptid,$modulecontext->id);
+		$submission = new \mod_cpassignment\submission($attemptid, $modulecontext->id);
         //this inits the js for the grading page
         $opts=array('modulecssclass'=>constants::M_CLASS);
         $PAGE->requires->js_call_amd("mod_cpassignment/gradenowhelper", 'init', array($opts));

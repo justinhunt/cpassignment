@@ -103,7 +103,7 @@ class submitbyuser extends basereport
         if($alldata){
             $this->submitted = false;
             foreach($alldata as $thedata){
-                $thedata->mediaurl  = $thedata->filename;
+                $thedata->mediaurl = $thedata->filename;
                 if ($thedata->status == constants::M_SUBMITSTATUS_SELECTED) {
                     $this->submitted = true;
                 }

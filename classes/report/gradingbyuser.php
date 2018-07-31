@@ -25,7 +25,7 @@ class gradingbyuser extends basereport
         $record = $this->headingdata;
         $ret='';
         if(!$record){return $ret;}
-        $user = $this->fetch_cache('user',$record->userid);
+        $user = $this->fetch_cache('user', $record->userid);
         return get_string('gradingbyuserheading',constants::M_LANG,fullname($user));
 
     }
