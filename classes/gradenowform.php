@@ -45,7 +45,7 @@ class gradenowform extends \moodleform{
 
         $mform = $this->_form;
         $context = $this->_customdata['context'];
-        $shownext = $this->_customdata['shownext'];
+        //$shownext = $this->_customdata['shownext'];
         $maxgrade = $this->_customdata['maxgrade'];
 
         $audiorecorderhtml = $this->_customdata['audiorecorderhtml'];
@@ -97,7 +97,13 @@ class gradenowform extends \moodleform{
             get_string('feedbackaudiolabel', constants::M_LANG),$audiorecorderhtml );
         $mform->addElement('static', 'fbvideo',
             get_string('feedbackvideolabel', constants::M_LANG),$videorecorderhtml );
+
+
+        $this->add_action_buttons();
+
         /*
+           Axe all this, I don't think we need it now. Action buttons will do.
+
         $mediabuttonarray = array();
         // Feedback audio.  These are no longer optional.
         $mediabuttonarray[] = $mform->createElement('submit', 'btn_fbaudio',
@@ -109,14 +115,17 @@ class gradenowform extends \moodleform{
         $mform->addGroup($mediabuttonarray, 'mbuttonar', '', array(' '), false);
         */
         // add out buttons for submitting and cancelling
-        $buttonarray=array();
-        $buttonarray[] = &$mform->createElement('cancel');
-        $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('savechanges'));
+        //$buttonarray=array();
+        //$buttonarray[] = &$mform->createElement('cancel');
+        //$buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('savechanges'));
+        /*
         if($shownext){
             $buttonarray[] = &$mform->createElement('submit', 'submitbutton2', get_string('saveandnext',constants::M_LANG));
         }
+
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
         //	$mform->closeHeaderBefore('buttonar');
+        */
     }
 }
 

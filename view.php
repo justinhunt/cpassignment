@@ -111,28 +111,28 @@ if ($canattempt) {
     // Is this a retake?
     if ($numattempts > 0) {
         // TRY page.
-        // Get the latest attempt, if it exists.
         $latestattempt = array_shift($attempts);
-
         // If an attempt has been submitted by the user, show it
         // and its status.
         $recordid = submission::get_submitted_id($USER->id);
         if ( $recordid) {
             //We probably do not need this. Until we have a flashy submission/transcript/text reader widget
             // $submission->prepare_javascript($reviewmode);
-            // We don't show any grading information if dis-allwoed in settings.
+            // We don't show any grading information if dis-allowed in settings.
             $submission = new \mod_cpassignment\submission($recordid, $modulecontext->id);
             $status .= $submissionrenderer->render_submission($submission, $moduleinstance->showgrade);
         } else {
-            $status .= get_string('notsubmitted', constants::M_LANG);
+            // No attempt submitted. Force submit latest attempt.
+            submission::set_submitted_id($latestattempt->id);
         }
         if ($latestattempt->sessiontime == null) {
             $status .= $renderer->show_ungradedyet();
         }
         // List the user attempts so far.  Allow one to be selected as the submission.
+        // We need a check here to not show the list button or the try again button
+        // if grading has been done.
         $status .= $renderer->listattemptsbutton($moduleinstance, get_string('listattempts', constants::M_FRANKY));
         // Try again button, if applicable.
-        // Might need later, but could probably have on grading submit by user page.
         if (!$attemptsexceeded) {
             $status .= $renderer->js_trigger_button('startbutton',false,
                     get_string('reattempt', constants::M_FRANKY));

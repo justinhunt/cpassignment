@@ -84,8 +84,8 @@ switch($source){
 	case 'grading':
 		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('id'=>$cm->id,'action'=>'grading'));
 		break;
-	case 'gradingbyuser':
-		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('action'=>'gradingbyuser','userid'=>$attempt->userid,'n'=>$n));
+	case 'viewingbyuser':
+		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('action'=>'viewingbyuser','userid'=>$attempt->userid,'n'=>$n));
 		break;
 	case 'submitbyuser':
 		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('action'=>'submitbyuser','userid'=>$attempt->userid,'n'=>$n));

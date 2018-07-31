@@ -67,16 +67,22 @@ class submission{
         return $DB->get_field(constants::M_USERTABLE, 'id', array('userid' => $userid,
                 'status' => constants::M_SUBMITSTATUS_SELECTED), IGNORE_MISSING);
    }
+   public static function set_submitted_id($attemptid) {
+        global $DB;
+        return $DB->set_field(constants::M_USERTABLE, 'status',
+                constants::M_SUBMITSTATUS_SELECTED, array('id' => $attemptid));
+   }
 
    public function update($formdata){
-		global $DB;
-		$updatedattempt = new \stdClass();
-		$updatedattempt->id=$this->attemptid;
-		$updatedattempt->sessiontime = $formdata->sessiontime;
-	//	$updatedattempt->accuracy = $formdata->accuracy;
-        $updatedattempt->feedbackaudio = $formdata->feedbackaudio;
-        $updatedattempt->feedbackvideo = $formdata->feedbackvideo;
-	    $updatedattempt->sessionscore = (int) $formdata->sessionscore;
+	     global $DB;
+		   $updatedattempt = new \stdClass();
+		   $updatedattempt->id=$this->attemptid;
+		   $updatedattempt->sessiontime = $formdata->sessiontime;
+	     $updatedattempt->status = constants::M_SUBMITSTATUS_GRADED;
+       //	$updatedattempt->accuracy = $formdata->accuracy;
+       $updatedattempt->feedbackaudio = $formdata->feedbackaudio;
+       $updatedattempt->feedbackvideo = $formdata->feedbackvideo;
+	     $updatedattempt->sessionscore = (int) $formdata->sessionscore;
 
        $context = \context_module::instance($this->modulecontextid);
        $edoptions = utils::editor_with_files_options($context);

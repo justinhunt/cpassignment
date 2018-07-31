@@ -15,7 +15,8 @@ class grading extends basereport
 {
 
     protected $report = "grading";
-    protected $fields = array('id', 'username', 'mediafile', 'totalattempts', 'grade_p', 'gradenow', 'timecreated', 'viewall');
+    protected $fields = array('id', 'username', 'mediafile', 'totalattempts', 'grade_p',
+        'timecreated', 'gradenow', 'viewall');
     protected $headingdata = null;
     protected $qcache = array();
     protected $ucache = array();
@@ -34,7 +35,7 @@ class grading extends basereport
                 $ret = fullname($user);
                 if ($withlinks) {
                     $link = new \moodle_url(constants::M_URL . '/grading.php',
-                        array('action' => 'gradingbyuser', 'n' => $record->cpassignmentid, 'userid' => $record->userid));
+                        array('action' => 'viewingbyuser', 'n' => $record->cpassignmentid, 'userid' => $record->userid));
                     $ret = \html_writer::link($link, $ret);
                 }
                 break;
@@ -57,32 +58,26 @@ class grading extends basereport
                 $ret = $record->sessionscore;
                 break;
 
-            case 'gradenow':
-                if ($withlinks) {
-                    $recordid = submission::get_submitted_id($record->userid);
-                    if ($recordid) {
-                        $link = new \moodle_url(constants::M_URL . '/grading.php',
-                                array('action' => 'gradenow', 'n' => $record->cpassignmentid,
-                                'attemptid' => $recordid));
-                        $ret = \html_writer::link($link, get_string('gradenow',
-                                constants::M_LANG));
-                    } else {
-                        $ret = get_string('noselection', constants::M_LANG);
-                    }
-                } else {
-                    $ret = get_string('cannotgradenow', constants::M_LANG);
-                }
-                break;
-
             case 'timecreated':
                 $ret = date("Y-m-d H:i:s", $record->timecreated);
                 break;
 
+            case 'gradenow':
+                if ($withlinks) {
+                    $link = new \moodle_url(constants::M_URL . '/grading.php',
+                            array('action' => 'gradenow', 'n' => $record->cpassignmentid,
+                            'userid' => $record->userid, 'attemptid' => $record->id));
+                    $ret = \html_writer::link($link, get_string('gradenow',
+                                constants::M_LANG));
+                } else {
+                    $ret = get_string('cannotgradenow', constants::M_LANG);
+                }
+                break;
             // So this used to be delete but now has the previous "total attempts code".
             case 'viewall':
                 $ret = get_string('viewall', constants::M_LANG);
                 $link = new \moodle_url(constants::M_URL . '/grading.php',
-                        array('action' => 'gradingbyuser', 'n' => $record->cpassignmentid,
+                        array('action' => 'viewingbyuser', 'n' => $record->cpassignmentid,
                         'userid' => $record->userid));
                 $ret = \html_writer::link($link, $ret);
                 break;

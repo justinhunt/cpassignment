@@ -29,6 +29,7 @@ require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
 use \mod_cpassignment\constants;
 use \mod_cpassignment\utils;
+use \mod_cpassignment\submission;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // cpassignment instance ID
@@ -164,8 +165,9 @@ switch ($action){
 			'sessiontime'=>$submission->fetch('sessiontime'),
 			'sessionscore'=>$submission->fetch('sessionscore'));
 
-        // Get next id
-		$nextid = $submission->get_next_ungraded_id();
+        // get next id, not required, we have only one now.
+        // $nextid = $submission->get_next_ungraded_id();
+
 
         // Fetch recorders
         $token = \mod_cpassignment\utils::fetch_token($config->apiuser,$config->apisecret);
@@ -211,9 +213,9 @@ switch ($action){
         );
         $vfeedbackbutton = $renderer->js_trigger_button('vfeedbackstart',true, get_string('feedbackvideolabel',constants::M_LANG));
 
-        // Create form.
+        // Create form.  No next any more.
 		$gradenowform = new \mod_cpassignment\gradenowform(null,
-                array('shownext'=>$nextid !== false,
+                array(/*'shownext'=>$nextid !== */false,
                 'context' => $modulecontext,'token' => $token,
                 'audiorecorderhtml' => $amodalcontainer . $afeedbackbutton,
                 'videorecorderhtml' => $vmodalcontainer .  $vfeedbackbutton,
@@ -252,8 +254,8 @@ switch ($action){
         $formdata->returnpage = 'grading';
 		break;
 
-	case 'gradingbyuser':
-		$report = new \mod_cpassignment\report\gradingbyuser();
+	case 'viewingbyuser':
+		$report = new \mod_cpassignment\report\viewingbyuser();
 		//formdata should only have simple values, not objects
 		//later it gets turned into urls for the export buttons
 		$formdata = new stdClass();
