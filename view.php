@@ -97,61 +97,72 @@ $attemptsexceeded = 0;
 
 if ( ($max != 0)  && ($numattempts >= $max) ) {
     $attemptsexceeded = 1;
-  }
+}
+
+// Has it been graded yet?
+$graded = false;
+$gradedattemptid = 0;
+foreach ($attempts as $attempt) {
+    if ( (!$graded) && $attempt->status == constants::M_SUBMITSTATUS_GRADED) {
+        $graded = true;
+        $gradedattemptid = $attempt->id;
+    }
+}
 
 // Are we allowed?
-$haspermission = has_capability('mod/cpassignment:view', $modulecontext);
-$canattempt = ($haspermission);
+$haspermission = (has_capability('mod/cpassignment:view', $modulecontext));
 
 // Status content is added to instructions.
 $status = '';
-//$status = 'attempts ' . $numattempts . ' exc: ' . $attemptsexceeded .
-//        ' can: ' . $canattempt . ' ret: '. $retake . ': ';
-if ($canattempt) {
+
+if ($haspermission) {
+
     // Is this a retake?
     if ($numattempts > 0) {
+
+        // Show a list of attempt data and status here.  Allow user to submit
+        // until graded.
         // TRY page.
-        $latestattempt = array_shift($attempts);
-        // If an attempt has been submitted by the user, show it
-        // and its status.
-        $recordid = submission::get_submitted_id($USER->id);
-        if ( $recordid) {
+        $renderer->fetch_attempts($moduleinstance, $modulecontext, $USER->id);
+
+        // Grade information.
+        if ($graded) {
             //We probably do not need this. Until we have a flashy submission/transcript/text reader widget
             // $submission->prepare_javascript($reviewmode);
             // We don't show any grading information if dis-allowed in settings.
-            $submission = new \mod_cpassignment\submission($recordid, $modulecontext->id);
-            $status .= $submissionrenderer->render_submission($submission, $moduleinstance->showgrade);
+            if ($moduleinstance->showgrade) {
+                $submission = new \mod_cpassignment\submission($gradedattemptid,
+                        $modulecontext->id);
+                $status .= $submissionrenderer->render_submission($submission,
+                        $moduleinstance->showgrade);
+            } else {
+                $status .= get_string('gradeunavailable', constants::M_LANG);
+            }
         } else {
-            // No attempt submitted. Force submit latest attempt.
-            submission::set_submitted_id($latestattempt->id);
+            $status .= get_string("notgradedyet",constants::M_LANG);
         }
-        if ($latestattempt->sessiontime == null) {
-            $status .= $renderer->show_ungradedyet();
-        }
-        // List the user attempts so far.  Allow one to be selected as the submission.
-        // We need a check here to not show the list button or the try again button
-        // if grading has been done.
-        $status .= $renderer->listattemptsbutton($moduleinstance, get_string('listattempts', constants::M_FRANKY));
         // Try again button, if applicable.
-        if (!$attemptsexceeded) {
-            $status .= $renderer->js_trigger_button('startbutton',false,
-                    get_string('reattempt', constants::M_FRANKY));
+        if ( (!$attemptsexceeded) && (!$graded) ) {
+            $status .= $renderer->js_trigger_button('startbutton', false,
+                    get_string('reattempt', constants::M_LANG));
         }
-
     } else { // numattempts = 0. TOP page.
         $status .= $renderer->js_trigger_button('startbutton',false,
-                get_string('firstattempt', constants::M_FRANKY));
+                get_string('firstattempt', constants::M_LANG));
     }
 
 } else {
     // Can't attempt - say why.
     if (!$haspermission) {
-        echo '<p>' . get_string('hasnopermission', constants::M_FRANKY) . '</p>';
+        echo '<p>' . get_string('hasnopermission', constants::M_LANG) . '</p>';
     } else if ($attemptsexceeded) {
-        echo '<p>' . get_string("exceededattempts", constants::M_LANG,
+        echo '<p>' . get_string('exceededattempts', constants::M_LANG,
+                $moduleinstance->maxattempts) . '</p>';
+    } else if ($graded) {
+        echo '<p>' . get_string('alreadygraded', constants::M_LANG,
                 $moduleinstance->maxattempts) . '</p>';
     } else {
-        echo '<p>' . get_string('unknown', constants::M_FRANKY) . '</p>';
+        echo '<p>' . get_string('unknown', constants::M_LANG) . '</p>';
     }
 }
 

@@ -168,7 +168,6 @@ switch ($action){
         // get next id, not required, we have only one now.
         // $nextid = $submission->get_next_ungraded_id();
 
-
         // Fetch recorders
         $token = \mod_cpassignment\utils::fetch_token($config->apiuser,$config->apisecret);
 
@@ -262,7 +261,7 @@ switch ($action){
 		$formdata->cpassignmentid = $moduleinstance->id;
 		$formdata->userid = $userid;
 		$formdata->modulecontextid = $modulecontext->id;
-        $formdata->returnpage = 'grading';
+        $formdata->returnpage = 'view';
 		break;
 
     case 'submitbyuser':  // Allows user to select an attempt to be submitted for grading.

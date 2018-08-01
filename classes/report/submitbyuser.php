@@ -20,8 +20,8 @@ class submitbyuser extends basereport
     protected $qcache=array();
     protected $ucache=array();
 
-    // When selecting an attempt for submission, check it hasn't already been done.
-    private $submitted;
+    // Don't show the action button if this attempt has been graded
+    private $graded;
 
     public function fetch_formatted_field($field, $record, $withlinks) {
         global $DB, $CFG, $OUTPUT;
@@ -49,26 +49,34 @@ class submitbyuser extends basereport
 
             case 'status':
                 if ($record->status == constants::M_SUBMITSTATUS_SELECTED) {
-                        $ret = get_string('submitted', constants::M_LANG);
+                    $ret = get_string('submitted', constants::M_LANG);
+                } else if ($record->status == constants::M_SUBMITSTATUS_GRADED) {
+                    $ret = get_string('graded', constants::M_LANG);
                 } else {
-
                     $ret = '';
                 }
                 break;
-
             case 'timecreated':
                 $ret = date("Y-m-d H:i:s", $record->timecreated);
                 break;
 
             case 'submit':
-                // The submit button
-                $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
-                        array('action' => 'submitbyuser', 'n' => $record->cpassignmentid,
-                        'attemptid' => $record->id, 'source' => $this->report));
-                $btn = new \single_button($url, get_string('submit'), 'post');
-                $btn->add_confirm_action(get_string('submitbyuserconfirm',
-                        constants::M_LANG));
-                $ret = $OUTPUT->render($btn);
+                if ($this->graded) {
+                    $ret = get_string('alreadygraded', constants::M_LANG);
+                } else {
+                    if (!$record->status == constants::M_SUBMITSTATUS_SELECTED) {
+                        $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
+                            array('action' => 'submitbyuser',
+                            'n' => $record->cpassignmentid,
+                            'attemptid' => $record->id, 'source' => $this->report));
+                        $btn = new \single_button($url, get_string('submit'), 'post');
+                        $btn->add_confirm_action(get_string('submitbyuserconfirm',
+                            constants::M_LANG));
+                        $ret = $OUTPUT->render($btn);
+                    } else {
+                        $ret = '';
+                    }
+                }
                 break;
 
             default:
@@ -101,13 +109,13 @@ class submitbyuser extends basereport
         $alldata = $DB->get_records(constants::M_USERTABLE,array('cpassignmentid'=>$formdata->cpassignmentid,'userid'=>$formdata->userid));
 
         if($alldata){
-            $this->submitted = false;
+            $this->graded = false;
             foreach($alldata as $thedata){
                 $thedata->mediaurl = $thedata->filename;
-                if ($thedata->status == constants::M_SUBMITSTATUS_SELECTED) {
-                    $this->submitted = true;
+                if ( (!$this->graded) &&
+                        ($thedata->status == constants::M_SUBMITSTATUS_GRADED) ) {
+                    $this->graded = true;
                 }
-                $this->rawdata[] = $thedata;
             }
             $this->rawdata= $alldata;
         }else{

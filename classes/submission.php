@@ -51,28 +51,6 @@ class submission{
 		}
    }
 
-   public function get_next_ungraded_id(){
-		global $DB;
-		$where = "id > " .$this->attemptid . " AND sessionscore = 0 AND cpassignmentid = " . $this->attemptdata->cpassignmentid;
-		$records = $DB->get_records_select(constants::M_USERTABLE,$where,array(),' id ASC');
-		if($records){
-			$rec = array_shift($records);
-			return $rec->id;
-		}else{
-			return false;
-		}
-   }
-   public static function get_submitted_id($userid){
-        global $DB;
-        return $DB->get_field(constants::M_USERTABLE, 'id', array('userid' => $userid,
-                'status' => constants::M_SUBMITSTATUS_SELECTED), IGNORE_MISSING);
-   }
-   public static function set_submitted_id($attemptid) {
-        global $DB;
-        return $DB->set_field(constants::M_USERTABLE, 'status',
-                constants::M_SUBMITSTATUS_SELECTED, array('id' => $attemptid));
-   }
-
    public function update($formdata){
 	     global $DB;
 		   $updatedattempt = new \stdClass();
@@ -92,7 +70,7 @@ class submission{
                $editor,$this->attemptid);
        $updatedattempt->feedbacktext = $formdata->feedbacktext;
        $updatedattempt->feedbacktextformat = $formdata->feedbacktextformat;
-		$DB->update_record(constants::M_USERTABLE, $updatedattempt);
+		   $DB->update_record(constants::M_USERTABLE, $updatedattempt);
    }
 
    public function fetch($property){

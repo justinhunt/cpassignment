@@ -49,16 +49,16 @@ class viewingbyuser extends basereport {
                     $ret = \html_writer::div('<i class="fa fa-play-circle"></i>',
                         constants::M_HIDDEN_PLAYER_BUTTON, array('data-audiosource' => $record->mediaurl));
 
-                } else {
-                    $ret = get_string('submitted', constants::M_LANG);
                 }
+                $ret = '';
                 break;
 
             case 'status':
                 if ($record->status == constants::M_SUBMITSTATUS_SELECTED) {
-                        $ret = get_string('submitted', constants::M_LANG);
+                    $ret = get_string('submitted', constants::M_LANG);
+                } else if ($record->status == constants::M_SUBMITSTATUS_GRADED) {
+                    $ret = get_string('graded', constants::M_LANG);
                 } else {
-
                     $ret = '';
                 }
                 break;

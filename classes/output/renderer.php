@@ -77,24 +77,6 @@ class renderer extends \plugin_renderer_base {
         $ret = \html_writer::div($button, $containerclass . ' ' .  $visibleclass);
         return $ret;
     }
-    /**
-     *  Show button to list user attempts.
-     */
-    public function listattemptsbutton($moduleinstance, $buttonlabel){
-
-        $button = $this->output->single_button(new \moodle_url(constants::M_URL .
-                '/grading.php', array('n' => $moduleinstance->id, 'action' => 'submitbyuser',
-                'class '=> 'btn btn-primary')), $buttonlabel);
-
-        $ret = \html_writer::div($button, constants::M_CLASS  . '_attempt_status_cont');
-        return $ret;
-    }
-
-    public function show_ungradedyet(){
-        $message = get_string("notgradedyet",constants::M_LANG);
-        $ret = \html_writer::div($message ,constants::M_CLASS  . '_attempt_status_cont');
-        return $ret;
-    }
 
     /**
      *  Show instructions/instructions
@@ -158,7 +140,6 @@ class renderer extends \plugin_renderer_base {
         return $ret;
     }
 
-
     /**
      * Show the reading passage
      */
@@ -169,7 +150,6 @@ class renderer extends \plugin_renderer_base {
             array('id'=>constants::M_PASSAGE_CONTAINER));
         return $ret;
     }
-
 
     /**
      * Show the completion message in the activity settings
@@ -226,7 +206,55 @@ class renderer extends \plugin_renderer_base {
         //return it
         return $ret;
     }
+    public function fetch_attempts($moduleinstance, $modulecontext, $userid) {
+        $reportrenderer = $this->page->get_renderer(constants::M_FRANKY,'report');
+        $submissionrenderer = $this->page->get_renderer(constants::M_FRANKY,'submission');
+        $report = new \mod_cpassignment\report\submitbyuser();
+        //formdata should only have simple values, not objects
+        //later it gets turned into urls for the export buttons
+        $formdata = new \stdClass();
+        $formdata->cpassignmentid = $moduleinstance->id;
+        $formdata->userid = $userid;
+        $formdata->modulecontextid = $modulecontext->id;
+        $formdata->returnpage = 'view';
 
+        //if we got to here we are loading the report on screen
+        //so we need our audio player loaded
+        //here we set up any info we need to pass into javascript
+        $aph_opts =Array();
+        $aph_opts['mediatype'] = $moduleinstance->mediatype;
+        $aph_opts['hiddenplayerclass'] = constants::M_HIDDEN_PLAYER;
+        $aph_opts['hiddenplayerbuttonclass'] = constants::M_HIDDEN_PLAYER_BUTTON;
+        $aph_opts['hiddenplayerbuttonactiveclass'] =
+                constants::M_HIDDEN_PLAYER_BUTTON_ACTIVE;
+        $aph_opts['hiddenplayerbuttonplayingclass'] =
+                constants::M_HIDDEN_PLAYER_BUTTON_PLAYING;
+        $aph_opts['hiddenplayerbuttonpausedclass'] =
+                constants::M_HIDDEN_PLAYER_BUTTON_PAUSED;
+
+        $report->process_raw_data($formdata, $moduleinstance);
+        $reportheading = $report->fetch_formatted_heading();
+
+        $reportrows = $report->fetch_formatted_rows();
+        $allrowscount = $report->fetch_all_rows_count();
+
+        switch($moduleinstance->mediatype)
+        {
+            case 'video':
+                echo $submissionrenderer->render_hiddenvideoplayer();
+                break;
+            case 'audio':
+            default:
+                echo $submissionrenderer->render_hiddenaudioplayer();
+        }
+
+        echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(),
+                $report->fetch_head(), $reportrows, $report->fetch_fields());
+
+        //prepare JS for the grading.php page, mainly hidden audio recorder
+        $this->page->requires->js_call_amd("mod_cpassignment/gradinghelper", 'init',
+                array($aph_opts));
+    }
 
     function fetch_activity_amd($cm, $moduleinstance, $pagemode='summary'){
         global $USER;

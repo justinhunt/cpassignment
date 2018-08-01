@@ -88,7 +88,7 @@ switch($source){
 		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('action'=>'viewingbyuser','userid'=>$attempt->userid,'n'=>$n));
 		break;
 	case 'submitbyuser':
-		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('action'=>'submitbyuser','userid'=>$attempt->userid,'n'=>$n));
+		$redirecturl = new moodle_url('/mod/cpassignment/view.php', array('n'=>$n));
 		break;
 }
 //handle delete actions
@@ -109,12 +109,16 @@ switch($action){
 
     case 'submitbyuser': // Change the status field
 		require_sesskey();
-		$existsattemptid = submission::get_submitted_id($USER->id);
-		if ($existsattemptid) {
-			// Found one already submitted, change status back.
-		    $DB->set_field(constants::M_USERTABLE, 'status',
-		    	    constants::M_SUBMITSTATUS_UNKNOWN, array('id' => $existsattemptid));
-        }
+		// Clear all status fields for this user's attempts.
+		$records = $DB->get_records(constants::M_USERTABLE, array('cpassignmentid'=>$moduleinstance->id, 'userid' => $USER->id));
+		foreach ($records as $record) {
+			// At the moment we are only using status graded and selected
+			// therefore this will work, we won't get here if status is
+			// graded.  If additional cases added, might have to check.
+			  $DB->set_field(constants::M_USERTABLE, 'status',
+		    	    constants::M_SUBMITSTATUS_UNKNOWN,
+		    	    array('id' => $record->id));
+		}
         // Set status of this one to submitted.
 		if (!$DB->set_field(constants::M_USERTABLE, 'status',
 		    	    constants::M_SUBMITSTATUS_SELECTED, array('id' => $attemptid))) {
