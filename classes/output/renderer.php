@@ -10,8 +10,11 @@ namespace mod_cpassignment\output;
 
 use \mod_cpassignment\constants;
 use \mod_cpassignment\utils;
+use renderable;
+use renderer_base;
+use templatable;
 
-class renderer extends \plugin_renderer_base {
+class renderer extends \plugin_renderer_base implements templatable, renderable {
 
     /**
      * Returns the header for the module
@@ -206,7 +209,68 @@ class renderer extends \plugin_renderer_base {
         //return it
         return $ret;
     }
-    public function fetch_attempts($moduleinstance, $modulecontext, $userid) {
+    /**
+     * Export this data so it can be used as the context for a mustache template.
+     *
+     * @return stdClass
+     */
+    public function export_for_template(renderer_base $output) {
+
+       // I'm not sure how to use this function.
+    }
+
+    public function fetch_attempts($attempts, $username, $graded) {
+
+        $table = new \stdClass();
+        $table->classes = constants::M_GRADING_ATTEMPT_CONTAINER;
+        $table->caption = get_string('submitbyuserheading', constants::M_LANG, $username);
+        $table->tableheaders = array(
+                get_string('id', constants::M_LANG),
+                get_string('mediafile', constants::M_LANG),
+                get_string('status', constants::M_LANG),
+                get_string('timecreated', constants::M_LANG),
+                get_string('action', constants::M_LANG));
+
+        $table->tabledata = array();
+
+        foreach ($attempts as $attempt) {
+            $data = array();
+            $data[] = $attempt->id;
+            $data[] = 'mediafile';
+            switch($attempt->status) {
+
+                case constants::M_SUBMITSTATUS_SELECTED:
+                    $status = get_string('submitted', constants::M_LANG);
+                    break;
+
+                case constants::M_SUBMITSTATUS_GRADED:
+                    $status = get_string('graded', constants::M_LANG);
+                    break;
+
+                default : $status = ' - ';
+
+            }
+            $data[] = $status;
+            $data[] = $attempt->timecreated;
+            if (!$graded) {
+                $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
+                        array('action' => 'submitbyuser', 'n' => $attempt->cpassignmentid,
+                        'attemptid' => $attempt->id));
+                        $btn = new \single_button($url, get_string('submit'), 'post');
+                        $btn->add_confirm_action(get_string('submitbyuserconfirm',
+                            constants::M_LANG));
+                $data[] = $this->output->render($btn);
+            } else {
+                $data[] = get_string('alreadygraded', constants::M_LANG);
+            }
+            $table->tabledata[] = $data;
+        }
+
+        return $this->render_from_template('mod_cpassignment/attempts', $table);
+
+    }
+
+    public function fetch_attempts_old($moduleinstance, $modulecontext, $userid) {
         $reportrenderer = $this->page->get_renderer(constants::M_FRANKY,'report');
         $submissionrenderer = $this->page->get_renderer(constants::M_FRANKY,'submission');
         $report = new \mod_cpassignment\report\submitbyuser();

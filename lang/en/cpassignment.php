@@ -125,6 +125,7 @@ $string['overview']='Overview';
 $string['overview_help']='Overview Help';
 $string['view']='View';
 $string['submit']='Submit';
+$string['action']='Action';
 $string['returncourse']='Finish';
 $string['returnview']='Return to assignment page';
 $string['preview']='Preview';

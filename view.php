@@ -123,7 +123,7 @@ if ($haspermission) {
         // Show a list of attempt data and status here.  Allow user to submit
         // until graded.
         // TRY page.
-        $renderer->fetch_attempts($moduleinstance, $modulecontext, $USER->id);
+        echo $renderer->fetch_attempts($attempts, fullname($USER), $graded);
 
         // Grade information.
         if ($graded) {
