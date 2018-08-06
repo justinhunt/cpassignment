@@ -45,7 +45,6 @@ class gradenowform extends \moodleform{
 
         $mform = $this->_form;
         $context = $this->_customdata['context'];
-        //$shownext = $this->_customdata['shownext'];
         $maxgrade = $this->_customdata['maxgrade'];
 
         $audiorecorderhtml = $this->_customdata['audiorecorderhtml'];
@@ -61,7 +60,6 @@ class gradenowform extends \moodleform{
 		$mform->addElement('hidden', 'n');
         $mform->addElement('hidden', 'sessiontime',null,
 				array('class'=>constants::M_GRADING_FORM_SESSIONTIME,'id'=>constants::M_GRADING_FORM_SESSIONTIME));
-
 
 		$mform->setType('action',PARAM_TEXT);
 		$mform->setType('attemptid',PARAM_INT);
@@ -92,40 +90,14 @@ class gradenowform extends \moodleform{
                 array('text'=>'', 'format' => FORMAT_HTML));
         $mform->setType('feedbacktext_editor', PARAM_RAW);
 
-
         $mform->addElement('static', 'fbaudio',
-            get_string('feedbackaudiolabel', constants::M_LANG),$audiorecorderhtml );
+                get_string('feedbackaudiolabel', constants::M_LANG),
+                $audiorecorderhtml );
         $mform->addElement('static', 'fbvideo',
-            get_string('feedbackvideolabel', constants::M_LANG),$videorecorderhtml );
-
+            get_string('feedbackvideolabel', constants::M_LANG),
+                $videorecorderhtml );
 
         $this->add_action_buttons();
-
-        /*
-           Axe all this, I don't think we need it now. Action buttons will do.
-
-        $mediabuttonarray = array();
-        // Feedback audio.  These are no longer optional.
-        $mediabuttonarray[] = $mform->createElement('submit', 'btn_fbaudio',
-                get_string('feedbackaudiolabel', constants::M_LANG));
-        // Feedback video.
-        $mediabuttonarray[] = $mform->createElement('submit', 'btn_fbvideo',
-                get_string('feedbackvideolabel', constants::M_LANG));
-
-        $mform->addGroup($mediabuttonarray, 'mbuttonar', '', array(' '), false);
-        */
-        // add out buttons for submitting and cancelling
-        //$buttonarray=array();
-        //$buttonarray[] = &$mform->createElement('cancel');
-        //$buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('savechanges'));
-        /*
-        if($shownext){
-            $buttonarray[] = &$mform->createElement('submit', 'submitbutton2', get_string('saveandnext',constants::M_LANG));
-        }
-
-        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
-        //	$mform->closeHeaderBefore('buttonar');
-        */
     }
 }
 
