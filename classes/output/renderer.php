@@ -219,6 +219,8 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
        // I'm not sure how to use this function.
     }
 
+
+
     public function fetch_attempts($attempts, $username, $graded) {
 
         $table = new \stdClass();
@@ -235,8 +237,8 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
 
         foreach ($attempts as $attempt) {
             $data = array();
-            $data[] = $attempt->id;
-            $data[] = 'mediafile';
+            $data['id'] = $attempt->id;
+            $data['submission'] = 'mediafile';
             switch($attempt->status) {
 
                 case constants::M_SUBMITSTATUS_SELECTED:
@@ -250,8 +252,8 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
                 default : $status = ' - ';
 
             }
-            $data[] = $status;
-            $data[] = $attempt->timecreated;
+            $data['status'] = $status;
+            $data['timecreated'] = $attempt->timecreated;
             if (!$graded) {
                 $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
                         array('action' => 'submitbyuser', 'n' => $attempt->cpassignmentid,
@@ -259,9 +261,9 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
                         $btn = new \single_button($url, get_string('submit'), 'post');
                         $btn->add_confirm_action(get_string('submitbyuserconfirm',
                             constants::M_LANG));
-                $data[] = $this->output->render($btn);
+                $data['action'] = $this->output->render($btn);
             } else {
-                $data[] = get_string('alreadygraded', constants::M_LANG);
+                $data['action'] = get_string('alreadygraded', constants::M_LANG);
             }
             $table->tabledata[] = $data;
         }

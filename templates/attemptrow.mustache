@@ -29,20 +29,10 @@
     * none
 
 }}
-<div class = "{{classes}}">
-    <div class = "table-responsive">
-        <table class = "table table-striped">
-            <caption>{{caption}}</caption>
-            <thead>
-                {{#tableheaders}}
-                    <th>{{.}}</th>
-                {{/tableheaders}}
-            </thead>
-            <tbody>
-                {{#tabledata}}
-                   {{> mod_cpassignment/attemptrow }}
-                {{/tabledata}}
-            </tbody>
-        </table>
-    </div>
-</div>
+<tr>
+        <td class="mod_cpassignment_attemptid">{{id}}</td>
+        <td class="mod_cpassignment_submission">{{submission}}</td>
+        <td class="mod_cpassignment_status">{{status}}</td>
+        <td class="mod_cpassignment_timecreated">{{timecreated}}</td>
+        <td class="mod_cpassignment_action">{{{action}}}</td>
+</tr>

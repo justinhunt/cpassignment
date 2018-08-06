@@ -29,7 +29,9 @@ require_once($CFG->dirroot.'/mod/cpassignment/lib.php');
 
 use \mod_cpassignment\constants;
 
-if ($ADMIN->fulltree) {
+
+if($ADMIN->fulltree) {
+
 
     // Instructions = old instructions area.
     // finished = old feedback area.
