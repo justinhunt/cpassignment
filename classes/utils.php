@@ -49,6 +49,33 @@ class utils{
                 'context' => $context);
     }
 
+    public static function select_attempt_as_submission($moduleinstance,$userid,$attemptid){
+        global $DB;
+
+        if (!$DB->record_exists(constants::M_USERTABLE, array('id'=>$attemptid))){
+            print_error("Could not select attempt because it does not exist");
+            return false;
+        }
+
+        // Clear all status fields for this user's attempts.
+        $records = $DB->get_records(constants::M_USERTABLE, array('cpassignmentid'=>$moduleinstance->id, 'userid' => $userid));
+        foreach ($records as $record) {
+            // At the moment we are only using status graded and selected
+            // therefore this will work, we won't get here if status is
+            // graded.  If additional cases added, might have to check.
+            $DB->set_field(constants::M_USERTABLE, 'status',
+            constants::M_SUBMITSTATUS_UNKNOWN,
+            array('id' => $record->id));
+        }
+        // Set status of this one to submitted.
+        if (!$DB->set_field(constants::M_USERTABLE, 'status',
+            constants::M_SUBMITSTATUS_SELECTED, array('id' => $attemptid))) {
+            print_error("Could not unsubmit an attempt");
+            return false;
+        }
+        return true;
+    }
+
     //are we willing and able to transcribe submissions?
     public static function can_transcribe($instance)
     {
@@ -229,7 +256,7 @@ class utils{
                 'data-transcode'=>"1",
                 'data-transcribe'=>$transcribe,
                 'data-subtitle'=>$subtitle,
-                //'data-transcribelanguage'=>$moduleinstance->language,
+                //'data-language'=>$moduleinstance->language,
                 'data-expiredays'=>$moduleinstance->expiredays,
                 'data-region'=>$moduleinstance->region,
                 'data-hints'=>$string_hints,

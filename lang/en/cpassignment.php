@@ -73,7 +73,7 @@ $string['video']='Video';
 $string['onetwothree']='One Two Three';
 $string['bmr']='Burnt Rose';
 $string['once']='Once';
-$string['mediatype']='Media Type';
+$string['mediatype']='Submission Type';
 $string['recordertype']='Recorder Type';
 
 // Sections in instance settings.
@@ -120,6 +120,7 @@ $string['viewingbyuserheading']='Viewing all attempts for: {$a}';
 $string['submitbyuserheading']='{$a}: Your previous attempts.';
 $string['submitbyuserconfirm']='Please confirm: submit this attempt?';
 $string['alreadygraded'] = 'Graded: cannot submit';
+$string['myattempts']='My Attempts';
 $string['totalattempts']='Attempts';
 $string['overview']='Overview';
 $string['overview_help']='Overview Help';
@@ -216,3 +217,5 @@ $string['showingtranscript']='Transcript: ';
 $string['feedback']='Feedback';
 $string['uploadsuccessmessage']='Your recording has been submitted. Thank you';
 $string['listattempts'] = 'View all attempts';
+
+$string['notokenincache']= "Refresh to see license information. Contact Poodll support if there is a problem.";

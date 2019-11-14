@@ -28,10 +28,10 @@ const M_RECORDERID='therecorderid';
 const M_RECORDING_CONTAINER='mod_cpassignment_recording_cont';
 const M_RECORDER_CONTAINER='mod_cpassignment_recorder_cont';
 const M_INSTRUCTIONS_CONTAINER='mod_cpassignment_instructions_cont';
-//const M_PASSAGE_CONTAINER='mod_cpassignment_passage_cont';
 const M_FINISHED_CONTAINER='mod_cpassignment_finished_cont';
 const M_ERROR_CONTAINER='mod_cpassignment_error_cont';
-const M_GRADING_ATTEMPT_CONTAINER='mod_cpassignment_grading_attempt_cont';
+const M_GRADING_MYATTEMPTS_CONTAINER='mod_cpassignment_myattempts_cont';
+const M_GRADING_ATTEMPTS_CONTAINER='mod_cpassignment_attempts_cont';
 const M_GRADING_PLAYER_CONTAINER='mod_cpassignment_grading_player_cont';
 const M_GRADING_CURRENTFB_CONTAINER=
     'mod_cpassignment_current_feedback_cont';

@@ -52,20 +52,14 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
                 $output .= ob_get_contents();
                 ob_end_clean();
             }
-        } else {
-            $output .= $this->output->heading($activityname);
+
         }
 
-
+        $output .= $this->output->heading($activityname);
         return $output;
     }
 
-    /**
-     * Return HTML to display limited header
-     */
-    public function notabsheader(){
-        return $this->output->header();
-    }
+
 
     /**
      *  Show a single button.
@@ -85,10 +79,8 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
      *  Show instructions/instructions
      */
     public function show_instructions($moduleinstance, $showtext, $status) {
-        $thetitle =  $this->output->heading($moduleinstance->name, 3, 'main');
-        $displaytext =  \html_writer::div($thetitle,
-                constants::M_CLASS  . '_center');
-        $displaytext .= $this->output->box_start();
+
+        $displaytext = $this->output->box_start();
 
         // Show the text according to the layout in the editor.
         $displaytext .= \html_writer::div($showtext);
@@ -144,15 +136,21 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
     }
 
     /**
-     * Show the reading passage
+     * Show the introduction text is as set in the activity description
      */
-    public function show_passage($themodule,$cm){
+    public function why_cannot_attempt($reason){
+       $ret = \html_writer::div($reason, constants::M_CLASS  . '_cannot_attempt');
+       return $ret;
+    }
 
-        $ret = "";
-        $ret .= \html_writer::div( $themodule->passage ,constants::M_PASSAGE_CONTAINER,
-            array('id'=>constants::M_PASSAGE_CONTAINER));
+    /**
+     * Show the grade, or why there is no grade
+     */
+    public function dont_show_grade($message){
+        $ret = \html_writer::div($message, constants::M_CLASS  . '_grade_or_message');
         return $ret;
     }
+
 
     /**
      * Show the completion message in the activity settings
@@ -209,6 +207,7 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
         //return it
         return $ret;
     }
+
     /**
      * Export this data so it can be used as the context for a mustache template.
      *
@@ -219,110 +218,51 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
        // I'm not sure how to use this function.
     }
 
+    public function fetch_attempts($moduleinstance, $modulecontext, $userid) {
 
-
-    public function fetch_attempts($attempts, $username, $graded) {
-
-        $table = new \stdClass();
-        $table->classes = constants::M_GRADING_ATTEMPT_CONTAINER;
-        $table->caption = get_string('submitbyuserheading', constants::M_LANG, $username);
-        $table->tableheaders = array(
-                get_string('id', constants::M_LANG),
-                get_string('mediafile', constants::M_LANG),
-                get_string('status', constants::M_LANG),
-                get_string('timecreated', constants::M_LANG),
-                get_string('action', constants::M_LANG));
-
-        $table->tabledata = array();
-
-        foreach ($attempts as $attempt) {
-            $data = array();
-            $data['id'] = $attempt->id;
-            $data['submission'] = 'mediafile';
-            switch($attempt->status) {
-
-                case constants::M_SUBMITSTATUS_SELECTED:
-                    $status = get_string('submitted', constants::M_LANG);
-                    break;
-
-                case constants::M_SUBMITSTATUS_GRADED:
-                    $status = get_string('graded', constants::M_LANG);
-                    break;
-
-                default : $status = ' - ';
-
-            }
-            $data['status'] = $status;
-            $data['timecreated'] = $attempt->timecreated;
-            if (!$graded) {
-                $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
-                        array('action' => 'submitbyuser', 'n' => $attempt->cpassignmentid,
-                        'attemptid' => $attempt->id));
-                        $btn = new \single_button($url, get_string('submit'), 'post');
-                        $btn->add_confirm_action(get_string('submitbyuserconfirm',
-                            constants::M_LANG));
-                $data['action'] = $this->output->render($btn);
-            } else {
-                $data['action'] = get_string('alreadygraded', constants::M_LANG);
-            }
-            $table->tabledata[] = $data;
-        }
-
-        return $this->render_from_template('mod_cpassignment/attempts', $table);
-
-    }
-
-    public function fetch_attempts_old($moduleinstance, $modulecontext, $userid) {
-        $reportrenderer = $this->page->get_renderer(constants::M_FRANKY,'report');
         $submissionrenderer = $this->page->get_renderer(constants::M_FRANKY,'submission');
-        $report = new \mod_cpassignment\report\submitbyuser();
+
+        //get attempts (with cells formatted)
+        $report = new \mod_cpassignment\report\attempts();
         //formdata should only have simple values, not objects
         //later it gets turned into urls for the export buttons
         $formdata = new \stdClass();
         $formdata->cpassignmentid = $moduleinstance->id;
         $formdata->userid = $userid;
         $formdata->modulecontextid = $modulecontext->id;
-        $formdata->returnpage = 'view';
-
-        //if we got to here we are loading the report on screen
-        //so we need our audio player loaded
-        //here we set up any info we need to pass into javascript
-        $aph_opts =Array();
-        $aph_opts['mediatype'] = $moduleinstance->mediatype;
-        $aph_opts['hiddenplayerclass'] = constants::M_HIDDEN_PLAYER;
-        $aph_opts['hiddenplayerbuttonclass'] = constants::M_HIDDEN_PLAYER_BUTTON;
-        $aph_opts['hiddenplayerbuttonactiveclass'] =
-                constants::M_HIDDEN_PLAYER_BUTTON_ACTIVE;
-        $aph_opts['hiddenplayerbuttonplayingclass'] =
-                constants::M_HIDDEN_PLAYER_BUTTON_PLAYING;
-        $aph_opts['hiddenplayerbuttonpausedclass'] =
-                constants::M_HIDDEN_PLAYER_BUTTON_PAUSED;
-
         $report->process_raw_data($formdata, $moduleinstance);
-        $reportheading = $report->fetch_formatted_heading();
+        $tabledata = new \stdClass();
+        $tabledata->classes = constants::M_GRADING_MYATTEMPTS_CONTAINER;
+        $tabledata->heading = get_string('myattempts',constants::M_LANG);
+        $tabledata->headfields = $report->fetch_head();
+        $tabledata->rows = $report->fetch_formatted_rows(false,false);
 
-        $reportrows = $report->fetch_formatted_rows();
-        $allrowscount = $report->fetch_all_rows_count();
+        //load data into template
+        $thehtml = $this->render_from_template('mod_cpassignment/attempts', $tabledata);
 
-        switch($moduleinstance->mediatype)
-        {
-            case 'video':
-                echo $submissionrenderer->render_hiddenvideoplayer();
+        //look for submitted attempt
+        $selectedattempt = false;
+        $selected = get_string('submitted', constants::M_LANG);
+        foreach($tabledata->rows as $therow){
+            if($therow->status ==$selected){
+                $selectedattempt= $therow->id;
                 break;
-            case 'audio':
-            default:
-                echo $submissionrenderer->render_hiddenaudioplayer();
+            }
         }
 
-        echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(),
-                $report->fetch_head(), $reportrows, $report->fetch_fields());
-
         //prepare JS for the grading.php page, mainly hidden audio recorder
-        $this->page->requires->js_call_amd("mod_cpassignment/gradinghelper", 'init',
-                array($aph_opts));
+        $osp_opts = array();
+        $osp_opts['selectedattempt'] = $selectedattempt;
+        $this->page->requires->js_call_amd("mod_cpassignment/onesubmissionplayer", 'init',
+            array($osp_opts));
+        $this->page->requires->strings_for_js(array('submitted'),constants::M_LANG);
+
+        return $thehtml;
+
     }
 
-    function fetch_activity_amd($cm, $moduleinstance, $pagemode='summary'){
+
+    function fetch_activity_amd($cm, $moduleinstance, $pagemode='summary',$selectedattemptid,$graded){
         global $USER;
         //any html we want to return to be sent to the page
         $ret_html = '';
@@ -341,6 +281,8 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
         $recopts['finishedcontainer'] = constants::M_FINISHED_CONTAINER;
         $recopts['pagemode']=$pagemode;
         $recopts['moduleclass']=constants::M_CLASS;
+        $recopts['selectedattempt']=$selectedattemptid;
+        $recopts['graded']=$graded;
 
 
 

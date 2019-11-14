@@ -16,11 +16,11 @@
 }}
 
 {{!
-    @template mod_cpassignment/attempts
+    @template mod_cpassignment/hiddenaudioplayer
 
-    Moodle table rendering template for cp_assignment
+    hidden audiuo player template for cp_assignment
 
-    This template renders and html table of attempt results.
+    This template renders a play button for hidden audio.
 
     Classes required for JS:
     * If you write them they will come
@@ -29,8 +29,4 @@
     * none
 
 }}
-<tr class="mod_cpassignment_attemptrow" data-mediasource="{{{mediafile}}}" data-attemptid="{{{id}}}">
-        <td class="mod_cpassignment_cell_attempts_id">{{id}}</td>
-        <td class="mod_cpassignment_cell_attempts_status">{{status}}</td>
-        <td class="mod_cpassignment_cell_attempts_timecreated">{{timecreated}}</td>
-</tr>
+<div class="mod_cpassignment_hidden_player_button" data-audiosource="{{{mediafile}}}"><i class="fa fa-play-circle"></i></div>

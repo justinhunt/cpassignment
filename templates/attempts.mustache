@@ -29,20 +29,27 @@
     * none
 
 }}
+<h4 class="mod_cpassignment_myattempts_caption">{{heading}}</h4>
 <div class = "{{classes}}">
-    <div class = "table-responsive">
-        <table class = "table table-striped">
-            <caption>{{caption}}</caption>
-            <thead>
-                {{#tableheaders}}
-                    <th>{{.}}</th>
-                {{/tableheaders}}
-            </thead>
-            <tbody>
-                {{#tabledata}}
-                   {{> mod_cpassignment/attemptrow }}
-                {{/tabledata}}
-            </tbody>
-        </table>
+    <div class = "mod_cpassignment_myattemptstable">
+        <div class = "table-responsive">
+            <table class = "table">
+                <tbody>
+
+                    {{#rows}}
+                       {{> mod_cpassignment/attemptrow }}
+                    {{/rows}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="mod_cpassignment_oneattempt">
+        <div class="mod_cpassignment_oneattempt_players">
+            <audio src="" id="mod_cpassignment_oneattempt_audio" class="mod_cpassignment_oneattempt_audio" style="display: none" controls></audio>
+            <video src="" id="mod_cpassignment_oneattempt_video" class="mod_cpassignment_oneattempt_video" style="display: none" controls></video>
+        </div>
+        <div class="mod_cpassignment_oneattempt_selectbutton_cont">
+            <button type="button" data-attemptid="0" class="mod_cpassignment_selectattempt btn btn-secondary" style="display: none">{{#str}} submit {{/str}}</button>
+        </div>
     </div>
 </div>

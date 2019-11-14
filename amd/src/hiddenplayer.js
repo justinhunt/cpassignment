@@ -1,12 +1,13 @@
 define(['jquery', 'core/log','mod_cpassignment/dialogs'], function($,log,dialogs) {
     "use strict"; // jshint ;_;
 
-    log.debug('cpassignment grading helper: initialising');
+    log.debug('cpassignment hidden player: initialising');
 
     return {
 
         controls: {},
         mediatype: null,
+        overallcontainer: 'mod_cpassignment_attempts_cont',
         hiddenplayer: 'mod_cpassignment_hidden_player',
         hiddenplayerbutton: 'mod_cpassignment_hidden_player_button',
         hiddenvideoplayer: 'mod_cpassignment_hidden_video_player',
@@ -24,6 +25,7 @@ define(['jquery', 'core/log','mod_cpassignment/dialogs'], function($,log,dialogs
         },
 
         register_controls: function(){
+            this.controls.overallcontainer = $('.' + this.overallcontainer);
             this.controls.hiddenplayer = $('.' + this.hiddenplayer);
             this.controls.hiddenvideoplayer = $('.' + this.hiddenvideoplayer);
             this.controls.hiddenplayerbutton = $('.' + this.hiddenplayerbutton);
@@ -33,7 +35,7 @@ define(['jquery', 'core/log','mod_cpassignment/dialogs'], function($,log,dialogs
             var that = this;
             var audioplayer = this.controls.hiddenplayer;
             //handle the button click
-            this.controls.hiddenplayerbutton.click(function(e){
+            this.controls.overallcontainer.on('click','.' + this.hiddenplayerbutton, function(e){
                 switch(that.mediatype){
 
                     case 'video':
@@ -57,7 +59,7 @@ define(['jquery', 'core/log','mod_cpassignment/dialogs'], function($,log,dialogs
 
 
         dohiddenaudioplay: function (mediasrc) {
-            var m = this;//M.mod_cpassignment.gradinghelper;
+            var m = this;
             var audioplayer = m.controls.hiddenplayer;
             audioplayer.attr('src', mediasrc);
             audioplayer[0].pause();

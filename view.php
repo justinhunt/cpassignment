@@ -78,13 +78,9 @@ $config = get_config(constants::M_FRANKY);
 $renderer = $PAGE->get_renderer('mod_cpassignment');
 $submissionrenderer = $PAGE->get_renderer(constants::M_FRANKY,'submission');
 
-// Student or teacher view?
-if(has_capability('mod/cpassignment:preview',$modulecontext)){
-    echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view',
+// Show our header
+ echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view',
         constants::M_LANG));
-} else {
-    echo $renderer->notabsheader();
-}
 
 // Do we have attempts?
 $attempts = $DB->get_records(constants::M_USERTABLE,array('userid'=>$USER->id,
@@ -102,10 +98,17 @@ if ( ($max != 0)  && ($numattempts >= $max) ) {
 // Has it been graded yet?
 $graded = false;
 $gradedattemptid = 0;
+$selectedattemptid = 0;
 foreach ($attempts as $attempt) {
-    if ( (!$graded) && $attempt->status == constants::M_SUBMITSTATUS_GRADED) {
-        $graded = true;
-        $gradedattemptid = $attempt->id;
+    switch($attempt->status){
+         case constants::M_SUBMITSTATUS_GRADED:
+            $graded = true;
+            $gradedattemptid = $attempt->id;
+            $selectedattemptid = $attempt->id;
+            break;
+        case constants::M_SUBMITSTATUS_SELECTED:
+            $selectedattemptid = $attempt->id;
+            break;
     }
 }
 
@@ -122,29 +125,39 @@ if ($haspermission) {
 
         // Show a list of attempt data and status here.  Allow user to submit
         // until graded.
-        // TRY page.
-        echo $renderer->fetch_attempts($attempts, fullname($USER), $graded);
+        echo $renderer->fetch_attempts($moduleinstance, $modulecontext, $USER->id);
 
         // Grade information.
         if ($graded) {
             //We probably do not need this. Until we have a flashy submission/transcript/text reader widget
             // $submission->prepare_javascript($reviewmode);
             // We don't show any grading information if dis-allowed in settings.
-            if ($moduleinstance->showgrade) {
-                $submission = new \mod_cpassignment\submission($gradedattemptid,
-                        $modulecontext->id);
-                $status .= $submissionrenderer->render_submission($submission,
-                        $moduleinstance->showgrade);
-            } else {
-                $status .= get_string('gradeunavailable', constants::M_LANG);
+            $submission = new \mod_cpassignment\submission($gradedattemptid,
+                    $modulecontext->id);
+            $status .= $submissionrenderer->render_submission($submission,
+                    $moduleinstance->showgrade);
+
+            if (!$moduleinstance->showgrade) {
+                $status .= $renderer->dont_show_grade(get_string('gradeunavailable', constants::M_LANG));
             }
         } else {
-            $status .= get_string("notgradedyet",constants::M_LANG);
+            $status .= $renderer->dont_show_grade(get_string("notgradedyet",constants::M_LANG));
         }
+
         // Try again button, if applicable.
         if ( (!$attemptsexceeded) && (!$graded) ) {
             $status .= $renderer->js_trigger_button('startbutton', false,
                     get_string('reattempt', constants::M_LANG));
+        }else{
+
+            if($graded){
+                $reason = get_string('alreadygraded', constants::M_LANG,
+                        $moduleinstance->maxattempts);
+            }else if($attemptsexceeded){
+                $reason =get_string('exceededattempts', constants::M_LANG,
+                    $moduleinstance->maxattempts);
+            }
+            $status .= $renderer->why_cannot_attempt($reason);
         }
     } else { // numattempts = 0. TOP page.
         $status .= $renderer->js_trigger_button('startbutton',false,
@@ -152,18 +165,10 @@ if ($haspermission) {
     }
 
 } else {
-    // Can't attempt - say why.
-    if (!$haspermission) {
-        echo '<p>' . get_string('hasnopermission', constants::M_LANG) . '</p>';
-    } else if ($attemptsexceeded) {
-        echo '<p>' . get_string('exceededattempts', constants::M_LANG,
-                $moduleinstance->maxattempts) . '</p>';
-    } else if ($graded) {
-        echo '<p>' . get_string('alreadygraded', constants::M_LANG,
-                $moduleinstance->maxattempts) . '</p>';
-    } else {
-        echo '<p>' . get_string('unknown', constants::M_LANG) . '</p>';
-    }
+    //no permission to attempt, so there you have it
+    $reason =  get_string('hasnopermission', constants::M_LANG) ;
+    echo $renderer->why_cannot_attempt($reason);
+
 }
 
 // Fetch token.
@@ -184,14 +189,13 @@ $finished = format_text($finished);
 echo $renderer->show_instructions($moduleinstance, $instructions, $status);
 echo $renderer->show_finished($moduleinstance, $finished);
 echo $renderer->show_error($moduleinstance,$cm);
-//echo $renderer->show_passage($moduleinstance,$cm);
 echo $renderer->show_recorder($moduleinstance, $token);
 echo $renderer->show_uploadsuccess($moduleinstance);
 //echo $renderer->cancelbutton($cm);
 
 // The module AMD code.
 $pagemode="summary";
-echo $renderer->fetch_activity_amd($cm, $moduleinstance, $pagemode);
+echo $renderer->fetch_activity_amd($cm, $moduleinstance, $pagemode,$selectedattemptid,$graded);
 
 // Finish the page.
 echo $renderer->footer();

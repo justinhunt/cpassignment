@@ -102,8 +102,8 @@ $aph_opts['hiddenplayerbuttonactiveclass'] =constants::M_HIDDEN_PLAYER_BUTTON_AC
 $aph_opts['hiddenplayerbuttonplayingclass'] =constants::M_HIDDEN_PLAYER_BUTTON_PLAYING;
 $aph_opts['hiddenplayerbuttonpausedclass'] =constants::M_HIDDEN_PLAYER_BUTTON_PAUSED;
 
-//this inits the grading helper JS
-$PAGE->requires->js_call_amd("mod_cpassignment/gradinghelper", 'init', array($aph_opts));
+//this inits the hidden player JS
+$PAGE->requires->js_call_amd("mod_cpassignment/hiddenplayer", 'init', array($aph_opts));
 
 //This puts all our display logic into the renderer.php files in this plugin
 $renderer = $PAGE->get_renderer(constants::M_FRANKY);
@@ -145,6 +145,7 @@ switch ($showreport){
 
 		$formdata = new stdClass();
 		$formdata->cpassignmentid = $moduleinstance->id;
+        $formdata->userid = $userid;
 		$formdata->modulecontextid = $modulecontext->id;
 		break;
 

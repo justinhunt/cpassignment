@@ -253,8 +253,8 @@ switch ($action){
         $formdata->returnpage = 'grading';
 		break;
 
-	case 'viewingbyuser':
-		$report = new \mod_cpassignment\report\viewingbyuser();
+	case 'attempts':
+		$report = new \mod_cpassignment\report\attempts();
 		//formdata should only have simple values, not objects
 		//later it gets turned into urls for the export buttons
 		$formdata = new stdClass();
@@ -283,7 +283,7 @@ $aph_opts['hiddenplayerbuttonplayingclass'] =constants::M_HIDDEN_PLAYER_BUTTON_P
 $aph_opts['hiddenplayerbuttonpausedclass'] =constants::M_HIDDEN_PLAYER_BUTTON_PAUSED;
 
 //prepare JS for the grading.php page, mainly hidden audio recorder
-$PAGE->requires->js_call_amd("mod_cpassignment/gradinghelper", 'init', array($aph_opts));
+$PAGE->requires->js_call_amd("mod_cpassignment/hiddenplayer", 'init', array($aph_opts));
 
 
 /*

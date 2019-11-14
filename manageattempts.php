@@ -27,6 +27,7 @@ require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
 use \mod_cpassignment\constants;
 use \mod_cpassignment\submission;
+use \mod_cpassignment\utils;
 
 global $USER,$DB;
 
@@ -67,7 +68,7 @@ $PAGE->set_pagelayout('course');
 
 */
 //is the attempt if OK?
-if ( (($action=='delete') || ($action=='submitbyuser')) && $attemptid > 0) {
+if ( (($action=='delete') || ($action=='submitbyuser') || ($action=='selectattempt')) && $attemptid > 0) {
     $attempt = $DB->get_record(constants::M_USERTABLE, array('id'=>$attemptid,'cpassignmentid' => $cm->instance), '*', MUST_EXIST);
 	if(!$attempt){
 		print_error('could not find attempt of id:' . $attemptid);
@@ -76,20 +77,26 @@ if ( (($action=='delete') || ($action=='submitbyuser')) && $attemptid > 0) {
     $edit = false;
 }
 
-//we always head back to the cpassignment attempts page
-switch($source){
-	case 'attempts':
-		$redirecturl = new moodle_url('/mod/cpassignment/reports.php', array('report'=>'attempts','id'=>$cm->id,'n'=>$n));
+//To where will we send the user if they arrive here ...
+switch($action){
+	case 'delete':
+		$redirecturl = new moodle_url('/mod/cpassignment/reports.php', array('report'=>'attempts','id'=>$cm->id,'userid'=>$attempt->userid,'n'=>$n));
 		break;
-	case 'grading':
-		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('id'=>$cm->id,'action'=>'grading'));
-		break;
-	case 'viewingbyuser':
-		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('action'=>'viewingbyuser','userid'=>$attempt->userid,'n'=>$n));
-		break;
+    case 'deleteall':
+        $redirecturl = new moodle_url('/mod/cpassignment/view.php', array('n'=>$n));
+        break;
+//	case 'grading':
+//		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('id'=>$cm->id,'action'=>'grading'));
+//		break;
+//  case 'viewingbyuser':
+//		$redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('action'=>'viewingbyuser','userid'=>$attempt->userid,'n'=>$n));
+//		break;
 	case 'submitbyuser':
 		$redirecturl = new moodle_url('/mod/cpassignment/view.php', array('n'=>$n));
 		break;
+    case 'selectattempt':
+        $redirecturl = new moodle_url('/mod/cpassignment/grading.php', array('action'=>'gradenow','userid'=>$attempt->userid,'attemptid'=>$attempt->id,'n'=>$n));
+        break;
 }
 //handle delete actions
 switch($action){
@@ -107,24 +114,16 @@ switch($action){
 		redirect($redirecturl);
 		return;
 
+    case 'selectattempt':
+        require_sesskey();
+        $success = utils::select_attempt_as_submission($moduleinstance,$attempt->userid,$attempt->id);
+        redirect($redirecturl);
+        return;
+
+    //submitbyuser is now handled ajax style, so we won't get here.
     case 'submitbyuser': // Change the status field
 		require_sesskey();
-		// Clear all status fields for this user's attempts.
-		$records = $DB->get_records(constants::M_USERTABLE, array('cpassignmentid'=>$moduleinstance->id, 'userid' => $USER->id));
-		foreach ($records as $record) {
-			// At the moment we are only using status graded and selected
-			// therefore this will work, we won't get here if status is
-			// graded.  If additional cases added, might have to check.
-			  $DB->set_field(constants::M_USERTABLE, 'status',
-		    	    constants::M_SUBMITSTATUS_UNKNOWN,
-		    	    array('id' => $record->id));
-		}
-        // Set status of this one to submitted.
-		if (!$DB->set_field(constants::M_USERTABLE, 'status',
-		    	    constants::M_SUBMITSTATUS_SELECTED, array('id' => $attemptid))) {
-			print_error("Could not unsubmit an attempt");
-		}
-
+        $success = utils::select_attempt_as_submission($moduleinstance,$USER->id,$attemptid);
 		redirect($redirecturl);
 		return;
 

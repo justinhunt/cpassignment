@@ -14,7 +14,8 @@ class attempts extends basereport
 {
 
     protected $report="attempts";
-    protected $fields = array('id','username', 'status', 'mediafile','grade_p','timecreated','deletenow');
+    protected $fields = array('id', 'status', 'mediafile','grade_p','timecreated','action');
+    protected $formdata=null;
     protected $headingdata = null;
     protected $qcache=array();
     protected $ucache=array();
@@ -26,11 +27,6 @@ class attempts extends basereport
         switch ($field) {
             case 'id':
                 $ret = $record->id;
-                break;
-
-            case 'username':
-                $user = $this->fetch_cache('user', $record->userid);
-                $ret = fullname($user);
                 break;
 
             case 'status':
@@ -49,7 +45,7 @@ class attempts extends basereport
                         constants::M_HIDDEN_PLAYER_BUTTON, array('data-audiosource' => $record->mediaurl));
 
                 } else {
-                    $ret = get_string('submitted', constants::M_LANG);
+                    $ret = $record->mediaurl;
                 }
                 break;
                 break;
@@ -62,12 +58,20 @@ class attempts extends basereport
                 $ret = date("Y-m-d H:i:s", $record->timecreated);
                 break;
 
-            case 'deletenow':
+            case 'action':
+                $ret = '';
                 $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
-                    array('action' => 'delete', 'n' => $record->cpassignmentid, 'attemptid' => $record->id, 'source' => $this->report));
+                    array('action' => 'delete', 'n' => $record->cpassignmentid, 'attemptid' => $record->id));
                 $btn = new \single_button($url, get_string('delete'), 'post');
                 $btn->add_confirm_action(get_string('deleteattemptconfirm', constants::M_LANG));
                 $ret = $OUTPUT->render($btn);
+
+
+                $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
+                    array('action' => 'selectattempt', 'n' => $record->cpassignmentid, 'attemptid' => $record->id,'userid'=>$record->userid));
+                $btn = new \single_button($url, get_string('submit'), 'post');
+                $btn->add_confirm_action(get_string('submitbyuserconfirm', constants::M_LANG));
+                $ret .= $OUTPUT->render($btn);
                 break;
 
             default:
@@ -84,8 +88,9 @@ class attempts extends basereport
         $record = $this->headingdata;
         $ret='';
         if(!$record){return $ret;}
-        //$ec = $this->fetch_cache(constants::M_TABLE,$record->englishcentralid);
-        return get_string('attemptsheading',constants::M_LANG);
+        $user = $this->fetch_cache('user', $this->formdata->userid);
+        $username = fullname($user);
+        return get_string('userattemptsheading',constants::M_LANG,$username );
 
     }
 
@@ -94,9 +99,10 @@ class attempts extends basereport
 
         //heading data
         $this->headingdata = new \stdClass();
+        $this->formdata = $formdata;
 
         $emptydata = array();
-        $alldata = $DB->get_records(constants::M_USERTABLE,array('cpassignmentid'=>$formdata->cpassignmentid));
+        $alldata = $DB->get_records(constants::M_USERTABLE,array('cpassignmentid'=>$formdata->cpassignmentid,'userid'=>$formdata->userid));
 
         if($alldata){
             foreach($alldata as $thedata){

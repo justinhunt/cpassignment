@@ -31,7 +31,7 @@ class submission_renderer extends \plugin_renderer_base {
     public function render_attempt_data ($submission) {
 
         $ret = \html_writer::start_div(
-                constants::M_GRADING_ATTEMPT_CONTAINER);
+                constants::M_GRADING_ATTEMPTS_CONTAINER);
 
         $ret .= $this->output->heading(
                 get_string('showingattempt',

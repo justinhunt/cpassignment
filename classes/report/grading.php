@@ -77,7 +77,7 @@ class grading extends basereport
             case 'viewall':
                 $ret = get_string('viewall', constants::M_LANG);
                 $link = new \moodle_url(constants::M_URL . '/grading.php',
-                        array('action' => 'viewingbyuser', 'n' => $record->cpassignmentid,
+                        array('action' => 'attempts', 'n' => $record->cpassignmentid,
                         'userid' => $record->userid));
                 $ret = \html_writer::link($link, $ret);
                 break;

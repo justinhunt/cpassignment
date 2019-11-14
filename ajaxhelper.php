@@ -28,10 +28,12 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
 use \mod_cpassignment\constants;
+use \mod_cpassignment\utils;
 
+$action =required_param('action',  PARAM_TEXT);
 $cmid = required_param('cmid',  PARAM_INT); // course_module ID, or
-//$sessionid = required_param('sessionid',  PARAM_INT); // course_module ID, or
-$filename= required_param('filename',  PARAM_TEXT); // data baby yeah
+$attemptid = optional_param('attemptid',  0,PARAM_INT); // course_module ID, or
+$filename= optional_param('filename','' , PARAM_TEXT); // data baby yeah
 $ret =new stdClass();
 
 if ($cmid) {
@@ -48,30 +50,43 @@ require_login($course, false, $cm);
 $modulecontext = context_module::instance($cm->id);
 $PAGE->set_context($modulecontext);
 
-//make database items and adhoc tasks
-$success = false;
-$attemptid = save_to_moodle($filename, $themodule);
-if($attemptid){
-    if(\mod_cpassignment\utils::can_transcribe($themodule)) {
-        $success = register_aws_task($themodule->id, $attemptid, $modulecontext->id);
-        if(!$success){
-            $message = "Unable to create adhoc task";
+switch($action){
+    case 'selectattempt':
+        if(!$attemptid){
+            $ret->success=false;
+            $ret->message="You must specify an attemptid";
+        }else {
+            $ret->success = utils::select_attempt_as_submission($themodule, $USER->id, $attemptid);
+            if(!$ret->success){
+                $ret->message="Unable to select attempt as submission";
+            }
         }
-    }else{
-        $success = true;
-    }
-}else{
-    $message = "Unable to add update database with submission";
-}
+        break;
+    case 'sendsubmission':
+        //make database items and adhoc tasks
+        $ret->success = false;
+        $newattempt = save_to_moodle($filename, $themodule);
 
-//handle return to Moodle
-$ret =new stdClass();
-if($success){
-    $ret->success=true;
-}else{
-    $ret->success=false;
-    $ret->message=$message;
+        if($newattempt){
+            if(\mod_cpassignment\utils::can_transcribe($themodule)) {
+                $ret->success = register_aws_task($themodule->id, $newattempt->id, $modulecontext->id);
+                if(!$ret->success){
+                    $ret->message = "Unable to create adhoc task";
+                }
+            }else{
+                $ret->success = true;
+                $ret->newattempt = $newattempt;
+            }
+            //make this the selected attempt
+            utils::select_attempt_as_submission($themodule,$USER->id,$newattempt->id);
+        }else{
+            $ret->message = "Unable to add update database with submission";
+        }
+        ;
+        break;
+    default:
 }
+//handle return to Moodle
 echo json_encode($ret);
 return;
 
@@ -93,7 +108,9 @@ function save_to_moodle($filename,$themodule){
     if(!$attemptid){
         return false;
     }
-    return $attemptid;
+    $newattempt->id=$attemptid;
+    $newattempt->timecreated = date("Y-m-d H:i:s", $newattempt->timecreated);
+    return $newattempt;
 }
 
 //register an adhoc task to pick up transcripts
