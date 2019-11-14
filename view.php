@@ -69,7 +69,7 @@ $mode= "view";
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
-$PAGE->set_pagelayout('frametop');
+$PAGE->set_pagelayout('embedded');
 
 // Get an admin settings.
 $config = get_config(constants::M_FRANKY);
