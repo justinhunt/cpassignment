@@ -72,11 +72,11 @@ $PAGE->set_context($modulecontext);
 $PAGE->set_pagelayout('embedded');
 
 // Get an admin settings.
-$config = get_config(constants::M_FRANKY);
+$config = get_config(constants::M_COMP);
 
 // Get our renderers.
 $renderer = $PAGE->get_renderer('mod_cpassignment');
-$submissionrenderer = $PAGE->get_renderer(constants::M_FRANKY,'submission');
+$submissionrenderer = $PAGE->get_renderer(constants::M_COMP,'submission');
 
 // Show our header
  echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view',
@@ -177,11 +177,11 @@ $token = \mod_cpassignment\utils::fetch_token($config->apiuser,
 
 // Process plugin files for standard editor component.
 $instructions = file_rewrite_pluginfile_urls($moduleinstance->instructions,
-        'pluginfile.php', $modulecontext->id, constants::M_FRANKY,
+        'pluginfile.php', $modulecontext->id, constants::M_COMP,
         constants::M_FILEAREA_INSTRUCTIONS, 0);
 $instructions = format_text($instructions);
 $finished = file_rewrite_pluginfile_urls($moduleinstance->finished,
-        'pluginfile.php', $modulecontext->id, constants::M_FRANKY,
+        'pluginfile.php', $modulecontext->id, constants::M_COMP,
         constants::M_FILEAREA_FINISHED, 0);
 $finished = format_text($finished);
 

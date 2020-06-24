@@ -64,7 +64,7 @@ $modulecontext = context_module::instance($cm->id);
 
 
 //Get an admin settings
-$config = get_config(constants::M_FRANKY);
+$config = get_config(constants::M_COMP);
 
 //set per page according to admin setting
 if($paging->perpage==-1){
@@ -98,12 +98,15 @@ switch($action){
 
             if (!empty($data->btn_fbaudio)) {
                 // Do something with audio
-                echo utils::fetch_modal_content('audio', 'audio button clicked');
+                $title = get_string('audio',constants::M_LANG);
+                $content = 'audio button clicked';
+                echo $renderer->fetch_modalcontent($title,$content);
             }
 
             if (!empty($data->btn_fbvideo)) {
-                // Do something with video
-                 echo utils::fetch_modal_content('video', 'video button clicked');
+                $title = get_string('video',constants::M_LANG);
+                $content = 'video button clicked';
+                echo $renderer->fetch_modalcontent($title,$content);
             }
 
 			$submission = new \mod_cpassignment\submission($attemptid,
@@ -137,9 +140,9 @@ $PAGE->requires->jquery();
 
 
 //This puts all our display logic into the renderer.php files in this plugin
-$renderer = $PAGE->get_renderer(constants::M_FRANKY);
-$reportrenderer = $PAGE->get_renderer(constants::M_FRANKY,'report');
-$submissionrenderer = $PAGE->get_renderer(constants::M_FRANKY,'submission');
+$renderer = $PAGE->get_renderer(constants::M_COMP);
+$reportrenderer = $PAGE->get_renderer(constants::M_COMP,'report');
+$submissionrenderer = $PAGE->get_renderer(constants::M_COMP,'submission');
 
 //From here we actually display the page.
 $mode = "grading";
@@ -187,14 +190,10 @@ switch ($action){
                 $moduleinstance,$audiorecid, $token,
                 constants::M_GRADING_FORM_FEEDBACKAUDIO,
                 $timelimit,'audio','bmr');
-        $amodalcontent = \mod_cpassignment\utils::fetch_modal_content(
-            get_string('feedbackaudiolabel',constants::M_LANG),
-            $audiorecorderhtml
-                );
-        $amodalcontainer = \mod_cpassignment\utils::fetch_modal_container(
-            $amodalcontent,
-            'arec_feedback_container'
-        );
+
+        $title = get_string('feedbackaudiolabel',constants::M_LANG);
+        $content = $audiorecorderhtml;
+        $amodalcontainer = $renderer->fetch_modalcontainer($title,$content, 'arec_feedback_container');
         $afeedbackbutton = $renderer->js_trigger_button('afeedbackstart', true, get_string('feedbackaudiolabel',constants::M_LANG));
 
         //prepare video feedback recorder, modal and trigger button
@@ -202,14 +201,10 @@ switch ($action){
                 $moduleinstance,$videorecid, $token,
                 constants::M_GRADING_FORM_FEEDBACKVIDEO,
                 $timelimit,'video','bmr');
-        $vmodalcontent = \mod_cpassignment\utils::fetch_modal_content(
-            get_string('feedbackvideolabel',constants::M_LANG),
-            $videorecorderhtml
-        );
-        $vmodalcontainer = \mod_cpassignment\utils::fetch_modal_container(
-            $vmodalcontent,
-            'vrec_feedback_container'
-        );
+
+        $title = get_string('feedbackvideolabel',constants::M_LANG);
+        $content = $videorecorderhtml;
+        $vmodalcontainer = $renderer->fetch_modalcontainer($title,$content,$vmodalcontent,'vrec_feedback_container');
         $vfeedbackbutton = $renderer->js_trigger_button('vfeedbackstart',true, get_string('feedbackvideolabel',constants::M_LANG));
 
         // Create form.  No next any more.
@@ -224,7 +219,7 @@ switch ($action){
 		$edfileoptions = \mod_cpassignment\utils::editor_with_files_options($modulecontext);
         $editor = "feedbacktext";
         $data = file_prepare_standard_editor( (object)$data, $editor,
-                $edfileoptions, $modulecontext, constants::M_FRANKY,
+                $edfileoptions, $modulecontext, constants::M_COMP,
                 $editor, $attemptid);
 
 		$gradenowform->set_data($data);

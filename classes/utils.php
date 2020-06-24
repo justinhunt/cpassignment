@@ -188,6 +188,7 @@ class utils{
   }
     public static function get_recordertype_options(){
     return array(
+        "fresh" => get_string("fresh",'mod_cpassignment'),
         "bmr" => get_string("bmr",'mod_cpassignment'),
         "onetwothree" => get_string("onetwothree",'mod_cpassignment'),
         "once" => get_string("once",'mod_cpassignment')
@@ -196,8 +197,15 @@ class utils{
 
     public static function get_mediatype_options(){
         return array(
-            "audio" => get_string("audio",'mod_cpassignment'),
-            "video" => get_string("video",'mod_cpassignment')
+            constants::M_AUDIO => get_string("audio",'mod_cpassignment'),
+            constants::M_VIDEO => get_string("video",'mod_cpassignment')
+        );
+    }
+
+    public static function get_mode_options(){
+        return array(
+                constants::M_MODENORMAL => get_string("normalmode",'mod_cpassignment'),
+                constants::M_MODEANONYMOUS => get_string("anonymousmode",'mod_cpassignment')
         );
     }
 
@@ -214,6 +222,103 @@ class utils{
           "9999"=>get_string('forever','mod_cpassignment')
       );
   }
+
+    //save the data to Moodle.
+   public static function save_to_moodle($filename,$themodule){
+        global $USER,$DB;
+
+        //Add a blank attempt with just the filename  and essential details
+        $newattempt = new \stdClass();
+        $newattempt->courseid=$themodule->course;
+        $newattempt->cpassignmentid=$themodule->id;
+        $newattempt->userid=$USER->id;
+        $newattempt->status=0;
+        $newattempt->filename=$filename;
+        $newattempt->sessionscore=0;
+        $newattempt->timecreated=time();
+        $newattempt->timemodified=time();
+        $attemptid = $DB->insert_record(constants::M_USERTABLE,$newattempt);
+        if(!$attemptid){
+            return false;
+        }
+        $newattempt->id=$attemptid;
+        $newattempt->timecreated = date("Y-m-d H:i:s", $newattempt->timecreated);
+        return $newattempt;
+    }
+
+    //remove the data from Moodle.
+    public static function remove_rec_from_moodle($itemid) {
+        global $USER, $DB;
+        $therec = $DB->get_record(constants::M_USERTABLE,array('id'=>$itemid,'userid'=>$USER->id));
+        if($therec){
+            $DB->delete_records(constants::M_USERTABLE,array('id'=>$itemid,'userid'=>$USER->id));
+            return true;
+        }
+        return false;
+    }
+
+    //save the data to Moodle.
+    public static function save_rec_to_moodle( $themodule, $filename, $subid, $itemname,$itemid){
+        global $USER,$DB,$PAGE;
+
+        $attemptid=0;
+        $theattempt = new \stdClass();
+        $theattempt->courseid = $themodule->course;
+        $theattempt->cpassignmentid = $themodule->id;
+        $theattempt->userid = $USER->id;
+        $theattempt->filename = $filename;
+        $theattempt->{constants::LIST_ITEM_NAME} = $itemname;
+        $theattempt->{constants::LIST_ITEM_ID} = $itemid;
+        $theattempt->timemodified = time();
+        
+        if(!$subid) {
+            //Add a blank attempt with just the filename  and essential details
+            $theattempt->status = 0;
+            $theattempt->sessionscore = 0;
+            $theattempt->timecreated = time();
+            $attemptid = $DB->insert_record(constants::M_USERTABLE, $theattempt);
+            $theattempt->id=$attemptid;
+        }else{
+            $currentattempt = $DB->get_record(constants::M_USERTABLE,array('id'=>$subid,'userid'=>$USER->id));
+            if($currentattempt) {
+                $theattempt->id = $subid;
+                $attemptid = $DB->update_record(constants::M_USERTABLE, $theattempt);
+            }
+        }
+        if(!$attemptid){
+            return false;
+        }
+        $theattempt->itemname = $itemname;
+        $theattempt->itemdate = date("Y-m-d H:i:s",$theattempt->timecreated);
+        $theattempt->itemid = $itemid;
+        $theattempt->subid = $attemptid;
+
+        $PAGE->set_context(\context_system::instance());
+        $renderer = $PAGE->get_renderer(constants::M_COMP);
+        $itemname_tmpl = new \mod_cpassignment\output\itemname($theattempt);
+        $theattempt->itemnames =  [$itemname_tmpl->export_for_template($renderer)];
+        $itemid_tmpl = new \mod_cpassignment\output\itemid($theattempt);
+        $theattempt->itemids =  [$itemid_tmpl->export_for_template($renderer)];
+
+
+        return $theattempt;
+    }
+
+    //register an adhoc task to pick up transcripts
+    public static function register_aws_task($activityid, $attemptid,$modulecontextid){
+        $s3_task = new \mod_cpassignment\task\s3_adhoc();
+        $s3_task->set_component(constants::M_COMP);
+
+        $customdata = new \stdClass();
+        $customdata->activityid = $activityid;
+        $customdata->attemptid = $attemptid;
+        $customdata->modulecontextid = $modulecontextid;
+
+        $s3_task->set_custom_data($customdata);
+        // queue it
+        \core\task\manager::queue_adhoc_task($s3_task);
+        return true;
+    }
 
     /**
      * The html part of the recorder (js is in the fetch_activity_amd)
@@ -237,7 +342,7 @@ class utils{
             default:
                 $mediatype = 'audio';//just in case we got something weird
                 $width="360";
-                $height="240";
+                $height="280";
                 break;
         }
 
@@ -307,139 +412,141 @@ class utils{
         return $modalcontent;
     }
 
-/*
-    public static function get_lang_options(){
-       return array(
-            'en-US'=>get_string('en-us','mod_cpassignment'),
-           'es-US'=>get_string('es-us','mod_cpassignment')
-       );
 
-      return array(
-			"none"=>"No TTS",
-			"af"=>"Afrikaans",
-			"sq"=>"Albanian",
-			"am"=>"Amharic",
-			"ar"=>"Arabic",
-			"hy"=>"Armenian",
-			"az"=>"Azerbaijani",
-			"eu"=>"Basque",
-			"be"=>"Belarusian",
-			"bn"=>"Bengali",
-			"bh"=>"Bihari",
-			"bs"=>"Bosnian",
-			"br"=>"Breton",
-			"bg"=>"Bulgarian",
-			"km"=>"Cambodian",
-			"ca"=>"Catalan",
-			"zh-CN"=>"Chinese (Simplified)",
-			"zh-TW"=>"Chinese (Traditional)",
-			"co"=>"Corsican",
-			"hr"=>"Croatian",
-			"cs"=>"Czech",
-			"da"=>"Danish",
-			"nl"=>"Dutch",
-			"en"=>"English",
-			"eo"=>"Esperanto",
-			"et"=>"Estonian",
-			"fo"=>"Faroese",
-			"tl"=>"Filipino",
-			"fi"=>"Finnish",
-			"fr"=>"French",
-			"fy"=>"Frisian",
-			"gl"=>"Galician",
-			"ka"=>"Georgian",
-			"de"=>"German",
-			"el"=>"Greek",
-			"gn"=>"Guarani",
-			"gu"=>"Gujarati",
-			"xx-hacker"=>"Hacker",
-			"ha"=>"Hausa",
-			"iw"=>"Hebrew",
-			"hi"=>"Hindi",
-			"hu"=>"Hungarian",
-			"is"=>"Icelandic",
-			"id"=>"Indonesian",
-			"ia"=>"Interlingua",
-			"ga"=>"Irish",
-			"it"=>"Italian",
-			"ja"=>"Japanese",
-			"jw"=>"Javanese",
-			"kn"=>"Kannada",
-			"kk"=>"Kazakh",
-			"rw"=>"Kinyarwanda",
-			"rn"=>"Kirundi",
-			"xx-klingon"=>"Klingon",
-			"ko"=>"Korean",
-			"ku"=>"Kurdish",
-			"ky"=>"Kyrgyz",
-			"lo"=>"Laothian",
-			"la"=>"Latin",
-			"lv"=>"Latvian",
-			"ln"=>"Lingala",
-			"lt"=>"Lithuanian",
-			"mk"=>"Macedonian",
-			"mg"=>"Malagasy",
-			"ms"=>"Malay",
-			"ml"=>"Malayalam",
-			"mt"=>"Maltese",
-			"mi"=>"Maori",
-			"mr"=>"Marathi",
-			"mo"=>"Moldavian",
-			"mn"=>"Mongolian",
-			"sr-ME"=>"Montenegrin",
-			"ne"=>"Nepali",
-			"no"=>"Norwegian",
-			"nn"=>"Norwegian(Nynorsk)",
-			"oc"=>"Occitan",
-			"or"=>"Oriya",
-			"om"=>"Oromo",
-			"ps"=>"Pashto",
-			"fa"=>"Persian",
-			"xx-pirate"=>"Pirate",
-			"pl"=>"Polish",
-			"pt-BR"=>"Portuguese(Brazil)",
-			"pt-PT"=>"Portuguese(Portugal)",
-			"pa"=>"Punjabi",
-			"qu"=>"Quechua",
-			"ro"=>"Romanian",
-			"rm"=>"Romansh",
-			"ru"=>"Russian",
-			"gd"=>"Scots Gaelic",
-			"sr"=>"Serbian",
-			"sh"=>"Serbo-Croatian",
-			"st"=>"Sesotho",
-			"sn"=>"Shona",
-			"sd"=>"Sindhi",
-			"si"=>"Sinhalese",
-			"sk"=>"Slovak",
-			"sl"=>"Slovenian",
-			"so"=>"Somali",
-			"es"=>"Spanish",
-			"su"=>"Sundanese",
-			"sw"=>"Swahili",
-			"sv"=>"Swedish",
-			"tg"=>"Tajik",
-			"ta"=>"Tamil",
-			"tt"=>"Tatar",
-			"te"=>"Telugu",
-			"th"=>"Thai",
-			"ti"=>"Tigrinya",
-			"to"=>"Tonga",
-			"tr"=>"Turkish",
-			"tk"=>"Turkmen",
-			"tw"=>"Twi",
-			"ug"=>"Uighur",
-			"uk"=>"Ukrainian",
-			"ur"=>"Urdu",
-			"uz"=>"Uzbek",
-			"vi"=>"Vietnamese",
-			"cy"=>"Welsh",
-			"xh"=>"Xhosa",
-			"yi"=>"Yiddish",
-			"yo"=>"Yoruba",
-			"zu"=>"Zulu"
-		);
 
-   }
-*/
+    /*
+        public static function get_lang_options(){
+           return array(
+                'en-US'=>get_string('en-us','mod_cpassignment'),
+               'es-US'=>get_string('es-us','mod_cpassignment')
+           );
+
+          return array(
+                "none"=>"No TTS",
+                "af"=>"Afrikaans",
+                "sq"=>"Albanian",
+                "am"=>"Amharic",
+                "ar"=>"Arabic",
+                "hy"=>"Armenian",
+                "az"=>"Azerbaijani",
+                "eu"=>"Basque",
+                "be"=>"Belarusian",
+                "bn"=>"Bengali",
+                "bh"=>"Bihari",
+                "bs"=>"Bosnian",
+                "br"=>"Breton",
+                "bg"=>"Bulgarian",
+                "km"=>"Cambodian",
+                "ca"=>"Catalan",
+                "zh-CN"=>"Chinese (Simplified)",
+                "zh-TW"=>"Chinese (Traditional)",
+                "co"=>"Corsican",
+                "hr"=>"Croatian",
+                "cs"=>"Czech",
+                "da"=>"Danish",
+                "nl"=>"Dutch",
+                "en"=>"English",
+                "eo"=>"Esperanto",
+                "et"=>"Estonian",
+                "fo"=>"Faroese",
+                "tl"=>"Filipino",
+                "fi"=>"Finnish",
+                "fr"=>"French",
+                "fy"=>"Frisian",
+                "gl"=>"Galician",
+                "ka"=>"Georgian",
+                "de"=>"German",
+                "el"=>"Greek",
+                "gn"=>"Guarani",
+                "gu"=>"Gujarati",
+                "xx-hacker"=>"Hacker",
+                "ha"=>"Hausa",
+                "iw"=>"Hebrew",
+                "hi"=>"Hindi",
+                "hu"=>"Hungarian",
+                "is"=>"Icelandic",
+                "id"=>"Indonesian",
+                "ia"=>"Interlingua",
+                "ga"=>"Irish",
+                "it"=>"Italian",
+                "ja"=>"Japanese",
+                "jw"=>"Javanese",
+                "kn"=>"Kannada",
+                "kk"=>"Kazakh",
+                "rw"=>"Kinyarwanda",
+                "rn"=>"Kirundi",
+                "xx-klingon"=>"Klingon",
+                "ko"=>"Korean",
+                "ku"=>"Kurdish",
+                "ky"=>"Kyrgyz",
+                "lo"=>"Laothian",
+                "la"=>"Latin",
+                "lv"=>"Latvian",
+                "ln"=>"Lingala",
+                "lt"=>"Lithuanian",
+                "mk"=>"Macedonian",
+                "mg"=>"Malagasy",
+                "ms"=>"Malay",
+                "ml"=>"Malayalam",
+                "mt"=>"Maltese",
+                "mi"=>"Maori",
+                "mr"=>"Marathi",
+                "mo"=>"Moldavian",
+                "mn"=>"Mongolian",
+                "sr-ME"=>"Montenegrin",
+                "ne"=>"Nepali",
+                "no"=>"Norwegian",
+                "nn"=>"Norwegian(Nynorsk)",
+                "oc"=>"Occitan",
+                "or"=>"Oriya",
+                "om"=>"Oromo",
+                "ps"=>"Pashto",
+                "fa"=>"Persian",
+                "xx-pirate"=>"Pirate",
+                "pl"=>"Polish",
+                "pt-BR"=>"Portuguese(Brazil)",
+                "pt-PT"=>"Portuguese(Portugal)",
+                "pa"=>"Punjabi",
+                "qu"=>"Quechua",
+                "ro"=>"Romanian",
+                "rm"=>"Romansh",
+                "ru"=>"Russian",
+                "gd"=>"Scots Gaelic",
+                "sr"=>"Serbian",
+                "sh"=>"Serbo-Croatian",
+                "st"=>"Sesotho",
+                "sn"=>"Shona",
+                "sd"=>"Sindhi",
+                "si"=>"Sinhalese",
+                "sk"=>"Slovak",
+                "sl"=>"Slovenian",
+                "so"=>"Somali",
+                "es"=>"Spanish",
+                "su"=>"Sundanese",
+                "sw"=>"Swahili",
+                "sv"=>"Swedish",
+                "tg"=>"Tajik",
+                "ta"=>"Tamil",
+                "tt"=>"Tatar",
+                "te"=>"Telugu",
+                "th"=>"Thai",
+                "ti"=>"Tigrinya",
+                "to"=>"Tonga",
+                "tr"=>"Turkish",
+                "tk"=>"Turkmen",
+                "tw"=>"Twi",
+                "ug"=>"Uighur",
+                "uk"=>"Ukrainian",
+                "ur"=>"Urdu",
+                "uz"=>"Uzbek",
+                "vi"=>"Vietnamese",
+                "cy"=>"Welsh",
+                "xh"=>"Xhosa",
+                "yi"=>"Yiddish",
+                "yo"=>"Yoruba",
+                "zu"=>"Zulu"
+            );
+
+       }
+    */
 }

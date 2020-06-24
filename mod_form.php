@@ -68,7 +68,12 @@ class mod_cpassignment_mod_form extends moodleform_mod {
         }
 
         // Add other editors.  HTML format for media files.
-        $config = get_config(constants::M_FRANKY);
+        $config = get_config(constants::M_COMP);
+
+        //Mode Type options
+        $modeoptions = \mod_cpassignment\utils::get_mode_options();
+        $mform->addElement('select', 'mode', get_string('mode', constants::M_LANG), $modeoptions);
+        $mform->setDefault('mode',$config->mode);
 
         //The passage area is not used but hasn't been removed yet.
         //$edfileoptions = \mod_cpassignment\utils::editor_with_files_options($this->context);
@@ -217,7 +222,7 @@ class mod_cpassignment_mod_form extends moodleform_mod {
      */
      function add_completion_rules() {
         $mform =& $this->_form;
-        $config = get_config(constants::M_FRANKY);
+        $config = get_config(constants::M_COMP);
 
         //timer options
         //Add a place to set a mimumum time after which the activity is recorded complete
@@ -240,7 +245,7 @@ class mod_cpassignment_mod_form extends moodleform_mod {
             foreach($editors as $editor) {
                 $form_data = file_prepare_standard_editor((object)$form_data,
                         $editor, $ednofileoptions, $this->context,
-                        constants::M_FRANKY, $editor, $itemid);
+                        constants::M_COMP, $editor, $itemid);
             }
         }
     }

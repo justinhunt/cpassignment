@@ -402,7 +402,7 @@ function cpassignment_process_editors(stdClass $themodule, mod_cpassignment_mod_
     foreach($editors as $editor) {
 	    $themodule = file_postupdate_standard_editor($themodule,
                 $editor,
-        $edoptions, $context,constants::M_FRANKY,$editor,
+        $edoptions, $context,constants::M_COMP,$editor,
                 $itemid);
 	}
 	return $themodule;
@@ -701,4 +701,25 @@ function cpassignment_extend_navigation(navigation_node $navref, stdclass $cours
  * @param navigation_node $themodulenode {@link navigation_node}
  */
 function cpassignment_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $themodulenode=null) {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// InPlace API                                                             //
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Implements callback inplace_editable() allowing to edit values in-place
+ *
+ * @param string $itemtype
+ * @param int $itemid
+ * @param mixed $newvalue
+ * @return \core\output\inplace_editable
+ */
+function cpassignment_inplace_editable($itemtype, $itemid, $newvalue) {
+    \external_api::validate_context(context_system::instance());
+    if ($itemtype === 'itemname') {
+        return \mod_cpassignment\output\itemname::update($itemid, $newvalue);
+    }
+    if ($itemtype === 'itemid') {
+        return \mod_cpassignment\output\itemid::update($itemid, $newvalue);
+    }
 }

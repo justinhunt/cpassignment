@@ -123,8 +123,7 @@ class submission_renderer extends \plugin_renderer_base {
         $title = 'Someones Video';
         $videoplayer = \html_writer::tag('video','',array('src'=>'','id'=>constants::M_HIDDEN_VIDEO_PLAYER,'class'=>constants::M_HIDDEN_VIDEO_PLAYER, 'controls'=>'true'));
         $content=$videoplayer;
-        $modalcontent = utils::fetch_modal_content($title,$content);
-        $modal = utils::fetch_modal_container($modalcontent,'hiddenvideocontainer');
+        $modal = $this->fetch_modalcontainer($title,$content,'hiddenvideocontainer');
         return $modal;
     }
 
@@ -186,7 +185,7 @@ class submission_renderer extends \plugin_renderer_base {
             $attemptid = $this->submission->fetch('attemptid');
 
             $text = file_rewrite_pluginfile_urls($text,
-                    'pluginfile.php', $contextid, constants::M_FRANKY,
+                    'pluginfile.php', $contextid, constants::M_COMP,
                     'feedbacktext', $attemptid);
 
             $ret .= \html_writer::div(format_text($text),
@@ -195,5 +194,22 @@ class submission_renderer extends \plugin_renderer_base {
         }
 
         return $ret;
+    }
+
+    //fetch modal content
+    function fetch_modalcontent($title,$content){
+        $data=[];
+        $data['title']=$title;
+        $data['content']=$content;
+        return $this->render_from_template('mod_cpassignment/modalcontent', $data);
+    }
+
+    //fetch modal container
+    function fetch_modalcontainer($title,$content,$containertag){
+        $data=[];
+        $data['title']=$title;
+        $data['content']=$content;
+        $data['containertag']=$containertag;
+        return $this->render_from_template('mod_cpassignment/modalcontainer', $data);
     }
 }

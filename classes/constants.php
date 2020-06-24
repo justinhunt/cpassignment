@@ -12,7 +12,7 @@ namespace mod_cpassignment;
 class constants
 {
 
-const M_FRANKY='mod_cpassignment';
+const M_COMP='mod_cpassignment';
 const M_FILEAREA_SUBMISSIONS='submission';
 const M_FILEAREA_FEEDBACKTEXT='feedbacktext';
 const M_FILEAREA_FINISHED='finished';
@@ -20,6 +20,7 @@ const M_FILEAREA_INSTRUCTIONS='instructions';
 const M_LANG='mod_cpassignment';
 const M_TABLE='cpassignment';
 const M_USERTABLE='cpassignment_attempt';
+const M_KEYTABLE='cpassignment_key';
 const M_MODNAME='cpassignment';
 const M_URL='/mod/cpassignment';
 const M_CLASS='mod_cpassignment';
@@ -37,6 +38,21 @@ const M_GRADING_CURRENTFB_CONTAINER=
     'mod_cpassignment_current_feedback_cont';
 const M_GRADING_CURRENTFBPLAYER_CONTAINER =
     'mod_cpassignment_current_player_cont';
+
+    const M_MODENORMAL =0;
+    const M_MODEANONYMOUS =1;
+
+    const M_AUDIO ='audio';
+    const M_VIDEO ='video';
+
+    const M_CLASS_ITEMTABLE='mod_cpassignment_itemstable';
+
+const LIST_ITEM_NAME='customtext1';
+const LIST_ITEM_ID='customtext2';
+const M_NOITEMS_CONTAINER='mod_cpassignment_noitems_cont';
+const M_LISTTOP_CONTAINER='mod_cpassignment_listtop_cont';
+const M_LIST_AUDIOREC='mod_cpassignment_listaudiorec';
+
 
 const M_GRADING_PLAYER='mod_cpassignment_grading_player';
 const M_GRADING_FORM_SESSIONTIME='mod_cpassignment_gradingform_sessiontime';

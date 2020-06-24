@@ -66,7 +66,7 @@ class submission{
        $edoptions = utils::editor_with_files_options($context);
        $editor = "feedbacktext";
        $formdata = file_postupdate_standard_editor($formdata, $editor,
-               $edoptions,$context,constants::M_FRANKY,
+               $edoptions,$context,constants::M_COMP,
                $editor,$this->attemptid);
        $updatedattempt->feedbacktext = $formdata->feedbacktext;
        $updatedattempt->feedbacktextformat = $formdata->feedbacktextformat;

@@ -29,9 +29,7 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
         global $CFG;
 
         $activityname = format_string($moduleinstance->name, true, $moduleinstance->course);
-        if (empty($extrapagetitle)) {
-            $title = $this->page->course->shortname.": ".$activityname;
-        } else {
+        if (!empty($extrapagetitle)) {
             $title = $this->page->course->shortname.": ".$activityname.": ".$extrapagetitle;
         }
 
@@ -55,7 +53,6 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
 
         }
 
-        $output .= $this->output->heading($activityname);
         return $output;
     }
 
@@ -78,16 +75,12 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
     /**
      *  Show instructions/instructions
      */
-    public function show_instructions($moduleinstance, $showtext, $status) {
+    public function show_instructions($moduleinstance, $showtext) {
 
         $displaytext = $this->output->box_start();
 
         // Show the text according to the layout in the editor.
         $displaytext .= \html_writer::div($showtext);
-
-        // Add html string to show where we are in the activity.
-        // Also will contain buttons.
-        $displaytext .= '<br>' . $status . '<br>';
 
         $displaytext .= $this->output->box_end();
 
@@ -104,8 +97,7 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
     public function show_uploadsuccess($moduleinstance) {
         $title = '';
         $content=get_string('uploadsuccessmessage',constants::M_LANG);
-        $modalcontent = utils::fetch_modal_content($title,$content);
-        $modal= utils::fetch_modal_container($modalcontent,'uploadsuccess');
+        $modal= $this->fetch_modalcontainer($title, $content,'uploadsuccess');
         return $modal;
     }
 
@@ -220,7 +212,7 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
 
     public function fetch_attempts($moduleinstance, $modulecontext, $userid) {
 
-        $submissionrenderer = $this->page->get_renderer(constants::M_FRANKY,'submission');
+        $submissionrenderer = $this->page->get_renderer(constants::M_COMP,'submission');
 
         //get attempts (with cells formatted)
         $report = new \mod_cpassignment\report\attempts();
@@ -307,5 +299,133 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
         //these need to be returned and echo'ed to the page
         return $ret_html;
     }
+
+    function setup_datatables($tableid){
+        global $USER;
+
+        $tableprops = array();
+        $columns = array();
+        //for cols .. .'itemname', 'itemtype', 'itemtags','timemodified', 'edit','delete'
+        $columns[0]=null;
+        $columns[1]=null;
+        $columns[2]=null;
+        $columns[3]=null;
+        $columns[4]=array('orderable'=>false);
+        $columns[5]=array('orderable'=>false);
+        $tableprops['columns']=$columns;
+
+        //default ordering
+        $order = array();
+        $order[0] =array(3, "desc");
+        $tableprops['order']=$order;
+
+        //here we set up any info we need to pass into javascript
+        $opts =Array();
+        $opts['tableid']=$tableid;
+        $opts['tableprops']=$tableprops;
+        $this->page->requires->js_call_amd("mod_cpassignment/datatables", 'init', array($opts));
+        $this->page->requires->css( new \moodle_url('https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'));
+    }
+
+    /**
+     * Return the html table of items
+     * @param array homework objects
+     * @param integer $courseid
+     * @return string html of table
+     */
+    function show_list_items($items,$tableid,$cm){
+
+        if(!$items){
+            return $this->output->heading(get_string('noitems',constants::M_COMP), 3, 'main');
+        }
+
+        $data = [];
+        $data['tableid']=$tableid;
+        $data['items']=[];
+        //loop through the items,massage data and add to table
+        //itemname itemid,filename,itemdate, id
+        $currentitem=0;
+        foreach ($items as $item) {
+            $ditem=[];
+            //item name
+            //need to nest this in array to get the data to the template
+            $itemname_tmpl = new \mod_cpassignment\output\itemname($item);
+            $ditem['itemnames'] =  [$itemname_tmpl->export_for_template($this)];
+            //$ditem['itemname']= $item->{constants::LIST_ITEM_NAME};
+
+            //item id
+            //need to nest this in array to get the data to the template
+            $itemid_tmpl = new \mod_cpassignment\output\itemid($item);
+            $ditem['itemids'] =  [$itemid_tmpl->export_for_template($this)];
+            //$ditem['itemid'] = $item->{constants::LIST_ITEM_ID};
+
+            //item date
+            $ditem['itemdate'] = date("Y-m-d H:i:s",$item->timecreated);
+            $ditem['filename']= $item->filename;
+            $ditem['id']= $item->id;
+            $data['items'][]=$ditem;
+
+        }
+        return $this->render_from_template('mod_cpassignment/itemtable', $data);
+    }
+
+    //this is the two textboxes
+    function fetch_itemform($itemname,$itemid, $itemfilename,$itemsubid){
+        $data=[];
+        $data['itemname']=$itemname;
+        $data['itemid']=$itemid;
+        $data['itemfilename']=$itemfilename;
+        $data['itemsubid']=$itemsubid;
+        return $this->render_from_template('mod_cpassignment/itemform', $data);
+    }
+
+    //fetch modal content
+    function fetch_modalcontent($title,$content){
+        $data=[];
+        $data['title']=$title;
+        $data['content']=$content;
+        return $this->render_from_template('mod_cpassignment/modalcontent', $data);
+    }
+
+    //fetch modal container
+    function fetch_modalcontainer($title,$content,$containertag){
+        $data=[];
+        $data['title']=$title;
+        $data['content']=$content;
+        $data['containertag']=$containertag;
+        return $this->render_from_template('mod_cpassignment/modalcontainer', $data);
+    }
+
+
+    //fetch downloadform
+    function fetch_downloadform(){
+        $data=[];
+        return $this->render_from_template('mod_cpassignment/downloadform', $data);
+    }
+
+    /**
+     * No items, thats too bad
+     */
+    public function no_list_items(){
+        $displaytext = $this->output->box_start();
+        $displaytext .= $this->output->heading(get_string('noitemsheader',constants::M_LANG), 3, 'main');
+        $displaytext .=  \html_writer::div(get_string('noitemsinfo',constants::M_LANG),'',array());
+        $displaytext .= $this->output->box_end();
+        $ret= \html_writer::div($displaytext,constants::M_NOITEMS_CONTAINER,array('id'=>constants::M_NOITEMS_CONTAINER));
+        return $ret;
+    }
+
+    /**
+     * Show lost top
+     */
+    public function show_list_top($fullname){
+        $displaytext = $this->output->box_start('mod_cpassignment_allcenter center');
+        $displaytext .= $this->output->heading(get_string('listtop',constants::M_LANG,$fullname), 3, 'main center');
+        $displaytext .=  \html_writer::div(get_string('listtopdetails',constants::M_LANG),'center',array());
+        $displaytext .= $this->output->box_end();
+        $ret= \html_writer::div($displaytext,constants::M_LISTTOP_CONTAINER,array('id'=>constants::M_LISTTOP_CONTAINER));
+        return $ret;
+    }
+
 
 }

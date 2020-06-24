@@ -29,8 +29,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2018080600; // If version == 0 then module will not be installed.
+$plugin->version   = 2020061602; // If version == 0 then module will not be installed.
 $plugin->requires  = 2010031900; // Requires this Moodle version.
 $plugin->component = 'mod_cpassignment'; // To check on upgrade, that module sits in correct place.
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0.0 (Build 2018071000)';
+$plugin->release = '1.0.1 (Build 2020061602)';

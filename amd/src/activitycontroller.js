@@ -1,5 +1,6 @@
 /* jshint ignore:start */
-define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_cpassignment/dialogs','core/templates'], function($, jqui, log, recorderhelper,dialogs,templates) {
+define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_cpassignment/dialogs','core/templates','core/ajax','core/notification'],
+    function($, jqui, log, recorderhelper,dialogs,templates, Ajax, notification) {
 
     "use strict"; // jshint ;_;
 
@@ -161,43 +162,34 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
 
         select_attempt: function(attemptid){
 
-            //set up our ajax request
-            var xhr = new XMLHttpRequest();
-            var that = this;
 
-            //set up our handler for the response
-            xhr.onreadystatechange = function(e){
-                if(this.readyState===4){
-                    if(xhr.status==200){
-                        //get a yes or forgetit or tryagain
-                        var payload = xhr.responseText;
-                        var payloadobject = JSON.parse(payload);
-                        if(payloadobject){
-                            switch(payloadobject.success) {
-                                case true:
-                                    that.update_attempt_table(that,attemptid);
-                                    that.selectedattempt = attemptid;
-                                    dialogs.openModal('#' + that.successmessageid);
-                                    break;
+            Ajax.call([{
+                methodname: 'mod_cpassignment_select_attempt',
+                args: {
+                    cmid: that.cmid,
+                    attemptid: attemptid
+                },
+                done: function (ajaxresult) {
+                    var payloadobject = JSON.parse(ajaxresult);
+                    if (payloadobject) {
+                        switch(payloadobject.success) {
+                            case true:
+                                that.update_attempt_table(that,attemptid);
+                                that.selectedattempt = attemptid;
+                                dialogs.openModal('#' + that.successmessageid);
+                                break;
 
-                                case false:
-                                default:
-                                    if (payloadobject.message) {
-                                        log.debug('message: ' + payloadobject.message);
-                                    }
-                            }
+                            case false:
+                            default:
+                                if (payloadobject.message) {
+                                    log.debug('message: ' + payloadobject.message);
+                                }
                         }
-                    }else{
-                        log.debug('Not 200 response:' + xhr.status);
                     }
-                }
-            };
+                },
+                fail: notification.exception
+            }]);
 
-            var params = "action=selectattempt&cmid=" + that.cmid + "&attemptid=" + attemptid;
-            xhr.open("POST",M.cfg.wwwroot + '/mod/cpassignment/ajaxhelper.php', true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.setRequestHeader("Cache-Control", "no-cache");
-            xhr.send(params);
         },
 
         update_attempt_table: function(that,selectedattemptid){
@@ -229,50 +221,41 @@ define(['jquery','jqueryui', 'core/log','mod_cpassignment/recorderhelper','mod_c
         },
 
         send_submission: function(filename){
+            var that=this;
 
-            //set up our ajax request
-            var xhr = new XMLHttpRequest();
-            var that = this;
+            Ajax.call([{
+                methodname: 'mod_cpassignment_submit_attempt',
+                args: {
+                    filename: filename,
+                    cmid: that.cmid
+                },
+                done: function (ajaxresult) {
+                    var payloadobject = JSON.parse(ajaxresult);
+                    if (payloadobject) {
+                        switch(payloadobject.success) {
+                            case true:
+                                var record = {};
+                                record.id=payloadobject.newattempt.id;
+                                record.mediafile=filename;
+                                record.timecreated=payloadobject.newattempt.timecreated;
+                                record.status='';
+                                record.grade_p=0;
+                                that.insert_new_attempt(that,record);
 
-            //set up our handler for the response
-            xhr.onreadystatechange = function(e){
-                if(this.readyState===4){
-                    if(xhr.status==200){
-                        //get a yes or forgetit or tryagain
-                        var payload = xhr.responseText;
-                        var payloadobject = JSON.parse(payload);
-                        if(payloadobject){
-                            switch(payloadobject.success) {
-                                case true:
-                                    var record = {};
-                                    record.id=payloadobject.newattempt.id;
-                                    record.mediafile=filename;
-                                    record.timecreated=payloadobject.newattempt.timecreated;
-                                    record.status='';
-                                    record.grade_p=0;
-                                    that.insert_new_attempt(that,record);
+                                dialogs.openModal('#' + that.successmessageid);
+                                break;
 
-                                    dialogs.openModal('#' + that.successmessageid);
-                                    break;
-
-                                case false:
-                                default:
-                                    if (payloadobject.message) {
-                                        log.debug('message: ' + payloadobject.message);
-                                    }
-                            }
+                            case false:
+                            default:
+                                if (payloadobject.message) {
+                                    log.debug('message: ' + payloadobject.message);
+                                }
                         }
-                     }else{
-                        log.debug('Not 200 response:' + xhr.status);
                     }
-                }
-            };
+                },
+                fail: notification.exception
+            }]);
 
-            var params = "action=sendsubmission&cmid=" + that.cmid + "&filename=" + filename;
-            xhr.open("POST",M.cfg.wwwroot + '/mod/cpassignment/ajaxhelper.php', true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.setRequestHeader("Cache-Control", "no-cache");
-            xhr.send(params);
         },
 
 

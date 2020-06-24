@@ -61,7 +61,7 @@ require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 //Get an admin settings
-$config = get_config(constants::M_FRANKY);
+$config = get_config(constants::M_COMP);
 
 //set per page according to admin setting
 if($paging->perpage==-1){
@@ -106,9 +106,9 @@ $aph_opts['hiddenplayerbuttonpausedclass'] =constants::M_HIDDEN_PLAYER_BUTTON_PA
 $PAGE->requires->js_call_amd("mod_cpassignment/hiddenplayer", 'init', array($aph_opts));
 
 //This puts all our display logic into the renderer.php files in this plugin
-$renderer = $PAGE->get_renderer(constants::M_FRANKY);
-$reportrenderer = $PAGE->get_renderer(constants::M_FRANKY,'report');
-$submissionrenderer = $PAGE->get_renderer(constants::M_FRANKY,'submission');
+$renderer = $PAGE->get_renderer(constants::M_COMP);
+$reportrenderer = $PAGE->get_renderer(constants::M_COMP,'report');
+$submissionrenderer = $PAGE->get_renderer(constants::M_COMP,'submission');
 
 //From here we actually display the page.
 //this is core renderer stuff

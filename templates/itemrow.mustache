@@ -1,0 +1,8 @@
+<tr class="lastrow" data-id="{{id}}">
+    <td class="itemid cell c0" style="">{{#itemids}}{{>core/inplace_editable}}{{/itemids}}</td>
+    <td class="itemname cell c1" style="">{{#itemnames}}{{>core/inplace_editable}}{{/itemnames}}</td>
+    <td class="item cell c2" style=""><audio src="{{filename}}" crossorigin="anonymous" class="nomediaplugin nopoodll" data-id="{{id}}" controls></audio></td>
+    <td class="itemdate cell c3" style="">{{itemdate}}</td>
+    <td class="download cell c4" style=""><a href="#" data-id="{{id}}" data-type="download">{{#str}}downloaditem, mod_cpassignment{{/str}}</a></td>
+    <td class="delete cell c5 lastcol" style=""><a href="#" data-id="{{id}}" data-type="delete">{{#str}}deleteitem, mod_cpassignment{{/str}}</a></td>
+</tr>

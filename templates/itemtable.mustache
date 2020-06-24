@@ -1,0 +1,17 @@
+<table class="generaltable" id="{{tableid}}">
+    <thead>
+    <tr>
+        <th class="header c1 itemid" style="" scope="col">{{#str}}itemid, mod_cpassignment{{/str}}</th>
+        <th class="header c0 itemname" style="" scope="col">{{#str}}itemname, mod_cpassignment{{/str}}</th>
+        <th class="header c2 item" style="" scope="col">{{#str}}item, mod_cpassignment{{/str}}</th>
+        <th class="header c3 timemodified" style="" scope="col">{{#str}}timemodified, mod_cpassignment{{/str}}</th>
+        <th class="header c4 edit" style="" scope="col">{{#str}}action, mod_cpassignment{{/str}}</th>
+        <th class="header c5 lastcol delete" style="" scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#items}}
+    {{> mod_cpassignment/itemrow}}
+    {{/items}}
+    </tbody>
+</table>

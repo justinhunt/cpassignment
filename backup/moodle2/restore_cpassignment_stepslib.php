@@ -57,7 +57,11 @@ class restore_cpassignment_activity_structure_step extends restore_activity_stru
 		//attempts
 		 $attempts= new restore_path_element(constants::M_USERTABLE,
                                             '/activity/cpassignment/attempts/attempt');
+        //keys
+        $keys= new restore_path_element(constants::M_KEYTABLE,
+                '/activity/cpassignment/keys/key');
 		$paths[] = $attempts;
+        $paths[] = $keys;
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
@@ -99,18 +103,33 @@ class restore_cpassignment_activity_structure_step extends restore_activity_stru
 		//IF we had files for this set of data. )
        $this->set_mapping(constants::M_USERTABLE, $oldid, $newitemid, true);
     }
+    protected function process_cpassignment_key($data) {
+        global $DB;
+
+        $data = (object)$data;
+        $oldid = $data->id;
+
+        $data->timecreated = $this->apply_date_offset($data->timecreated);
+
+
+        $data->{constants::M_MODNAME . 'id'} = $this->get_new_parentid(constants::M_MODNAME);
+        $newitemid = $DB->insert_record(constants::M_KEYTABLE, $data);
+
+        // Mapping without files
+        $this->set_mapping(constants::M_KEYTABLE, $oldid, $newitemid, false);
+    }
 
 
     protected function after_execute() {
         // Add module related files, no need to match by itemname (just internally handled context)
-        $this->add_related_files(constants::M_FRANKY, 'intro', null);
-		$this->add_related_files(constants::M_FRANKY, 'instructions', null);
-		$this->add_related_files(constants::M_FRANKY, 'passage', null);
-		$this->add_related_files(constants::M_FRANKY, 'completion', null);
+        $this->add_related_files(constants::M_COMP, 'intro', null);
+		$this->add_related_files(constants::M_COMP, 'instructions', null);
+		$this->add_related_files(constants::M_COMP, 'passage', null);
+		$this->add_related_files(constants::M_COMP, 'completion', null);
 		 $userinfo = $this->get_setting_value('userinfo'); // are we including userinfo?
 		 if($userinfo){
-			$this->add_related_files(constants::M_FRANKY, constants::M_FILEAREA_SUBMISSIONS, constants::M_USERTABLE);
-             $this->add_related_files(constants::M_FRANKY, constants::M_FILEAREA_FEEDBACKTEXT, constants::M_USERTABLE);
+			$this->add_related_files(constants::M_COMP, constants::M_FILEAREA_SUBMISSIONS, constants::M_USERTABLE);
+             $this->add_related_files(constants::M_COMP, constants::M_FILEAREA_FEEDBACKTEXT, constants::M_USERTABLE);
 		 }
     }
 }

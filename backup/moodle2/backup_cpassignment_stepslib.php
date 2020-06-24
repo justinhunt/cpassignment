@@ -50,7 +50,7 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
 
         // root element describing cpassignment instance
         $oneactivity = new backup_nested_element(constants::M_MODNAME, array('id'), array(
-                'course', 'name', 'intro', 'introformat',
+                'key','course', 'name', 'intro', 'introformat',
                 'passage', 'passageformat', 'instructions',
                 'instructionsformat', 'finished',
                 'finishedformat', 'timelimit', 'grade',
@@ -68,12 +68,22 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
             "status", "filename", "transcript", "fulltranscript",
             "subtitles", "sessionscore", "sessiontime", "feedbacktext",
             "feedbacktextformat", "feedbackaudio", "feedbackvideo",
+            "customtext1","customtext2","customtext3","customtext4","customtext5",
             "timecreated","timemodified"
 		));
+
+        //keys
+        $keys = new backup_nested_element('keys');
+        $key = new backup_nested_element('key', array('id'),
+                array(constants::M_MODNAME . "id", "userid","key",
+                        "timecreated","timemodified"
+                ));
 
 		// Build the tree.
         $oneactivity->add_child($attempts);
         $attempts->add_child($attempt);
+        $oneactivity->add_child($keys);
+        $keys->add_child($key);
 
 
         // Define sources.
@@ -83,6 +93,8 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
         if ($userinfo) {
 			$attempt->set_source_table(constants::M_USERTABLE,
 			array(constants::M_MODNAME . 'id' => backup::VAR_PARENTID));
+            $key->set_source_table(constants::M_KEYTABLE,
+                    array(constants::M_MODNAME . 'id' => backup::VAR_PARENTID));
         }
 
         // Define id annotations.
@@ -91,15 +103,15 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
 
         // Define file annotations.
         // intro file area has 0 itemid.
-        $oneactivity->annotate_files(constants::M_FRANKY, 'intro', null);
-		$oneactivity->annotate_files(constants::M_FRANKY, 'instructions', null);
-		$oneactivity->annotate_files(constants::M_FRANKY, 'passage', null);
-		$oneactivity->annotate_files(constants::M_FRANKY, 'finished', null);
+        $oneactivity->annotate_files(constants::M_COMP, 'intro', null);
+		$oneactivity->annotate_files(constants::M_COMP, 'instructions', null);
+		$oneactivity->annotate_files(constants::M_COMP, 'passage', null);
+		$oneactivity->annotate_files(constants::M_COMP, 'finished', null);
 
 		//file annotation if including user info
         if ($userinfo) {
-			$attempt->annotate_files(constants::M_FRANKY, constants::M_FILEAREA_SUBMISSIONS, 'id');
-            $attempt->annotate_files(constants::M_FRANKY, constants::M_FILEAREA_FEEDBACKTEXT, 'id');
+			$attempt->annotate_files(constants::M_COMP, constants::M_FILEAREA_SUBMISSIONS, 'id');
+            $attempt->annotate_files(constants::M_COMP, constants::M_FILEAREA_FEEDBACKTEXT, 'id');
         }
 
         // Return the root element, wrapped into standard activity structure.

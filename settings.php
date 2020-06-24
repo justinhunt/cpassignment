@@ -40,6 +40,9 @@ if($ADMIN->fulltree) {
 	 $settings->add(new admin_setting_configtextarea('mod_cpassignment/defaultfinished',
         get_string('finishedlabel', 'cpassignment'), get_string('finishedlabel_details', constants::M_LANG), get_string('defaultfinished', constants::M_LANG), PARAM_TEXT));
 
+    $modeoptions = \mod_cpassignment\utils::get_mode_options();
+    $settings->add(new admin_setting_configselect('mod_cpassignment/mode', get_string('mode', constants::M_LANG), '', 0, $modeoptions));
+
 
     $settings->add(new admin_setting_configtext('mod_cpassignment/apiuser',
         get_string('apiuser', constants::M_LANG), get_string('apiuser_details', constants::M_LANG), '', PARAM_TEXT));

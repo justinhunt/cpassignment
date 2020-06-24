@@ -32,6 +32,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use \mod_cpassignment\constants;
+
 /**
  * Execute cpassignment upgrade from the given old version
  *
@@ -43,21 +45,32 @@ function xmldb_cpassignment_upgrade($oldversion) {
 
     $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
 
-/*
+
     // Add SOMEFIELD field
-    if ($oldversion < 2018070100) {
+    if ($oldversion < 2020061600) {
 
         // Define field introformat to be added to cpassignment
-        $table = new xmldb_table('cpassignment');
-        $field = new xmldb_field('SOMEFIELD', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0');
+        $table = new xmldb_table(constants::M_USERTABLE);
+        for($x=1;$x<6;$x++) {
+            $field = new xmldb_field('textfield' . $x, XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, null, null, null);
+
+            // Add field introformat
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        // Define field introformat to be added to cpassignment
+        $table = new xmldb_table(constants::M_MODNAME);
+        $field = new xmldb_field('key', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, null, null, null);
 
         // Add field introformat
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_mod_savepoint(true, 2018070100, 'cpassignment');
+
+        upgrade_mod_savepoint(true, 2020061600, constants::M_MODNAME);
     }
-*/
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }

@@ -9,6 +9,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course cpassignment activity belongs to" />
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" />
+        <FIELD NAME="mode" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="regular or anonymous" />
         <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the cpassignment activity" />
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)"/>
 		   <FIELD NAME="passage" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The passage to be read." />
@@ -46,25 +47,43 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course cpassignment activity belongs to" />
-		    <FIELD NAME="cpassignmentid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="cpassignment activity this data belongs to" />
-		    <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course cpassignment activity belongs to" />
+		<FIELD NAME="cpassignmentid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="cpassignment activity this data belongs to" />
+		<FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course cpassignment activity belongs to" />
         <FIELD NAME="status" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="status " />
-		    <FIELD NAME="filename" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="the submission filename"/>
+		<FIELD NAME="filename" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="the submission filename"/>
         <FIELD NAME="transcript" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The text transcript." />
         <FIELD NAME="fulltranscript" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The full TTS result (JSON)" />
         <FIELD NAME="subtitles" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="The subtitles (VTT)" />
-		    <FIELD NAME="sessionscore" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="the score for this session"/>
+		<FIELD NAME="sessionscore" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="the score for this session"/>
         <FIELD NAME="sessiontime" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" />
         <FIELD NAME="feedbacktext" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Feedback text" />
         <FIELD NAME="feedbacktextformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the feedback field (MOODLE, HTML, MARKDOWN...)"/>
         <FIELD NAME="feedbackaudio" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="audio feedback filename" />
         <FIELD NAME="feedbackvideo" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="video feedback filename" />
-		    <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
+        <FIELD NAME="customtext1" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="customtext one" />
+        <FIELD NAME="customtext2" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="customtext two" />
+        <FIELD NAME="customtext3" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="customtext three" />
+        <FIELD NAME="customtext4" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="customtext four" />
+        <FIELD NAME="customtext5" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="customtext five" />
+		<FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
+      <TABLE NAME="cpassignment_keys" COMMENT="user key id">
+          <FIELDS>
+              <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
+              <FIELD NAME="cpassignmentid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="cpassignment activity this data belongs to" />
+              <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The userid this belongs to" />
+              <FIELD NAME="key" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="key field to identify userid an cpassignment" />
+              <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
+              <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
+          </FIELDS>
+          <KEYS>
+              <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+          </KEYS>
+      </TABLE>
   </TABLES>
 </XMLDB>

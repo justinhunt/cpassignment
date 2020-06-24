@@ -8,6 +8,9 @@ define(['jquery','core/log'], function($,log) {
     return {
         openModal: function (selector){
             $(selector).modal('show');
+        },
+        closeModal: function (selector){
+            $(selector).modal('hide');
         }
     };//end of return object
 });
