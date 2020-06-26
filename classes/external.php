@@ -66,14 +66,15 @@ class mod_cpassignment_external extends external_api {
                 'filename' => new external_value(PARAM_TEXT),
                 'itemname' => new external_value(PARAM_TEXT),
                 'itemid' => new external_value(PARAM_TEXT),
+                'accesskey' => new external_value(PARAM_TEXT)
         ]);
     }
 
-    public static function submit_rec($cmid,$subid, $filename,$itemname,$itemid) {
+    public static function submit_rec($cmid,$subid, $filename,$itemname,$itemid, $accesskey) {
         global $DB, $USER;
 
         $params = self::validate_parameters(self::submit_rec_parameters(),
-                array('cmid'=>$cmid,'subid'=>$subid,'filename'=>$filename,'itemname'=>$itemname,'itemid'=>$itemid));
+                array('cmid'=>$cmid,'subid'=>$subid,'filename'=>$filename,'itemname'=>$itemname,'itemid'=>$itemid,'accesskey'=>$accesskey));
         extract($params);
 
         $cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
@@ -83,7 +84,7 @@ class mod_cpassignment_external extends external_api {
         //make database items and adhoc tasks
         $ret = new stdClass();
         $ret->success = false;
-        $item = utils::save_rec_to_moodle( $themodule, $filename, $subid, $itemname,$itemid);
+        $item = utils::save_rec_to_moodle( $themodule, $filename, $subid, $itemname,$itemid,$accesskey);
 
         if($item){
                 $ret->success = true;
@@ -168,4 +169,70 @@ class mod_cpassignment_external extends external_api {
     public static function select_attempt_returns() {
         return new external_value(PARAM_RAW);
     }
+
+    /**
+     * Returns description of method parameters
+     * @return external_function_parameters
+     */
+    public static function reset_key_parameters() {
+        $params = array();
+        $params['moduleid'] = new external_value(PARAM_INT, 'The id of the activity');
+
+        return new external_function_parameters(
+                $params
+        );
+    }
+
+    /*
+  * Reset CPAPI secret
+    * $username
+    * $currentsecret
+  */
+    public static function reset_key($moduleid){
+
+        global $USER;
+
+        $rawparams = array();
+        $rawparams['moduleid'] = $moduleid;
+
+
+        //Parameter validation
+        $params = self::validate_parameters(self::reset_key_parameters(),
+                $rawparams);
+
+        //Context validation
+        //OPTIONAL but in most web service it should present
+        $context = context_user::instance($USER->id);
+        self::validate_context($context);
+
+        //Capability checking
+        if (!has_capability('mod/cpassignment:view', $context)) {
+            throw new moodle_exception('nopermission');
+        }
+
+
+
+        //do the job and process the result
+        $newkey = utils::do_reset_accesskey($params['moduleid']);
+
+        //handle return to Moodle
+        $ret = new stdClass();
+        if(!$newkey){
+            $ret->success=false;
+            $ret->message="could not get a new key";
+        }else {
+            $ret->success = true;
+            $ret->message=$newkey;
+        }
+
+        return json_encode($ret);
+    }
+
+    /**
+     * Returns description of method result value
+     * @return external_description
+     */
+    public static function reset_key_returns() {
+        return new external_value(PARAM_RAW);
+    }//end of function
 }

@@ -42,5 +42,14 @@ $functions = array(
         'capabilities'=> 'mod/cpassignment:view',
         'type'        => 'write',
         'ajax'        => true,
-    )
+    ),
+
+    'mod_cpassignment_reset_key' => array(
+            'classname'   => 'mod_cpassignment_external',
+            'methodname'  => 'reset_key',
+            'description' => 'resets access key',
+            'capabilities'=> 'mod/cpassignment:view',
+            'type'        => 'write',
+            'ajax'        => true,
+    ),
 );

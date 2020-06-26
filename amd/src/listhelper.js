@@ -1,6 +1,6 @@
-define(['jquery','core/log','core/ajax','core/templates','core/modal_factory','core/str','core/modal_events',
+define(['jquery','core/config','core/log','core/ajax','core/templates','core/modal_factory','core/str','core/modal_events',
         'mod_cpassignment/cloudpoodllloader','mod_cpassignment/dialogs','mod_cpassignment/datatables','core/notification'],
-    function($,log,Ajax, templates, ModalFactory, str, ModalEvents, cloudpoodll, dialogs, datatables,notification) {
+    function($,cfg,log,Ajax, templates, ModalFactory, str, ModalEvents, cloudpoodll, dialogs, datatables,notification) {
     "use strict"; // jshint ;_;
 
     log.debug('cpassignment list helper: initialising');
@@ -9,11 +9,21 @@ define(['jquery','core/log','core/ajax','core/templates','core/modal_factory','c
         controls: {},
         modulecssclass: null,
         cmid: null,
+        moduleid: 0,
         strings: [],
+        authmode: 'normal',
+        accesskey: '',
 
         init: function(props){
             this.modulecssclass = props.modulecssclass;
+            this.moduleid = props.moduleid;
             this.cmid = props.cmid;
+            if(props.hasOwnProperty('authmode')){
+                this.authmode=props.authmode;
+            }
+            if(props.hasOwnProperty('accesskey')){
+                this.accesskey=props.accesskey;
+            }
             this.prepare_html();
             this.register_events();
             //instantiate the recorders
@@ -33,6 +43,11 @@ define(['jquery','core/log','core/ajax','core/templates','core/modal_factory','c
 
         prepare_html: function(){
             this.controls.arecstartbutton = $('#' + this.modulecssclass + '_listaudiorecstart');
+            this.controls.shareboxbutton = $('#' + this.modulecssclass + '_listshareboxstart');
+            this.controls.shareboxresetkeybutton = $('#' + this.modulecssclass + '_sharebox_resetkey_button');
+            this.controls.sharebox = $('#' + this.modulecssclass + '_sharebox');
+            this.controls.shareboxcopybutton = $('#' + this.modulecssclass + '_sharebox_copy_button');
+
             this.controls.areccontainer = $('#' + this.modulecssclass + '_arec_container');
             this.controls.rectable = $('#' + this.modulecssclass + '_itemstable__opts_9999');
             this.controls.itemnamefield = $('.itemform_itemname');
@@ -46,12 +61,15 @@ define(['jquery','core/log','core/ajax','core/templates','core/modal_factory','c
             this.controls.deletebutton = $('#' + this.modulecssclass + '_itemstable__opts_9999 a[data-type="delete"]');
             this.controls.downloadbutton = $('#' + this.modulecssclass + '_itemstable__opts_9999 a[data-type="download"]');
             this.controls.arecstartbutton.show();
+            this.controls.shareboxbutton.show();
             this.controls.thedatatable = datatables.getDataTable(this.modulecssclass + '_itemstable__opts_9999');
 
         },
 
         register_events: function(){
             var that =this;
+
+            //recorder dialog show link
             this.controls.arecstartbutton.click(function(){
                 //clear fields
                 that.controls.itemfilenamefield.val("");
@@ -61,6 +79,40 @@ define(['jquery','core/log','core/ajax','core/templates','core/modal_factory','c
                 dialogs.openModal('#' + that.modulecssclass + '_arec_container');
             });
 
+            //sharebox
+            this.controls.shareboxbutton.click(function(){
+                that.show_sharebox();
+            });
+
+            //sharebox
+            this.controls.shareboxresetkeybutton.click(function(){
+                ModalFactory.create({
+                    type: ModalFactory.types.SAVE_CANCEL,
+                    title: 'Reset the Public Link',
+                    body: 'Resetting the public link will change it and the previous link will no longer work anymore. Are you sure that you want to do this?'
+                })
+                .then(function(modal) {
+                    modal.setSaveButtonText('RESET');
+                    var root = modal.getRoot();
+                    root.on(ModalEvents.save, function() {
+                        that.do_resetkey(that, that.moduleid);
+                    });
+                    modal.show();
+                });
+                return false;
+            });
+
+            this.controls.shareboxcopybutton.click(function(){
+                var copyText = that.controls.sharebox[0];
+                /* Select the text field */
+                copyText.select();
+                copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+                /* Copy the text inside the text field */
+                document.execCommand("copy");
+            });
+
+            //download links
             this.controls.rectable.on('click','a[data-type="download"]',function(e){
                     var clickedLink = $(e.currentTarget);
                     var elementid = clickedLink.data('id');
@@ -68,7 +120,7 @@ define(['jquery','core/log','core/ajax','core/templates','core/modal_factory','c
                     return false;
             });
 
-            //this.controls.deletebutton.click(function(e){
+            //delete linkc
             this.controls.rectable.on('click','a[data-type="delete"]',function(e){
                         var clickedLink = $(e.currentTarget);
                         var elementid = clickedLink.data('id');
@@ -99,6 +151,47 @@ define(['jquery','core/log','core/ajax','core/templates','core/modal_factory','c
             that.controls.dialogdownloadbutton.attr("href",audiolink);
             that.controls.dialogdownloadname.html('<h3>Download: ' +  audiotitle + '</h3>');
             dialogs.openModal('#' + that.modulecssclass + '_download_container');
+        },
+
+        show_sharebox(){
+            var that =this;
+            /*
+            var audiotitle = $('td.itemname span[data-itemid="'+ elementid+ '"]').data('value');
+            var audiolink = $('td.item audio[data-id="'+ elementid+ '"]').attr('src');
+            that.controls.dialogdownloadlink.val(audiolink);
+            that.controls.dialogdownloadbutton.attr("href",audiolink);
+            that.controls.dialogdownloadname.html('<h3>Download: ' +  audiotitle + '</h3>');
+            */
+            dialogs.openModal('#' + that.modulecssclass + '_sharebox_container');
+        },
+
+        do_resetkey(that, moduleid){
+
+            Ajax.call([{
+                methodname: 'mod_cpassignment_reset_key',
+                args: {
+                    moduleid: moduleid,
+                },
+                done: function (ajaxresult) {
+                    var payloadobject = JSON.parse(ajaxresult);
+                    if (payloadobject) {
+                        switch(payloadobject.success) {
+                            case true:
+                                var accesskey = payloadobject.message;
+                                that.controls.sharebox.val(cfg.wwwroot + '/mod/cpassignment/k.php?k=' + accesskey);
+                                break;
+
+                            case false:
+                            default:
+                                if (payloadobject.message) {
+                                    log.debug('message: ' + payloadobject.message);
+                                }
+                        }
+                    }
+                },
+                fail: notification.exception
+            }]);
+
         },
 
         do_delete(itemid){
@@ -160,12 +253,13 @@ define(['jquery','core/log','core/ajax','core/templates','core/modal_factory','c
             );
         },
 
-        re_init_recorder: function(recorderid){
+        re_init_recorder: function(that,recorderid){
             var rec_div = $('#' + recorderid);
             rec_div.empty();
             rec_div.attr('data-alreadyparsed','false');
             //the initially applied callback lives, so we just do a blank one here
-            cloudpoodll.init(recorderid,function(){});
+            var callback = false;
+            cloudpoodll.init(recorderid,callback);
         },
 
         insert_new_item: function(that,item){
@@ -180,16 +274,22 @@ define(['jquery','core/log','core/ajax','core/templates','core/modal_factory','c
 
         send_submission: function(subid,filename, itemid, itemname ){
             var that=this;
-
-            Ajax.call([{
-                methodname: 'mod_cpassignment_submit_rec',
-                args: {
+            var args = {
                     subid: subid,
                     filename: filename,
                     itemname: itemname,
                     itemid: itemid,
                     cmid: that.cmid
-                },
+                };
+            if(authmode==='guest'){
+                args.accesskey=that.accesskey;
+            }else{
+                args.accesskey='none';
+            }
+
+            Ajax.call([{
+                methodname: 'mod_cpassignment_submit_rec',
+                args: args,
                 done: function (ajaxresult) {
                     var payloadobject = JSON.parse(ajaxresult);
                     if (payloadobject) {
@@ -198,7 +298,7 @@ define(['jquery','core/log','core/ajax','core/templates','core/modal_factory','c
                                 var item = payloadobject.item;
                                 that.insert_new_item(that,item);
                                 dialogs.closeModal('#' + that.modulecssclass + '_arec_container');
-                                that.re_init_recorder(that.audiorecid);
+                                that.re_init_recorder(that,that.audiorecid);
                                 break;
 
                             case false:

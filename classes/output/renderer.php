@@ -56,16 +56,45 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
         return $output;
     }
 
+    /**
+     * Returns the header for the module
+     *
+     * @param mod $instance
+     * @param string $currenttab current tab that is shown.
+     * @param int    $item id of the anything that needs to be displayed.
+     * @param string $extrapagetitle String to append to the page title.
+     * @return string
+     */
+    public function notabsheader($moduleinstance, $cm, $currenttab = '', $itemid = null, $extrapagetitle = null) {
+        global $CFG;
+
+        $activityname = format_string($moduleinstance->name, true, $moduleinstance->course);
+        if (!empty($extrapagetitle)) {
+            $title = $this->page->course->shortname.": ".$activityname.": ".$extrapagetitle;
+        }
+
+        // Build the buttons
+        $context = \context_module::instance($cm->id);
+
+        /// Header setup
+        $this->page->set_title($title);
+        $this->page->set_heading($this->page->course->fullname);
+        $output = $this->output->header();
+
+
+        return $output;
+    }
+
 
 
     /**
      *  Show a single button.
      */
-    public function js_trigger_button($buttontag, $visible, $buttonlabel){
+    public function js_trigger_button($buttontag, $visible, $buttonlabel, $bootstrapclass='btn-primary'){
 
         $buttonclass =constants::M_CLASS  . '_' . $buttontag;
         $containerclass = $buttonclass . 'container';
-        $button = \html_writer::link('#', $buttonlabel, array('class'=>'btn btn-primary ' . $buttonclass,'type'=>'button','id'=>$buttonclass));
+        $button = \html_writer::link('#', $buttonlabel, array('class'=>'btn ' . $bootstrapclass . ' ' . $buttonclass,'type'=>'button','id'=>$buttonclass));
         $visibleclass = '';
         if(!$visible){$visibleclass = 'hide';}
         $ret = \html_writer::div($button, $containerclass . ' ' .  $visibleclass);
@@ -401,6 +430,14 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
     function fetch_downloadform(){
         $data=[];
         return $this->render_from_template('mod_cpassignment/downloadform', $data);
+    }
+
+    //fetch sharebox
+    function fetch_sharebox($accesskey){
+        global $CFG;
+        $data=[];
+        $data['publiclink'] = $CFG->wwwroot . '/mod/cpassignment/k.php?k=' . $accesskey;
+        return $this->render_from_template('mod_cpassignment/sharebox', $data);
     }
 
     /**

@@ -127,3 +127,11 @@ tr.mod_cpassignment_attemptrow {
 	margin: auto;
 	text-align: center;
 }
+.mod_cpassignment_sharebox_copy_button {
+	float: right;
+}
+
+.mod_cpassignment_listshareboxstartcontainer {
+	width: 150px;
+	float: right;
+}

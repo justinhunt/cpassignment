@@ -77,7 +77,7 @@
               <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
               <FIELD NAME="cpassignmentid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="cpassignment activity this data belongs to" />
               <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The userid this belongs to" />
-              <FIELD NAME="key" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="key field to identify userid an cpassignment" />
+              <FIELD NAME="accesskey" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="key field to identify userid an cpassignment" />
               <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
               <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
           </FIELDS>

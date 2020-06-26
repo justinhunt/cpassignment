@@ -258,14 +258,25 @@ class utils{
     }
 
     //save the data to Moodle.
-    public static function save_rec_to_moodle( $themodule, $filename, $subid, $itemname,$itemid){
+    public static function save_rec_to_moodle( $themodule, $filename, $subid, $itemname,$itemid, $accesskey){
         global $USER,$DB,$PAGE;
+
+        if($accesskey !='none'){
+            $accessinfo = self::get_accessinfo_by_accesskey($accesskey);
+            if($accessinfo) {
+                $userid = $accessinfo->userid;
+            }else{
+                return false;
+            }
+        }else{
+            $userid = $USER->id;
+        }
 
         $attemptid=0;
         $theattempt = new \stdClass();
         $theattempt->courseid = $themodule->course;
         $theattempt->cpassignmentid = $themodule->id;
-        $theattempt->userid = $USER->id;
+        $theattempt->userid = $userid;
         $theattempt->filename = $filename;
         $theattempt->{constants::LIST_ITEM_NAME} = $itemname;
         $theattempt->{constants::LIST_ITEM_ID} = $itemid;
@@ -279,7 +290,7 @@ class utils{
             $attemptid = $DB->insert_record(constants::M_USERTABLE, $theattempt);
             $theattempt->id=$attemptid;
         }else{
-            $currentattempt = $DB->get_record(constants::M_USERTABLE,array('id'=>$subid,'userid'=>$USER->id));
+            $currentattempt = $DB->get_record(constants::M_USERTABLE,array('id'=>$subid,'userid'=>$userid));
             if($currentattempt) {
                 $theattempt->id = $subid;
                 $attemptid = $DB->update_record(constants::M_USERTABLE, $theattempt);
@@ -374,42 +385,66 @@ class utils{
         return $recorderdiv;
     }
 
-    //puts the content passed in, into div containers that Bootstrap will recognize as a modal (hidden on load etc)
-    public static function fetch_modal_container($modalcontent,$containertag){
-        $containerid = constants::M_CLASS  . '_' . $containertag;
-        //this is the modal container that hides it. The id is used to trigger the modal. The trigger code is not set up here.
-        $modal_attributes = array('id'=>$containerid, 'role'=>'dialog','aria-hidden'=>'true','tab-index'=>'-1');
-        $modal =  \html_writer::div($modalcontent, $containerid  . ' hidden modal fade',$modal_attributes);
-        return $modal;
+
+    //fetch the access key
+    public static function get_accessinfo_by_accesskey($accesskey) {
+        global $DB, $USER;
+
+        $rec = $DB->get_record(constants::M_KEYTABLE,array('accesskey'=>$accesskey));
+        if($rec) {
+            return $rec;
+        }else{
+            return false;
+        }
     }
 
+    //fetch the access key
+    public static function fetch_accesskey($moduleid) {
+         global $DB, $USER;
 
-    /**
-     *  A template to make the content of a modal(header/content/footer(+buttons)
-     */
-    public static function fetch_modal_content($title,$content) {
+        $rec = $DB->get_record(constants::M_KEYTABLE,array('cpassignmentid'=>$moduleid, 'userid'=>$USER->id));
+        if($rec) {
+            return $rec->accesskey;
+        }else{
+            $accesskey = self::do_reset_accesskey($moduleid);
+            return $accesskey;
+        }
+    }
 
-        $modalcontent=  '<div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">';
-        $modalcontent .=  $title;
-        $modalcontent .= '</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">';
-        $modalcontent .=  $content;
-        $modalcontent .=  '</div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>';
+    //generate a new or updated random key for access
+    public static function do_reset_accesskey($moduleid){
+        global $USER, $DB;
 
-        return $modalcontent;
+        $exists = true;
+        $attempts = 0;
+        $random = '';
+        while($exists || $attempts==100) {
+            $attempts++;
+            $random = \html_writer::random_id('RMP3');
+            $exists = $DB->record_exists(constants::M_KEYTABLE, array('accesskey' => $random));
+        }
+        if($exists || empty($random)){
+            //we failed to get a random id
+            return false;
+        }
+
+        if($DB->record_exists(constants::M_KEYTABLE,array('cpassignmentid'=>$moduleid, 'userid'=>$USER->id))){
+            $ret = $DB->set_field(constants::M_KEYTABLE,'accesskey',$random,array('cpassignmentid'=>$moduleid, 'userid'=>$USER->id));
+        }else{
+            $newkeyobject = new \stdClass();
+            $newkeyobject->cpassignmentid=$moduleid;
+            $newkeyobject->userid= $USER->id;
+            $newkeyobject->accesskey=$random;
+            $newkeyobject->timecreated=time();
+            $newkeyobject->timemodified=time();
+            $ret = $DB->insert_record(constants::M_KEYTABLE,$newkeyobject);
+        }
+        if($ret){
+            return $random;
+        }else{
+            return false;
+        }
+
     }
 
 
