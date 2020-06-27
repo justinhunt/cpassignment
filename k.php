@@ -42,8 +42,9 @@ if ($accessinfo) {
 }
 
 $PAGE->set_url('/mod/cpassignment/k.php', array('k' => $accesskey));
-require_login($course, true, $cm);
+//require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
+$PAGE->set_context($modulecontext);
 
 //are we a teacher or a student?
 $mode= "view";
@@ -52,9 +53,9 @@ $mode= "view";
 // Set up the page header.
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($modulecontext);
-//$PAGE->set_pagelayout('embedded');
-$PAGE->set_pagelayout('course');
+
+$PAGE->set_pagelayout('embedded');
+
 
 // Get an admin settings.
 $config = get_config(constants::M_COMP);
@@ -103,9 +104,13 @@ $arecorderbutton = $renderer->js_trigger_button('listaudiorecstart', true,
 $fullname = fullname($owner);
 
 
-echo $renderer->show_list_top($fullname);
+echo $renderer->show_unauth_top($fullname);
 echo $arecorderbutton;
 echo $amodalcontainer;
+
+//acknowledge receipts container (only for unauth users with access key)
+echo $renderer->fetch_receipts_container();
+
 
 
 

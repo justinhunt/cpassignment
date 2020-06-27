@@ -135,3 +135,21 @@ tr.mod_cpassignment_attemptrow {
 	width: 150px;
 	float: right;
 }
+
+.cp_assignment_onereceipt {
+	text-align: center;
+	margin: auto;
+	max-width: 350px;
+	margin-top: 25px;
+	border: darkgray 1px solid;
+	border-radius: 5px;
+	background-color: white;
+	padding: 8px;
+}
+
+.therecorderid_mod_cpassignment_listaudiorec {
+	text-align: center;
+	background-image: url([[pix:mod_cpassignment|spinner]]);
+	background-repeat: no-repeat;
+	background-position: center;
+}

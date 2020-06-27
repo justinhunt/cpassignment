@@ -47,7 +47,9 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             this.controls.shareboxresetkeybutton = $('#' + this.modulecssclass + '_sharebox_resetkey_button');
             this.controls.sharebox = $('#' + this.modulecssclass + '_sharebox');
             this.controls.shareboxcopybutton = $('#' + this.modulecssclass + '_sharebox_copy_button');
-
+            this.controls.receiptscontainer = $('#' + this.modulecssclass + '_receipts_container');
+            this.controls.noitemscontainer = $('#' + this.modulecssclass + '_noitems_cont');
+            this.controls.itemscontainer = $('#' + this.modulecssclass + '_items_cont');
             this.controls.areccontainer = $('#' + this.modulecssclass + '_arec_container');
             this.controls.rectable = $('#' + this.modulecssclass + '_itemstable__opts_9999');
             this.controls.itemnamefield = $('.itemform_itemname');
@@ -135,7 +137,10 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                                 var root = modal.getRoot();
                                 root.on(ModalEvents.save, function() {
                                     that.controls.thedatatable.row( clickedLink.parents('tr')).remove().draw();
-                                    //$('tr[data-id="' +elementid+ '"]').remove();
+                                    if(!that.controls.thedatatable.count()){
+                                        that.controls.noitemscontainer.show();
+                                        that.controls.itemscontainer.hide();
+                                    }
                                     that.do_delete(elementid);
                                 });
                                 modal.show();
@@ -155,13 +160,6 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
 
         show_sharebox(){
             var that =this;
-            /*
-            var audiotitle = $('td.itemname span[data-itemid="'+ elementid+ '"]').data('value');
-            var audiolink = $('td.item audio[data-id="'+ elementid+ '"]').attr('src');
-            that.controls.dialogdownloadlink.val(audiolink);
-            that.controls.dialogdownloadbutton.attr("href",audiolink);
-            that.controls.dialogdownloadname.html('<h3>Download: ' +  audiotitle + '</h3>');
-            */
             dialogs.openModal('#' + that.modulecssclass + '_sharebox_container');
         },
 
@@ -263,11 +261,20 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         },
 
         insert_new_item: function(that,item){
-
+            that.controls.noitemscontainer.hide();
+            that.controls.itemscontainer.show();
             templates.render('mod_cpassignment/itemrow',item).then(
                 function(html,js){
-                   // that.controls.rectable.find('tbody').prepend(html);
                     that.controls.thedatatable.row.add($(html)[0]).draw();
+                }
+            );
+        },
+
+        acknowledge_receipt: function(that,item){
+            that.controls.receiptscontainer.show();
+            templates.render('mod_cpassignment/onereceipt',item).then(
+                function(html,js){
+                    that.controls.receiptscontainer.prepend(html);
                 }
             );
         },
@@ -281,7 +288,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                     itemid: itemid,
                     cmid: that.cmid
                 };
-            if(authmode==='guest'){
+            if(this.authmode==='guest'){
                 args.accesskey=that.accesskey;
             }else{
                 args.accesskey='none';
@@ -296,7 +303,12 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                         switch(payloadobject.success) {
                             case true:
                                 var item = payloadobject.item;
-                                that.insert_new_item(that,item);
+                                if(that.authmode==='guest'){
+                                    that.acknowledge_receipt(that,item);
+                                }else{
+                                    that.insert_new_item(that,item);
+                                }
+
                                 dialogs.closeModal('#' + that.modulecssclass + '_arec_container');
                                 that.re_init_recorder(that,that.audiorecid);
                                 break;

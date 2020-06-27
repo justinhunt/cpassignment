@@ -12,9 +12,9 @@ $functions = array(
             'classname'   => 'mod_cpassignment_external',
             'methodname'  => 'submit_rec',
             'description' => 'submits recording.',
-            'capabilities'=> 'mod/cpassignment:view',
             'type'        => 'write',
             'ajax'        => true,
+            'loginrequired' => false
     ),
 
     'mod_cpassignment_remove_rec' => array(
@@ -23,7 +23,7 @@ $functions = array(
             'description' => 'removes recording.',
             'capabilities'=> 'mod/cpassignment:view',
             'type'        => 'write',
-            'ajax'        => true,
+            'ajax'          => true
     ),
 
     'mod_cpassignment_submit_attempt' => array(

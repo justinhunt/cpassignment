@@ -229,8 +229,7 @@ $string['item'] = 'Item';
 $string['timemodified'] = 'Date';
 $string['edititem'] = 'Edit';
 $string['deleteitem'] = 'Delete';
-$string['noitemsheader'] = 'Nothing to Display (yet)';
-$string['noitemsinfo'] = 'No recordings have been submitted yet. When they have you will see a list of them here';
+
 $string['listtop'] = '{$a} Audio Folder';
 $string['listtopdetails'] = 'Your Audio Recordings are all displayed down here.';
 $string['listrecaudiolabel'] = 'Record Audio';
@@ -252,3 +251,12 @@ $string['resetkeylink'] = 'Reset Public Link';
 $string['copysharelink'] = 'Copy Public Link';
 $string['resetkeywarning'] = 'Resetting the public link will change it and the previous link will no longer work anymore. Are you sure that you want to do this?';
 $string['copysharelinkinstructions'] = 'Copy the text below and distribute it to your users. From the linked location they will be able to record audio which will appear in your list of audio submissions,';
+$string['receiptsheader'] = 'Submitted Audio';
+$string['onereceiptheader'] = 'Audio Recieved!!';
+$string['receiptsinfo'] = 'Receipts Info';
+
+$string['noitemsheader'] = 'Nothing to Display (yet)';
+$string['noitemsinfo'] = 'No recordings have been submitted yet. When they have you will see a list of them here';
+$string['noitems'] = 'No Items';
+$string['unauthtopdetails'] = 'Record audio using the recorder below. After you upload it will be submitted and processed.';
+

@@ -49,6 +49,7 @@ const M_GRADING_CURRENTFBPLAYER_CONTAINER =
 
 const LIST_ITEM_NAME='customtext1';
 const LIST_ITEM_ID='customtext2';
+const M_ITEMS_CONTAINER='mod_cpassignment_items_cont';
 const M_NOITEMS_CONTAINER='mod_cpassignment_noitems_cont';
 const M_LISTTOP_CONTAINER='mod_cpassignment_listtop_cont';
 const M_LIST_AUDIOREC='mod_cpassignment_listaudiorec';

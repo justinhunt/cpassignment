@@ -14,7 +14,7 @@ use renderable;
 use renderer_base;
 use templatable;
 
-class renderer extends \plugin_renderer_base implements templatable, renderable {
+class renderer extends \plugin_renderer_base implements renderable {
 
     /**
      * Returns the header for the module
@@ -80,8 +80,6 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
         $this->page->set_title($title);
         $this->page->set_heading($this->page->course->fullname);
         $output = $this->output->header();
-
-
         return $output;
     }
 
@@ -229,15 +227,7 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
         return $ret;
     }
 
-    /**
-     * Export this data so it can be used as the context for a mustache template.
-     *
-     * @return stdClass
-     */
-    public function export_for_template(renderer_base $output) {
 
-       // I'm not sure how to use this function.
-    }
 
     public function fetch_attempts($moduleinstance, $modulecontext, $userid) {
 
@@ -362,13 +352,10 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
      * @param integer $courseid
      * @return string html of table
      */
-    function show_list_items($items,$tableid,$cm){
-
-        if(!$items){
-            return $this->output->heading(get_string('noitems',constants::M_COMP), 3, 'main');
-        }
+    function show_list_items($items,$tableid,$visible){
 
         $data = [];
+        $data['display'] = $visible ? 'block' : 'none';
         $data['tableid']=$tableid;
         $data['items']=[];
         //loop through the items,massage data and add to table
@@ -443,22 +430,40 @@ class renderer extends \plugin_renderer_base implements templatable, renderable 
     /**
      * No items, thats too bad
      */
-    public function no_list_items(){
-        $displaytext = $this->output->box_start();
-        $displaytext .= $this->output->heading(get_string('noitemsheader',constants::M_LANG), 3, 'main');
-        $displaytext .=  \html_writer::div(get_string('noitemsinfo',constants::M_LANG),'',array());
-        $displaytext .= $this->output->box_end();
-        $ret= \html_writer::div($displaytext,constants::M_NOITEMS_CONTAINER,array('id'=>constants::M_NOITEMS_CONTAINER));
-        return $ret;
+    public function no_list_items($visible){
+        $data=[];
+        $data['display'] = $visible ? 'block' : 'none';
+        return $this->render_from_template('mod_cpassignment/noitemscontainer', $data);
     }
 
     /**
-     * Show lost top
+     * No items, thats too bad
+     */
+    public function fetch_receipts_container(){
+        $data=[];
+        return $this->render_from_template('mod_cpassignment/receipts', $data);
+    }
+
+
+    /**
+     * Show list top
      */
     public function show_list_top($fullname){
         $displaytext = $this->output->box_start('mod_cpassignment_allcenter center');
         $displaytext .= $this->output->heading(get_string('listtop',constants::M_LANG,$fullname), 3, 'main center');
         $displaytext .=  \html_writer::div(get_string('listtopdetails',constants::M_LANG),'center',array());
+        $displaytext .= $this->output->box_end();
+        $ret= \html_writer::div($displaytext,constants::M_LISTTOP_CONTAINER,array('id'=>constants::M_LISTTOP_CONTAINER));
+        return $ret;
+    }
+
+    /**
+     * Show list top
+     */
+    public function show_unauth_top($fullname){
+        $displaytext = $this->output->box_start('mod_cpassignment_allcenter center');
+        $displaytext .= $this->output->heading(get_string('listtop',constants::M_LANG,$fullname), 3, 'main center');
+        $displaytext .=  \html_writer::div(get_string('unauthtopdetails',constants::M_LANG),'center',array());
         $displaytext .= $this->output->box_end();
         $ret= \html_writer::div($displaytext,constants::M_LISTTOP_CONTAINER,array('id'=>constants::M_LISTTOP_CONTAINER));
         return $ret;

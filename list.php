@@ -164,11 +164,12 @@ echo $smodalcontainer;
 
 
 //if we have items, show em. Data tables will make it pretty
-if($items){
-    echo $renderer->show_list_items($items,$tableid,$cm);
-}else{
-    echo $renderer->no_list_items();
+$visible = false;
+if($items) {
+    $visible = true;
 }
+echo $renderer->show_list_items($items,$tableid,$visible );
+echo $renderer->no_list_items(!$visible);
 
 //this inits the js for the grading page
 $opts=array('modulecssclass'=>constants::M_CLASS, 'cmid'=>$cm->id, 'moduleid'=>$moduleinstance->id,'authmode'=>'normal');
