@@ -104,7 +104,7 @@ $arecorderbutton = $renderer->js_trigger_button('listaudiorecstart', true,
 $fullname = fullname($owner);
 
 
-echo $renderer->show_unauth_top($fullname);
+echo $renderer->show_unauth_top($fullname,$moduleinstance->name);
 echo $arecorderbutton;
 echo $amodalcontainer;
 

@@ -692,9 +692,12 @@ class renderer extends \plugin_renderer_base implements renderable {
     /**
      * Show list top
      */
-    public function show_unauth_top($fullname){
+    public function show_unauth_top($fullname,$modname){
+        $moddetails = new \stdClass();
+        $moddetails->fullname = $fullname;
+        $moddetails->modname = $modname;
         $displaytext = $this->output->box_start('mod_cpassignment_allcenter center');
-        $displaytext .= $this->output->heading(get_string('listtop',constants::M_LANG,$fullname), 3, 'main center');
+        $displaytext .= $this->output->heading(get_string('listtop',constants::M_LANG,$moddetails), 3, 'main center');
         $displaytext .=  \html_writer::div(get_string('unauthtopdetails',constants::M_LANG),'center',array());
         $displaytext .= $this->output->box_end();
         $ret= \html_writer::div($displaytext,constants::M_LISTTOP_CONTAINER,array('id'=>constants::M_LISTTOP_CONTAINER));
