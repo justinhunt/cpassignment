@@ -13,6 +13,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         strings: [],
         authmode: 'normal',
         accesskey: '',
+        max: 0,
 
         init: function(props){
             this.modulecssclass = props.modulecssclass;
@@ -23,6 +24,9 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             }
             if(props.hasOwnProperty('accesskey')){
                 this.accesskey=props.accesskey;
+            }
+            if(props.hasOwnProperty('max')){
+                this.max=props.max;
             }
             this.prepare_html();
             this.register_events();
@@ -43,6 +47,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
 
         prepare_html: function(){
             this.controls.arecstartbutton = $('#' + this.modulecssclass + '_listaudiorecstart');
+            this.controls.arecstartcontainer = $('.' + this.modulecssclass + '_listaudiorecstartcontainer');
             this.controls.shareboxbutton = $('#' + this.modulecssclass + '_listshareboxstart');
             this.controls.shareboxresetkeybutton = $('#' + this.modulecssclass + '_sharebox_resetkey_button');
             this.controls.sharebox = $('#' + this.modulecssclass + '_sharebox');
@@ -63,6 +68,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             this.audiorecid = 'therecorderid_mod_cpassignment_listaudiorec';
             this.controls.deletebutton = $('#' + this.modulecssclass + '_itemstable__opts_9999 a[data-type="delete"]');
             this.controls.downloadbutton = $('#' + this.modulecssclass + '_itemstable__opts_9999 a[data-type="download"]');
+            this.controls.recordingsexceeded = $('#' + this.modulecssclass + '_recordingsexceeded_cont');
             this.controls.arecstartbutton.show();
             this.controls.shareboxbutton.show();
             this.controls.thedatatable = datatables.getDataTable(this.modulecssclass + '_itemstable__opts_9999');
@@ -148,16 +154,29 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                                 var root = modal.getRoot();
                                 root.on(ModalEvents.save, function() {
                                     that.controls.thedatatable.row( clickedLink.parents('tr')).remove().draw();
-                                    if(!that.controls.thedatatable.count()){
+                                    var itemcount = that.controls.thedatatable.rows().count();
+                                    if(!itemcount){
                                         that.controls.noitemscontainer.show();
                                         that.controls.itemscontainer.hide();
                                     }
                                     that.do_delete(elementid);
+                                    that.check_item_count(that);
                                 });
                                 modal.show();
                             });
                         return false;
             });
+        },
+
+        check_item_count: function(that){
+          var itemcount =   that.controls.thedatatable.rows().count();
+          if(that.max > 0 && itemcount >= that.max){
+              that.controls.recordingsexceeded.show();
+              that.controls.arecstartcontainer.addClass('hide');
+          }else{
+              that.controls.recordingsexceeded.hide();
+              that.controls.arecstartcontainer.removeClass('hide');
+          }
         },
 
         show_download: function(that, elementid){
@@ -318,6 +337,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                                     that.acknowledge_receipt(that,item);
                                 }else{
                                     that.insert_new_item(that,item);
+                                    that.check_item_count(that);
                                 }
 
                                 dialogs.closeModal('#' + that.modulecssclass + '_arec_container');

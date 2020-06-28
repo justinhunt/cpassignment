@@ -170,3 +170,11 @@ tr.mod_cpassignment_attemptrow {
 	text-align: center;
 	margin-top: 10px;
 }
+
+.mod_cpassignment_recordingsexceeded_cont {
+	max-width: 500px;
+	border: gray 1px solid;
+	margin: auto;
+	text-align: center;
+	padding: 5px;
+}

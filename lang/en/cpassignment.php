@@ -261,5 +261,9 @@ $string['noitems'] = 'No Items';
 $string['unauthtopdetails'] = 'Record audio using the recorder below. After you upload it will be submitted and processed.';
 $string['otherreason'] = 'cannot attempt';
 $string['copydownloadlink'] = 'Copy Download Link';
+$string['recordingsexceededheader'] = 'Max recordings reached';
+$string['recordingsexceededinfo'] = 'You can keep no more than {$a} recordings. Please remove some recordings to continue';
+
+
 
 

@@ -470,6 +470,14 @@ class renderer extends \plugin_renderer_base implements renderable {
      */
     function display_list_page($moduleinstance, $cm, $config, $items){
         global $USER;
+
+        // How many allowed?
+        $max = $moduleinstance->maxattempts;
+        $attemptsexceeded = 0;
+        if ( ($max != 0)  && $items && (count($items) >= $max) ) {
+            $attemptsexceeded = 1;
+        }
+
         //Prepare datatable(before header printed)
         $tableid = '' . constants::M_CLASS_ITEMTABLE . '_' . '_opts_9999';
         $this->setup_datatables($tableid);
@@ -478,17 +486,6 @@ class renderer extends \plugin_renderer_base implements renderable {
         $mode= "view";
         echo $this->notabsheader($moduleinstance, $cm, $mode, null, get_string('view',
                 constants::M_LANG));
-
-
-        // How many allowed?
-        $max = $moduleinstance->maxattempts;
-        $attemptsexceeded = 0;
-
-        if ( ($max != 0)  && $items && (count($items) >= $max) ) {
-            $attemptsexceeded = 1;
-        }
-        //do something with attempts exceeded here
-        //but what?
 
 
         //Start Embed Recorder
@@ -500,7 +497,7 @@ class renderer extends \plugin_renderer_base implements renderable {
 
 
         //prepare audio feedback recorder, modal and trigger button
-        $timelimit=0;
+        $timelimit=$moduleinstance->timelimit;
         $audiorecorderhtml = \mod_cpassignment\utils::fetch_recorder(
                 $moduleinstance,$audiorecid, $token,
                 constants::M_LIST_AUDIOREC,
@@ -537,14 +534,24 @@ class renderer extends \plugin_renderer_base implements renderable {
 
         $shareboxbutton = $this->js_trigger_button('listshareboxstart', true,
                 get_string('listshareboxlabel',constants::M_LANG),'btn-success');
-        $arecorderbutton = $this->js_trigger_button('listaudiorecstart', true,
+
+        //recording button
+        $visible = $attemptsexceeded ? false : true;
+        $arecorderbutton = $this->js_trigger_button('listaudiorecstart', $visible,
                 get_string('listrecaudiolabel',constants::M_LANG), 'btn-primary');
+
+       //recordings exceeded
+        $data=[];
+        $data['maxitems']=$max;
+        $data['display']= $attemptsexceeded ? 'block' : 'none';
+        $recordingsexceededbox = $this->render_from_template('mod_cpassignment/recordingsexceeded', $data);
 
         $fullname = fullname($USER);
 
         echo $shareboxbutton;
         echo $this->show_list_top($fullname, $moduleinstance->name);
         echo $arecorderbutton;
+        echo $recordingsexceededbox;
         echo $amodalcontainer;
         echo $dmodalcontainer;
         echo $smodalcontainer;
@@ -558,8 +565,8 @@ class renderer extends \plugin_renderer_base implements renderable {
         echo $this->show_list_items($items,$tableid,$visible );
         echo $this->no_list_items(!$visible);
 
-        //this inits the js for the grading page
-        $opts=array('modulecssclass'=>constants::M_CLASS, 'cmid'=>$cm->id, 'moduleid'=>$moduleinstance->id,'authmode'=>'normal');
+        //this inits the js for the list helper page
+        $opts=array('modulecssclass'=>constants::M_CLASS, 'cmid'=>$cm->id, 'moduleid'=>$moduleinstance->id,'authmode'=>'normal', 'max'=>$max);
         $this->page->requires->js_call_amd("mod_cpassignment/listhelper", 'init', array($opts));
         
 

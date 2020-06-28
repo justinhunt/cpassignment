@@ -157,9 +157,11 @@ class mod_cpassignment_mod_form extends moodleform_mod {
                 get_string('timelimitdetails', constants::M_LANG));
 
         // Permitted attempts.
-        $attemptoptions = array(0 => get_string('unlimited', constants::M_LANG),
-                            1 => '1',2 => '2',3 => '3',4 => '4',5 => '5',);
-        $mform->addElement('select', 'maxattempts', get_string('maxattempts', constants::M_LANG), $attemptoptions);
+        $mform->addElement('text', 'maxattempts', get_string('maxattempts', constants::M_LANG), array('size'=>'10'));
+        $mform->setType('maxattempts',PARAM_INT);
+        $mform->setDefault('maxattempts',0);
+
+
 
         // Show grade to students?
         $mform->addElement('advcheckbox', 'showgrade',
