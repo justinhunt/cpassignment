@@ -227,8 +227,6 @@ class renderer extends \plugin_renderer_base implements renderable {
         return $ret;
     }
 
-
-
     public function fetch_attempts($moduleinstance, $modulecontext, $userid) {
 
         $submissionrenderer = $this->page->get_renderer(constants::M_COMP,'submission');
@@ -346,6 +344,230 @@ class renderer extends \plugin_renderer_base implements renderable {
         $this->page->requires->css( new \moodle_url('https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'));
     }
 
+    /*
+     * This is the top level function that assembles elements of the view page and displays them
+     * It is called from view.php
+     */
+    function display_view_page($moduleinstance, $cm, $config,$modulecontext, $submissionrenderer, $attempts) {
+        global $USER;
+
+        // Show our header
+        $mode= "view";
+        echo $this->header($moduleinstance, $cm, $mode, null, get_string('view',
+                constants::M_LANG));
+
+        // How many allowed?
+        $max = $moduleinstance->maxattempts;
+        $attemptsexceeded = 0;
+        $attemptcount = count($attempts);
+
+        if ( ($max != 0)  && $attempts && ($attemptcount >= $max) ) {
+            $attemptsexceeded = 1;
+        }
+
+        // Has it been graded yet?
+        $graded = false;
+        $gradedattemptid = 0;
+        $selectedattemptid = 0;
+        foreach ($attempts as $attempt) {
+            switch($attempt->status){
+                case constants::M_SUBMITSTATUS_GRADED:
+                    $graded = true;
+                    $gradedattemptid = $attempt->id;
+                    $selectedattemptid = $attempt->id;
+                    break;
+                case constants::M_SUBMITSTATUS_SELECTED:
+                    $selectedattemptid = $attempt->id;
+                    break;
+            }
+        }
+
+        // Status content is added to instructions.
+        $status = '';
+
+        // Is this a retake?
+        if ($attemptcount > 0) {
+
+            // Show a list of attempt data and status here.  Allow user to submit
+            // until graded.
+            echo $this->fetch_attempts($moduleinstance, $modulecontext, $USER->id);
+
+            // Grade information.
+            if ($graded) {
+                //We probably do not need this. Until we have a flashy submission/transcript/text reader widget
+                // $submission->prepare_javascript($reviewmode);
+                // We don't show any grading information if dis-allowed in settings.
+                $submission = new \mod_cpassignment\submission($gradedattemptid,
+                        $modulecontext->id);
+                $status .= $submissionrenderer->render_submission($submission,
+                        $moduleinstance->showgrade);
+
+                if (!$moduleinstance->showgrade) {
+                    $status .= $this->dont_show_grade(get_string('gradeunavailable', constants::M_LANG));
+                }
+            } else {
+                $status .= $this->dont_show_grade(get_string("notgradedyet",constants::M_LANG));
+            }
+
+            // Try again button, if applicable.
+            if ( (!$attemptsexceeded) && (!$graded) ) {
+                $status .= $this->js_trigger_button('startbutton', false,
+                        get_string('reattempt', constants::M_LANG));
+            }else{
+
+                if($graded){
+                    $reason = get_string('alreadygraded', constants::M_LANG,
+                            $moduleinstance->maxattempts);
+                }else if($attemptsexceeded){
+                    $reason =get_string('exceededattempts', constants::M_LANG,
+                            $moduleinstance->maxattempts);
+                }else{
+                    $reason =  get_string('otherreason', constants::M_LANG);
+                }
+                $status .= $this->why_cannot_attempt($reason);
+            }
+        } else { // numattempts = 0. TOP page.
+            $status .= $this->js_trigger_button('startbutton',false,
+                    get_string('firstattempt', constants::M_LANG));
+        }
+
+
+        // Fetch token.
+        $token = \mod_cpassignment\utils::fetch_token($config->apiuser,
+                $config->apisecret);
+
+        // Process plugin files for standard editor component.
+        $instructions = file_rewrite_pluginfile_urls($moduleinstance->instructions,
+                'pluginfile.php', $modulecontext->id, constants::M_COMP,
+                constants::M_FILEAREA_INSTRUCTIONS, 0);
+        $instructions = format_text($instructions);
+        $finished = file_rewrite_pluginfile_urls($moduleinstance->finished,
+                'pluginfile.php', $modulecontext->id, constants::M_COMP,
+                constants::M_FILEAREA_FINISHED, 0);
+        $finished = format_text($finished);
+
+        // Show all the main parts. Many will be hidden and displayed by JS.
+        echo $this->show_instructions($moduleinstance, $instructions);
+        echo $this->show_finished($moduleinstance, $finished);
+        echo $this->show_error($moduleinstance,$cm);
+        echo $this->show_recorder($moduleinstance, $token);
+        echo $this->show_uploadsuccess($moduleinstance);
+        //echo $this->cancelbutton($cm);
+
+        // The module AMD code.
+        $pagemode="summary";
+        echo $this->fetch_activity_amd($cm, $moduleinstance, $pagemode,$selectedattemptid,$graded);
+
+        // Finish the page.
+        echo $this->footer();
+
+
+    }
+
+    /*
+     * This is the top level function that assembles elements of the list page and displays them
+     * Called from view.php
+     */
+    function display_list_page($moduleinstance, $cm, $config, $items){
+        global $USER;
+        //Prepare datatable(before header printed)
+        $tableid = '' . constants::M_CLASS_ITEMTABLE . '_' . '_opts_9999';
+        $this->setup_datatables($tableid);
+
+        // Show our header
+        $mode= "view";
+        echo $this->notabsheader($moduleinstance, $cm, $mode, null, get_string('view',
+                constants::M_LANG));
+
+
+        // How many allowed?
+        $max = $moduleinstance->maxattempts;
+        $attemptsexceeded = 0;
+
+        if ( ($max != 0)  && $items && (count($items) >= $max) ) {
+            $attemptsexceeded = 1;
+        }
+        //do something with attempts exceeded here
+        //but what?
+
+
+        //Start Embed Recorder
+        $token = \mod_cpassignment\utils::fetch_token($config->apiuser,
+                $config->apisecret);
+
+        $audiorecid = constants::M_RECORDERID . '_' .
+                constants::M_LIST_AUDIOREC;
+
+
+        //prepare audio feedback recorder, modal and trigger button
+        $timelimit=0;
+        $audiorecorderhtml = \mod_cpassignment\utils::fetch_recorder(
+                $moduleinstance,$audiorecid, $token,
+                constants::M_LIST_AUDIOREC,
+                $timelimit,'audio','fresh');
+
+
+        //text boxes
+        $itemname='';
+        $itemid='';
+        $itemfilename ='';
+        $itemsubid =0;
+        $itemformhtml = $this->fetch_itemform($itemname,$itemid,$itemfilename, $itemsubid);
+
+        //recorder modal
+        $title = get_string('listrecaudiolabel',constants::M_LANG);
+        $content = $itemformhtml . $audiorecorderhtml;
+        $containertag = 'arec_container';
+        $amodalcontainer = $this->fetch_modalcontainer($title,$content,$containertag);
+
+        //download modal
+        $title = get_string('listrecdownloadlabel',constants::M_LANG);
+        $downloadformhtml = $this->fetch_downloadform();
+        $content = $downloadformhtml ;
+        $containertag = 'download_container';
+        $dmodalcontainer = $this->fetch_modalcontainer($title,$content,$containertag);
+
+        //share modal
+        $title = get_string('listsharelabel',constants::M_LANG);
+        $accesskey = utils::fetch_accesskey($moduleinstance->id);
+        $shareboxhtml = $this->fetch_sharebox($accesskey);
+        $content = $shareboxhtml ;
+        $containertag = 'sharebox_container';
+        $smodalcontainer = $this->fetch_modalcontainer($title,$content,$containertag);
+
+        $shareboxbutton = $this->js_trigger_button('listshareboxstart', true,
+                get_string('listshareboxlabel',constants::M_LANG),'btn-success');
+        $arecorderbutton = $this->js_trigger_button('listaudiorecstart', true,
+                get_string('listrecaudiolabel',constants::M_LANG), 'btn-primary');
+
+        $fullname = fullname($USER);
+
+        echo $shareboxbutton;
+        echo $this->show_list_top($fullname, $moduleinstance->name);
+        echo $arecorderbutton;
+        echo $amodalcontainer;
+        echo $dmodalcontainer;
+        echo $smodalcontainer;
+
+
+        //if we have items, show em. Data tables will make it pretty
+        $visible = false;
+        if($items) {
+            $visible = true;
+        }
+        echo $this->show_list_items($items,$tableid,$visible );
+        echo $this->no_list_items(!$visible);
+
+        //this inits the js for the grading page
+        $opts=array('modulecssclass'=>constants::M_CLASS, 'cmid'=>$cm->id, 'moduleid'=>$moduleinstance->id,'authmode'=>'normal');
+        $this->page->requires->js_call_amd("mod_cpassignment/listhelper", 'init', array($opts));
+        
+
+        // Finish the page.
+        echo $this->footer();
+
+    }
+
     /**
      * Return the html table of items
      * @param array homework objects
@@ -448,9 +670,12 @@ class renderer extends \plugin_renderer_base implements renderable {
     /**
      * Show list top
      */
-    public function show_list_top($fullname){
+    public function show_list_top($fullname, $modname){
+        $moddetails = new \stdClass();
+        $moddetails->fullname = $fullname;
+        $moddetails->modname = $modname;
         $displaytext = $this->output->box_start('mod_cpassignment_allcenter center');
-        $displaytext .= $this->output->heading(get_string('listtop',constants::M_LANG,$fullname), 3, 'main center');
+        $displaytext .= $this->output->heading(get_string('listtop',constants::M_LANG,$moddetails), 3, 'main center');
         $displaytext .=  \html_writer::div(get_string('listtopdetails',constants::M_LANG),'center',array());
         $displaytext .= $this->output->box_end();
         $ret= \html_writer::div($displaytext,constants::M_LISTTOP_CONTAINER,array('id'=>constants::M_LISTTOP_CONTAINER));

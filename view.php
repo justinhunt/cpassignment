@@ -41,7 +41,7 @@ if ($id) {
     $course     = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance('cpassignment', $moduleinstance->id, $course->id, false, MUST_EXIST);
 } else {
-    error('You must specify a course_module ID or an instance ID');
+    print_error(0,'You must specify a course_module ID or an instance ID');
 }
 
 $PAGE->set_url('/mod/cpassignment/view.php', array('id' => $cm->id));
@@ -62,14 +62,11 @@ $event->trigger();
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
-//are we a teacher or a student?
-$mode= "view";
-
 // Set up the page header.
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
-$PAGE->set_pagelayout('embedded');
+$PAGE->set_pagelayout('course');
 
 // Get an admin settings.
 $config = get_config(constants::M_COMP);
@@ -78,124 +75,28 @@ $config = get_config(constants::M_COMP);
 $renderer = $PAGE->get_renderer('mod_cpassignment');
 $submissionrenderer = $PAGE->get_renderer(constants::M_COMP,'submission');
 
-// Show our header
- echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view',
-        constants::M_LANG));
+
+
+// Are we allowed?
+$haspermission = (has_capability('mod/cpassignment:view', $modulecontext));
+if (!$haspermission) {
+    //no permission to attempt, so there you have it
+    $reason =  get_string('hasnopermission', constants::M_LANG) ;
+    // Show our header
+    echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view',
+            constants::M_LANG));
+    echo $renderer->why_cannot_attempt($reason);
+    echo $renderer->footer();
+
+}
 
 // Do we have attempts?
 $attempts = $DB->get_records(constants::M_USERTABLE,array('userid'=>$USER->id,
         constants::M_MODNAME.'id' => $moduleinstance->id), 'id DESC');
-$numattempts = count($attempts);
 
-// How many allowed?
-$max = $moduleinstance->maxattempts;
-$attemptsexceeded = 0;
 
-if ( ($max != 0)  && ($numattempts >= $max) ) {
-    $attemptsexceeded = 1;
+if(true) {
+    echo $renderer->display_list_page($moduleinstance,$cm,$config, $attempts);
+}else{
+    echo $renderer->display_view_page($moduleinstance,$cm,$config,$modulecontext, $submissionrenderer, $attempts);
 }
-
-// Has it been graded yet?
-$graded = false;
-$gradedattemptid = 0;
-$selectedattemptid = 0;
-foreach ($attempts as $attempt) {
-    switch($attempt->status){
-         case constants::M_SUBMITSTATUS_GRADED:
-            $graded = true;
-            $gradedattemptid = $attempt->id;
-            $selectedattemptid = $attempt->id;
-            break;
-        case constants::M_SUBMITSTATUS_SELECTED:
-            $selectedattemptid = $attempt->id;
-            break;
-    }
-}
-
-// Are we allowed?
-$haspermission = (has_capability('mod/cpassignment:view', $modulecontext));
-
-// Status content is added to instructions.
-$status = '';
-
-if ($haspermission) {
-
-    // Is this a retake?
-    if ($numattempts > 0) {
-
-        // Show a list of attempt data and status here.  Allow user to submit
-        // until graded.
-        echo $renderer->fetch_attempts($moduleinstance, $modulecontext, $USER->id);
-
-        // Grade information.
-        if ($graded) {
-            //We probably do not need this. Until we have a flashy submission/transcript/text reader widget
-            // $submission->prepare_javascript($reviewmode);
-            // We don't show any grading information if dis-allowed in settings.
-            $submission = new \mod_cpassignment\submission($gradedattemptid,
-                    $modulecontext->id);
-            $status .= $submissionrenderer->render_submission($submission,
-                    $moduleinstance->showgrade);
-
-            if (!$moduleinstance->showgrade) {
-                $status .= $renderer->dont_show_grade(get_string('gradeunavailable', constants::M_LANG));
-            }
-        } else {
-            $status .= $renderer->dont_show_grade(get_string("notgradedyet",constants::M_LANG));
-        }
-
-        // Try again button, if applicable.
-        if ( (!$attemptsexceeded) && (!$graded) ) {
-            $status .= $renderer->js_trigger_button('startbutton', false,
-                    get_string('reattempt', constants::M_LANG));
-        }else{
-
-            if($graded){
-                $reason = get_string('alreadygraded', constants::M_LANG,
-                        $moduleinstance->maxattempts);
-            }else if($attemptsexceeded){
-                $reason =get_string('exceededattempts', constants::M_LANG,
-                    $moduleinstance->maxattempts);
-            }
-            $status .= $renderer->why_cannot_attempt($reason);
-        }
-    } else { // numattempts = 0. TOP page.
-        $status .= $renderer->js_trigger_button('startbutton',false,
-                get_string('firstattempt', constants::M_LANG));
-    }
-
-} else {
-    //no permission to attempt, so there you have it
-    $reason =  get_string('hasnopermission', constants::M_LANG) ;
-    echo $renderer->why_cannot_attempt($reason);
-
-}
-
-// Fetch token.
-$token = \mod_cpassignment\utils::fetch_token($config->apiuser,
-        $config->apisecret);
-
-// Process plugin files for standard editor component.
-$instructions = file_rewrite_pluginfile_urls($moduleinstance->instructions,
-        'pluginfile.php', $modulecontext->id, constants::M_COMP,
-        constants::M_FILEAREA_INSTRUCTIONS, 0);
-$instructions = format_text($instructions);
-$finished = file_rewrite_pluginfile_urls($moduleinstance->finished,
-        'pluginfile.php', $modulecontext->id, constants::M_COMP,
-        constants::M_FILEAREA_FINISHED, 0);
-$finished = format_text($finished);
-
-// Show all the main parts. Many will be hidden and displayed by JS.
-echo $renderer->show_instructions($moduleinstance, $instructions, $status);
-echo $renderer->show_finished($moduleinstance, $finished);
-echo $renderer->show_error($moduleinstance,$cm);
-echo $renderer->show_recorder($moduleinstance, $token);
-echo $renderer->show_uploadsuccess($moduleinstance);
-//echo $renderer->cancelbutton($cm);
-
-// The module AMD code.
-$pagemode="summary";
-echo $renderer->fetch_activity_amd($cm, $moduleinstance, $pagemode,$selectedattemptid,$graded);
-
-// Finish the page.
-echo $renderer->footer();

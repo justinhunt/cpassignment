@@ -230,8 +230,8 @@ $string['timemodified'] = 'Date';
 $string['edititem'] = 'Edit';
 $string['deleteitem'] = 'Delete';
 
-$string['listtop'] = '{$a} Audio Folder';
-$string['listtopdetails'] = 'Your Audio Recordings are all displayed down here.';
+$string['listtop'] = '{$a->fullname}: {$a->modname}';
+$string['listtopdetails'] = 'Your audio recordings are displayed below.';
 $string['listrecaudiolabel'] = 'Record Audio';
 $string['close'] = 'Close';
 $string['saverecaudiolabel'] = 'Save';
@@ -259,4 +259,7 @@ $string['noitemsheader'] = 'Nothing to Display (yet)';
 $string['noitemsinfo'] = 'No recordings have been submitted yet. When they have you will see a list of them here';
 $string['noitems'] = 'No Items';
 $string['unauthtopdetails'] = 'Record audio using the recorder below. After you upload it will be submitted and processed.';
+$string['otherreason'] = 'cannot attempt';
+$string['copydownloadlink'] = 'Copy Download Link';
+
 

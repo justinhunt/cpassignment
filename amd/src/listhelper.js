@@ -56,9 +56,10 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             this.controls.itemidfield = $('.itemform_itemid');
             this.controls.itemfilenamefield =$('.itemform_itemfilename');
             this.controls.itemsubidfield =$('.itemform_itemsubid');
-            this.controls.dialogdownloadlink=$('#cp_assignment_download_link');
-            this.controls.dialogdownloadbutton=$('#cp_assignment_download_button');
-            this.controls.dialogdownloadname=$('#cp_assignment_download_name');
+            this.controls.dialogdownloadlink=$('#' + this.modulecssclass + '_download_link');
+            this.controls.dialogdownloadbutton=$('#' + this.modulecssclass + '_download_button');
+            this.controls.dialogdownloadname=$('#' + this.modulecssclass + '_download_name');
+            this.controls.downloadlinkcopybutton=$('#' + this.modulecssclass + '_download_copy_button');
             this.audiorecid = 'therecorderid_mod_cpassignment_listaudiorec';
             this.controls.deletebutton = $('#' + this.modulecssclass + '_itemstable__opts_9999 a[data-type="delete"]');
             this.controls.downloadbutton = $('#' + this.modulecssclass + '_itemstable__opts_9999 a[data-type="download"]');
@@ -114,6 +115,16 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 document.execCommand("copy");
             });
 
+            this.controls.downloadlinkcopybutton.click(function(){
+                var copyText = that.controls.dialogdownloadlink[0];
+                /* Select the text field */
+                copyText.select();
+                copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+                /* Copy the text inside the text field */
+                document.execCommand("copy");
+            });
+
             //download links
             this.controls.rectable.on('click','a[data-type="download"]',function(e){
                     var clickedLink = $(e.currentTarget);
@@ -149,7 +160,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             });
         },
 
-        show_download(that, elementid){
+        show_download: function(that, elementid){
             var audiotitle = $('td.itemname span[data-itemid="'+ elementid+ '"]').data('value');
             var audiolink = $('td.item audio[data-id="'+ elementid+ '"]').attr('src');
             that.controls.dialogdownloadlink.val(audiolink);
@@ -158,12 +169,12 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             dialogs.openModal('#' + that.modulecssclass + '_download_container');
         },
 
-        show_sharebox(){
+        show_sharebox: function(){
             var that =this;
             dialogs.openModal('#' + that.modulecssclass + '_sharebox_container');
         },
 
-        do_resetkey(that, moduleid){
+        do_resetkey: function(that, moduleid){
 
             Ajax.call([{
                 methodname: 'mod_cpassignment_reset_key',
@@ -192,7 +203,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
 
         },
 
-        do_delete(itemid){
+        do_delete: function(itemid){
 
             Ajax.call([{
                 methodname: 'mod_cpassignment_remove_rec',

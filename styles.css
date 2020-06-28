@@ -130,12 +130,13 @@ tr.mod_cpassignment_attemptrow {
 .mod_cpassignment_sharebox_copy_button {
 	float: right;
 }
-
+.mod_cpassignment_download_copy_button {
+	float: right;
+}
 .mod_cpassignment_listshareboxstartcontainer {
 	width: 150px;
 	float: right;
 }
-
 .cp_assignment_onereceipt {
 	text-align: center;
 	margin: auto;
@@ -152,4 +153,8 @@ tr.mod_cpassignment_attemptrow {
 	background-image: url([[pix:mod_cpassignment|spinner]]);
 	background-repeat: no-repeat;
 	background-position: center;
+}
+
+.mod_cpassignment_downloaddialog_button_container {
+	text-align: center;
 }
