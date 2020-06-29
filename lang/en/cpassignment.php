@@ -252,7 +252,7 @@ $string['copysharelink'] = 'Copy Public Link';
 $string['resetkeywarning'] = 'Resetting the public link will change it and the previous link will no longer work anymore. Are you sure that you want to do this?';
 $string['copysharelinkinstructions'] = 'Copy the text below and distribute it to your users. From the linked location they will be able to record audio which will appear in your list of audio submissions,';
 $string['receiptsheader'] = 'Submitted Audio';
-$string['onereceiptheader'] = 'Audio Recieved!!';
+$string['onereceiptheader'] = 'Audio Received!!';
 $string['receiptsinfo'] = 'Receipts Info';
 
 $string['noitemsheader'] = 'Nothing to Display (yet)';
