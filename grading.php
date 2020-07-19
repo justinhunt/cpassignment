@@ -328,7 +328,7 @@ switch($format){
         $order=array();
         $order[0] =array(1, "desc"); //lastdate desc
         $reportrenderer->setup_datatables($tableid,$filtercolumn, $filterlabel, $order);
-
+        $paging = false;
         $reportrows = $report->fetch_formatted_rows(true,$paging);
         $allrowscount = $report->fetch_all_rows_count();
         echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_LANG));
