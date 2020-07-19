@@ -33,7 +33,7 @@ use \mod_cpassignment\submission;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // cpassignment instance ID
-$format = optional_param('format', 'html', PARAM_TEXT); //export format csv or html
+$format = optional_param('format', 'datatables', PARAM_TEXT); //export format csv or html
 $action = optional_param('action', 'grading', PARAM_TEXT); // report type
 $userid = optional_param('userid', 0, PARAM_INT); // user id
 $attemptid = optional_param('attemptid', 0, PARAM_INT); // attemptid
@@ -292,7 +292,34 @@ $report->process_raw_data($formdata, $moduleinstance);
 $reportheading = $report->fetch_formatted_heading();
 
 switch($format){
+
+	case 'html':
+
+
+		$reportrows = $report->fetch_formatted_rows(true,$paging);
+		$allrowscount = $report->fetch_all_rows_count();
+		$pagingbar = $reportrenderer->show_paging_bar($allrowscount, $paging,$PAGE->url);
+		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_LANG));
+        switch($moduleinstance->mediatype)
+        {
+            case 'video':
+                echo $submissionrenderer->render_hiddenvideoplayer();
+                break;
+            case 'audio':
+            default:
+                echo $submissionrenderer->render_hiddenaudioplayer();
+        }
+		echo $extraheader;
+		echo $pagingbar;
+		echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
+		echo $pagingbar;
+		echo $reportrenderer->show_grading_footer($moduleinstance, $cm, $formdata);
+		echo $renderer->footer();
+		break;
+
+
     case 'datatables':
+    default:
         $tableid = \html_writer::random_id(constants::M_COMP);
 
         //apply data table, order by date desc
@@ -321,26 +348,4 @@ switch($format){
 
 
         break;
-	case 'html':
-	default:
-
-		$reportrows = $report->fetch_formatted_rows(true,$paging);
-		$allrowscount = $report->fetch_all_rows_count();
-		$pagingbar = $reportrenderer->show_paging_bar($allrowscount, $paging,$PAGE->url);
-		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_LANG));
-        switch($moduleinstance->mediatype)
-        {
-            case 'video':
-                echo $submissionrenderer->render_hiddenvideoplayer();
-                break;
-            case 'audio':
-            default:
-                echo $submissionrenderer->render_hiddenaudioplayer();
-        }
-		echo $extraheader;
-		echo $pagingbar;
-		echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
-		echo $pagingbar;
-		echo $reportrenderer->show_grading_footer($moduleinstance, $cm, $formdata);
-		echo $renderer->footer();
 }

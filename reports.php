@@ -31,7 +31,7 @@ use \mod_cpassignment\constants;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // cpassignment instance ID
-$format = optional_param('format', 'html', PARAM_TEXT); //export format csv or html
+$format = optional_param('format', 'datatables', PARAM_TEXT); //export format csv or html
 $showreport = optional_param('report', 'menu', PARAM_TEXT); // report type
 $userid = optional_param('userid', 0, PARAM_INT); // report type
 $attemptid = optional_param('attemptid', 0, PARAM_INT); // report type
