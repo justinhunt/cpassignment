@@ -577,7 +577,7 @@ class renderer extends \plugin_renderer_base implements renderable {
 
     /**
      * Return the html table of items
-     * @param array homework objects
+     * @param array submssion items
      * @param integer $courseid
      * @return string html of table
      */

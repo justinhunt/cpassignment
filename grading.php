@@ -292,6 +292,35 @@ $report->process_raw_data($formdata, $moduleinstance);
 $reportheading = $report->fetch_formatted_heading();
 
 switch($format){
+    case 'datatables':
+        $tableid = \html_writer::random_id(constants::M_COMP);
+
+        //apply data table, order by date desc
+        $filtercolumn=false;
+        $filterlabel=false;
+        $order=array();
+        $order[0] =array(1, "desc"); //lastdate desc
+        $reportrenderer->setup_datatables($tableid,$filtercolumn, $filterlabel, $order);
+
+        $reportrows = $report->fetch_formatted_rows(true,$paging);
+        $allrowscount = $report->fetch_all_rows_count();
+        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_LANG));
+        switch($moduleinstance->mediatype)
+        {
+            case 'video':
+                echo $submissionrenderer->render_hiddenvideoplayer();
+                break;
+            case 'audio':
+            default:
+                echo $submissionrenderer->render_hiddenaudioplayer();
+        }
+        echo $extraheader;
+        echo $reportrenderer->render_table_for_datatables($tableid, $reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
+        echo $reportrenderer->show_grading_footer($moduleinstance, $cm, $formdata);
+        echo $renderer->footer();
+
+
+        break;
 	case 'html':
 	default:
 

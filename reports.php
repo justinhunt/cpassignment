@@ -171,7 +171,9 @@ switch($format){
 		$reportrows = $report->fetch_formatted_rows(false);
 		$reportrenderer->render_section_csv($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
 		exit;
-	default:
+		break;
+
+    case 'html':
 
 		$reportrows = $report->fetch_formatted_rows(true,$paging);
 		$allrowscount = $report->fetch_all_rows_count();
@@ -183,4 +185,23 @@ switch($format){
 		echo $pagingbar;
 		echo $reportrenderer->show_reports_footer($moduleinstance,$cm,$formdata,$showreport);
 		echo $renderer->footer();
+		break;
+
+    case 'datatables':
+    default:
+        $tableid = \html_writer::random_id(constants::M_COMP);
+
+        //apply data table, order by date desc
+        $filtercolumn=false;
+        $filterlabel=false;
+        $order=array();
+        $order[0] =array(1, "desc"); //lastdate desc
+        $reportrenderer->setup_datatables($tableid,$filtercolumn, $filterlabel, $order);
+        $reportrows = $report->fetch_formatted_rows(true,$paging);
+        $allrowscount = $report->fetch_all_rows_count();
+        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_LANG));
+        echo $reportrenderer->render_table_for_datatables($tableid, $reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
+        echo $reportrenderer->show_reports_footer($moduleinstance,$cm,$formdata,$showreport);
+        echo $renderer->footer();
+        break;
 }

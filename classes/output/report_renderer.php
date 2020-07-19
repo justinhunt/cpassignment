@@ -138,6 +138,64 @@ class report_renderer extends \plugin_renderer_base {
 
     }
 
+    /*
+    * Make a table out of some data
+    * sectiontitle = heading
+    * report = report display name
+    * head = array of title for the columns
+    * rows = array of data objects
+    * fields - array of names for each field(row object data members)
+    *
+    */
+    function render_table_for_datatables($tableid,$sectiontitle, $reportname, $head,$rows, $fields)
+    {
+        global $CFG;
+        if (empty($rows)) {
+            $sectiontitle = $this->output->heading($sectiontitle, 5);
+            $message = \html_writer::div(get_string('nodataavailable', constants::M_COMP), 'alert alert-info');
+            return $sectiontitle . $message;
+        }
+
+        //set up our table and head attributes
+        $tableattributes = array('class' => 'generaltable ' . constants::M_COMP . '_table');
+        $headrow_attributes = array('class' => constants::M_COMP . '_headrow');
+
+        $htmltable = new \html_table();
+        $htmltable->id = $tableid;
+        $htmltable->attributes = $tableattributes;
+
+        //the old way which datatables did not like
+        /*
+        $htr = new \html_table_row();
+        $htr->attributes = $headrow_attributes;
+        foreach ($head as $headcell) {
+            $htr->cells[] = new \html_table_cell($headcell);
+        }
+        //$htmltable->data[] = $htr;
+        */
+
+        //new way (ok with datatables)
+        $htmltable->head =$head;
+
+
+        foreach ($rows as $row) {
+            $htr = new \html_table_row();
+            //set up descrption cell
+            $cells = array();
+            foreach ($fields as $field) {
+                $cell = new \html_table_cell($row->{$field});
+                $cell->attributes = array('class' => constants::M_COMP . '_cell_' . $reportname . '_' . $field);
+                $htr->cells[] = $cell;
+            }
+
+            $htmltable->data[] = $htr;
+        }
+        $html = $this->output->heading($sectiontitle, 5);
+        $html .= \html_writer::table($htmltable);
+        return $html;
+
+    }
+
     function show_reports_footer($moduleinstance,$cm,$formdata,$showreport){
         // print's a popup link to your custom page
         $link = new \moodle_url(constants::M_URL . '/reports.php',array('report'=>'menu','id'=>$cm->id,'n'=>$moduleinstance->id));
@@ -171,6 +229,41 @@ class report_renderer extends \plugin_renderer_base {
         }
 
         return $ret;
+    }
+
+    function setup_datatables($tableid, $filtercolumn=false, $filterlabel=false, $order=false, $columns=false){
+
+        //columns
+        /*
+        $columns[0]=null;
+        $columns[1]=null;
+        $columns[2]=null;
+        $columns[3]=null;
+        $columns[4]=array('orderable'=>false);
+        $columns[5]=array('orderable'=>false);
+        */
+
+        //default ordering
+        /* $order[0] =array(3, "desc"); */
+
+
+        $tableprops = new \stdClass();
+        if($order){
+            $tableprops->order=$order;
+        }
+        if($columns){
+            $tableprops->columns=$columns;
+        }
+
+
+        //here we set up any info we need to pass into javascript
+        $opts =Array();
+        $opts['tableid']=$tableid;
+        $opts['filtercolumn']=$filtercolumn;
+        $opts['filterlabel']=$filterlabel;
+        $opts['tableprops']=$tableprops;
+        $this->page->requires->js_call_amd( constants::M_COMP . "/datatables", 'init', array($opts));
+        $this->page->requires->css( new \moodle_url('https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'));
     }
 
 }

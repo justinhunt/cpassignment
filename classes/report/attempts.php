@@ -14,7 +14,7 @@ class attempts extends basereport
 {
 
     protected $report="attempts";
-    protected $fields = array('id', 'status', 'mediafile','grade_p','timecreated','action');
+    protected $fields = array('id', 'status','itemid','itemname', 'mediafile','grade_p','timecreated','action');
     protected $formdata=null;
     protected $headingdata = null;
     protected $qcache=array();
@@ -36,6 +36,14 @@ class attempts extends basereport
 
                     $ret = "-";
                 }
+                break;
+
+            case 'itemid':
+                $ret = $record->{CONSTANTS::LIST_ITEM_ID};
+                break;
+
+            case 'itemname':
+                $ret = $record->{CONSTANTS::LIST_ITEM_NAME};
                 break;
 
             case 'mediafile':
