@@ -35,7 +35,8 @@ define(['jquery', 'core/log','mod_cpassignment/dialogs'], function($,log,dialogs
             var that = this;
             var audioplayer = this.controls.hiddenplayer;
             //handle the button click
-            this.controls.overallcontainer.on('click','.' + this.hiddenplayerbutton, function(e){
+           // this.controls.overallcontainer.on('click','.' + this.hiddenplayerbutton, function(e){
+            $('body').on('click','.' + this.hiddenplayerbutton, function(e){
                 switch(that.mediatype){
 
                     case 'video':
