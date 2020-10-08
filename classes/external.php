@@ -190,7 +190,7 @@ class mod_cpassignment_external extends external_api {
   */
     public static function reset_key($moduleid){
 
-        global $USER;
+        global $DB, $USER;
 
         $rawparams = array();
         $rawparams['moduleid'] = $moduleid;
@@ -202,11 +202,14 @@ class mod_cpassignment_external extends external_api {
 
         //Context validation
         //OPTIONAL but in most web service it should present
-        $context = context_user::instance($USER->id);
-        self::validate_context($context);
+        $moduleinstance  = $DB->get_record('cpassignment', array('id' => $moduleid), '*', MUST_EXIST);
+        $course     = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
+        $cm         = get_coursemodule_from_instance('cpassignment', $moduleinstance->id, $course->id, false, MUST_EXIST);
+        $modulecontext = context_module::instance($cm->id);
+        self::validate_context($modulecontext);
 
         //Capability checking
-        if (!has_capability('mod/cpassignment:view', $context)) {
+        if (!has_capability('mod/cpassignment:view', $modulecontext)) {
             throw new moodle_exception('nopermission');
         }
 
