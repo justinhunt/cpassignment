@@ -64,7 +64,7 @@ if ($action == 'submitbyuser') {
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-$PAGE->set_pagelayout('course');
+$PAGE->set_pagelayout('incourse');
 
 */
 //is the attempt if OK?

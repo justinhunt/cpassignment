@@ -1,3 +1,6 @@
+Version 1.0.3 (Build 2024082600)
+- fix for layout issues on theme_adaptable
+
 Version 1.0.2 (Build 2020100800)
 -Changed incorrect permissions check on reset public link
 
