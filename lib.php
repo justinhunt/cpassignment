@@ -715,6 +715,7 @@ function cpassignment_extend_settings_navigation(settings_navigation $settingsna
  * @return \core\output\inplace_editable
  */
 function cpassignment_inplace_editable($itemtype, $itemid, $newvalue) {
+    global $CFG;
     require_once($CFG->libdir . '/externallib.php');
     \external_api::validate_context(context_system::instance());
     if ($itemtype === 'itemname') {
