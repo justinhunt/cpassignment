@@ -381,7 +381,7 @@ function cpassignment_get_editornames(){
  * @param mod_cpassignment_mod_form $mform
  * @return int The id of the newly inserted cpassignment record
  */
-function cpassignment_add_instance(stdClass $themodule, mod_cpassignment_mod_form $mform = null) {
+function cpassignment_add_instance(stdClass $themodule, ?mod_cpassignment_mod_form $mform = null) {
     global $DB;
     $themodule->timecreated = time();
     $themodule = cpassignment_process_editors($themodule,$mform);
@@ -390,7 +390,7 @@ function cpassignment_add_instance(stdClass $themodule, mod_cpassignment_mod_for
 }
 
 
-function cpassignment_process_editors(stdClass $themodule, mod_cpassignment_mod_form $mform = null) {
+function cpassignment_process_editors(stdClass $themodule, ?mod_cpassignment_mod_form $mform = null) {
 	global $DB;
     $cmid = $themodule->coursemodule;
     $context = context_module::instance($cmid);
@@ -419,7 +419,7 @@ function cpassignment_process_editors(stdClass $themodule, mod_cpassignment_mod_
  * @param mod_cpassignment_mod_form $mform
  * @return boolean Success/Fail
  */
-function cpassignment_update_instance(stdClass $themodule, mod_cpassignment_mod_form $mform = null) {
+function cpassignment_update_instance(stdClass $themodule, ?mod_cpassignment_mod_form $mform = null) {
     global $DB;
 
     $themodule->timemodified = time();
@@ -700,7 +700,7 @@ function cpassignment_extend_navigation(navigation_node $navref, stdclass $cours
  * @param settings_navigation $settingsnav {@link settings_navigation}
  * @param navigation_node $themodulenode {@link navigation_node}
  */
-function cpassignment_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $themodulenode=null) {
+function cpassignment_extend_settings_navigation(settings_navigation $settingsnav, ?navigation_node $themodulenode = null) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////

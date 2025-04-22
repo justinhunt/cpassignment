@@ -271,7 +271,7 @@ class renderer extends \plugin_renderer_base implements renderable {
     }
 
 
-    function fetch_activity_amd($cm, $moduleinstance, $pagemode='summary',$selectedattemptid,$graded){
+    function fetch_activity_amd($cm, $moduleinstance, $pagemode,$selectedattemptid,$graded){
         global $USER;
         //any html we want to return to be sent to the page
         $ret_html = '';
