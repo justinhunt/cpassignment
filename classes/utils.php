@@ -372,7 +372,7 @@ class utils{
                 'data-id'=>$recorderid,
                 'data-parent'=>$CFG->wwwroot,
                 'data-localloader'=>'/mod/cpassignment/poodlllocalloader.html',
-                'data-cloudpoodllurl'=>self::get_cloud_poodll_url(),
+                'data-cloudpoodllurl'=>self::get_cloud_poodll_server(),
                 'data-media'=>$mediatype,
                 'data-type'=>$recordertype,
                 'data-width'=>$width,
