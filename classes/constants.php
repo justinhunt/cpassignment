@@ -13,6 +13,8 @@ class constants
 {
 
 const M_COMP='mod_cpassignment';
+
+const M_DEFAULT_CLOUDPOODLL = 'cloud.poodll.com';
 const M_FILEAREA_SUBMISSIONS='submission';
 const M_FILEAREA_FEEDBACKTEXT='feedbacktext';
 const M_FILEAREA_FINISHED='finished';

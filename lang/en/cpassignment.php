@@ -263,6 +263,8 @@ $string['otherreason'] = 'cannot attempt';
 $string['copydownloadlink'] = 'Copy Download Link';
 $string['recordingsexceededheader'] = 'Max recordings reached';
 $string['recordingsexceededinfo'] = 'You can keep no more than {$a} recordings. Please remove some recordings to continue';
+$string['cloudpoodllserver'] = 'Cloud Poodll Server';
+$string['cloudpoodllserver_details'] = 'The server to use for Cloud Poodll. Only change this if Poodll has provided a different one.';
 
 
 

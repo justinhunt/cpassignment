@@ -36,6 +36,15 @@ use \mod_cpassignment\constants;
  */
 class utils{
 
+    public static function get_cloud_poodll_server() {
+        $conf = get_config('mod_cpassignment');
+        if (isset($conf->cloudpoodllserver) && !empty($conf->cloudpoodllserver)) {
+            return 'https://' . $conf->cloudpoodllserver;
+        } else {
+            return 'https://' . constants::M_DEFAULT_CLOUDPOODLL;
+        }
+    }
+
    // function cpassignment_editor_with_files_options($context){
     public static function editor_with_files_options($context){
 
@@ -362,7 +371,8 @@ class utils{
             array('id'=>$recorderid,
                 'data-id'=>$recorderid,
                 'data-parent'=>$CFG->wwwroot,
-                'data-localloader'=>'/mod/cpassignment/poodllloader.html',
+                'data-localloader'=>'/mod/cpassignment/poodlllocalloader.html',
+                'data-cloudpoodllurl'=>self::get_cloud_poodll_url(),
                 'data-media'=>$mediatype,
                 'data-type'=>$recordertype,
                 'data-width'=>$width,

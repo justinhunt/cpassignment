@@ -50,6 +50,12 @@ if($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('mod_cpassignment/apisecret',
         get_string('apisecret', constants::M_LANG), get_string('apisecret_details', constants::M_LANG), '', PARAM_TEXT));
 
+    // Cloud Poodll Server.
+    $settings->add(new admin_setting_configtext(constants::M_COMP .  '/cloudpoodllserver',
+        get_string('cloudpoodllserver', constants::M_COMP),
+        get_string('cloudpoodllserver_details', constants::M_COMP),
+        constants::M_DEFAULT_CLOUDPOODLL, PARAM_URL));
+
     $settings->add(new admin_setting_configcheckbox('mod_cpassignment/transcribe',
         get_string('transcribe', constants::M_LANG), get_string('transcribe_details',constants::M_LANG), 0));
 
