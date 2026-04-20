@@ -1,6 +1,6 @@
-define(['jquery','core/config','core/log','core/ajax','core/templates','core/modal_factory','core/str','core/modal_events',
+define(['jquery','core/config','core/log','core/ajax','core/templates','core/modal_save_cancel','core/str','core/modal_events',
         'mod_cpassignment/cloudpoodllloader','mod_cpassignment/dialogs','mod_cpassignment/datatables','core/notification'],
-    function($,cfg,log,Ajax, templates, ModalFactory, str, ModalEvents, cloudpoodll, dialogs, datatables,notification) {
+    function($,cfg,log,Ajax, templates, ModalSaveCancel, str, ModalEvents, cloudpoodll, dialogs, datatables,notification) {
     "use strict"; // jshint ;_;
 
     log.debug('cpassignment list helper: initialising');
@@ -95,8 +95,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
 
             //sharebox
             this.controls.shareboxresetkeybutton.click(function(){
-                ModalFactory.create({
-                    type: ModalFactory.types.SAVE_CANCEL,
+                ModalSaveCancel.create({
                     title: 'Reset the Public Link',
                     body: 'Resetting the public link will change it and the previous link will no longer work anymore. Are you sure that you want to do this?'
                 })
@@ -144,8 +143,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                         var clickedLink = $(e.currentTarget);
                         var elementid = clickedLink.data('id');
                         var audiotitle = $('td.itemname span[data-itemid="'+ elementid+ '"]').data('value');
-                        ModalFactory.create({
-                            type: ModalFactory.types.SAVE_CANCEL,
+                        ModalSaveCancel.create({
                             title: 'Delete Media',
                             body: 'Do you really want to delete audio? <i>' + audiotitle + '</i>',
                         })
