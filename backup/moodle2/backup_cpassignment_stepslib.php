@@ -50,14 +50,14 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
 
         // root element describing cpassignment instance
         $oneactivity = new backup_nested_element(constants::M_MODNAME, array('id'), array(
-                'key','course', 'name', 'intro', 'introformat',
+                'course', 'name', 'mode', 'intro', 'introformat',
                 'passage', 'passageformat', 'instructions',
                 'instructionsformat', 'finished',
                 'finishedformat', 'timelimit', 'grade',
                 'gradeoptions', 'maxattempts', 'mingrade',
                 'language', 'mediatype', 'recordertype',
                 'transcribe', 'subtitle', 'expiredays',
-                'region', 'fbaudio', 'fbvideo',
+                'region', 'showgrade', 'fbaudio', 'fbvideo',
                 'timecreated', 'timemodified'
 			));
 
@@ -75,7 +75,7 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
         //keys
         $keys = new backup_nested_element('keys');
         $key = new backup_nested_element('key', array('id'),
-                array(constants::M_MODNAME . "id", "userid","key",
+                array(constants::M_MODNAME . "id", "userid", "accesskey",
                         "timecreated","timemodified"
                 ));
 
@@ -99,6 +99,7 @@ class backup_cpassignment_activity_structure_step extends backup_activity_struct
 
         // Define id annotations.
         $attempt->annotate_ids('user', 'userid');
+        $key->annotate_ids('user', 'userid');
 
 
         // Define file annotations.
