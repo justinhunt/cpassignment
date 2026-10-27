@@ -38,7 +38,7 @@ if ($accessinfo) {
     $cm         = get_coursemodule_from_instance('cpassignment', $moduleinstance->id, $course->id, false, MUST_EXIST);
     $owner = $DB->get_record('user',array('id'=>$accessinfo->userid));
 } else {
-    print_error(0,'The URL that you are using is either old or incorrect.');
+    throw new \moodle_exception('The URL that you are using is either old or incorrect.');
 }
 
 $PAGE->set_url('/mod/cpassignment/k.php', array('k' => $accesskey));

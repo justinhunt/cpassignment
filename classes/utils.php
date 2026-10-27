@@ -62,7 +62,7 @@ class utils{
         global $DB;
 
         if (!$DB->record_exists(constants::M_USERTABLE, array('id'=>$attemptid))){
-            print_error("Could not select attempt because it does not exist");
+            throw new \moodle_exception("Could not select attempt because it does not exist");
             return false;
         }
 
@@ -79,7 +79,7 @@ class utils{
         // Set status of this one to submitted.
         if (!$DB->set_field(constants::M_USERTABLE, 'status',
             constants::M_SUBMITSTATUS_SELECTED, array('id' => $attemptid))) {
-            print_error("Could not unsubmit an attempt");
+            throw new \moodle_exception("Could not unsubmit an attempt");
             return false;
         }
         return true;
