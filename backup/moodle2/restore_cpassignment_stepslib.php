@@ -58,8 +58,7 @@ class restore_cpassignment_activity_structure_step extends restore_activity_stru
 		 $attempts= new restore_path_element(constants::M_USERTABLE,
                                             '/activity/cpassignment/attempts/attempt');
         //keys
-        $keys= new restore_path_element(constants::M_KEYTABLE,
-                '/activity/cpassignment/keys/key');
+        $keys = new restore_path_element('cpassignment_key', '/activity/cpassignment/keys/key');
 		$paths[] = $attempts;
         $paths[] = $keys;
 
@@ -92,6 +91,7 @@ class restore_cpassignment_activity_structure_step extends restore_activity_stru
         $oldid = $data->id;
 
         $data->timecreated = $this->apply_date_offset($data->timecreated);
+        $data->userid = $this->get_mappingid('user', $data->userid);
 
 
         $data->{constants::M_MODNAME . 'id'} = $this->get_new_parentid(constants::M_MODNAME);
@@ -110,6 +110,11 @@ class restore_cpassignment_activity_structure_step extends restore_activity_stru
         $oldid = $data->id;
 
         $data->timecreated = $this->apply_date_offset($data->timecreated);
+        $data->userid = $this->get_mappingid('user', $data->userid);
+        // Backups made before 1.0.5 named the access key field "key".
+        if (!isset($data->accesskey) && isset($data->key)) {
+            $data->accesskey = $data->key;
+        }
 
 
         $data->{constants::M_MODNAME . 'id'} = $this->get_new_parentid(constants::M_MODNAME);

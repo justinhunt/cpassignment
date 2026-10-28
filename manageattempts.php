@@ -71,7 +71,7 @@ $PAGE->set_pagelayout('incourse');
 if ( (($action=='delete') || ($action=='submitbyuser') || ($action=='selectattempt')) && $attemptid > 0) {
     $attempt = $DB->get_record(constants::M_USERTABLE, array('id'=>$attemptid,'cpassignmentid' => $cm->instance), '*', MUST_EXIST);
 	if(!$attempt){
-		print_error('could not find attempt of id:' . $attemptid);
+		throw new \moodle_exception('could not find attempt of id:' . $attemptid);
 	}
 } else {
     $edit = false;
@@ -105,7 +105,7 @@ switch($action){
 	case 'delete':
 		require_sesskey();
 		if (!$DB->delete_records(constants::M_USERTABLE, array('id'=>$attemptid))){
-			print_error("Could not delete attempt");
+			throw new \moodle_exception("Could not delete attempt");
 		}
 		//delete AI grades for this attempt too
 		// No such table yet...
@@ -131,7 +131,7 @@ switch($action){
 	case 'deleteall':
 		require_sesskey();
 		if (!$DB->delete_records(constants::M_USERTABLE, array('cpassignmentid'=>$moduleinstance->id))){
-			print_error("Could not delete attempts (all)");
+			throw new \moodle_exception("Could not delete attempts (all)");
 		}
         //delete AI grades for this activity too
         $DB->delete_records(constants::M_AITABLE, array('cpassignmentid'=>$moduleinstance->id));

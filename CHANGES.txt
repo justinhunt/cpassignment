@@ -1,5 +1,10 @@
-Version 1.0.5 (Build 2026101800)
+Version 1.0.5 (Build 2026102700)
+- Use the core_external web service classes (the old global names log debugging notices on Moodle 5.3)
 - Load recorder scripts from the configured Cloud Poodll server
+- Fixed the course page listing all Cloud Poodll Assignments, which stopped with an error
+- Fixed backup and restore: restoring with user data stopped with an error, and the backup left out some settings
+- Tested with Moodle 5.3
+- Replaced calls to print_error() and error(), which no longer exist in Moodle, so error pages show their message instead of a fatal error
 
 Version 1.0.4 (Build 2026042000)
 - Updates for Moodle 5.2 (now requires Moodle 4.3)

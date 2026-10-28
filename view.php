@@ -41,7 +41,7 @@ if ($id) {
     $course     = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance('cpassignment', $moduleinstance->id, $course->id, false, MUST_EXIST);
 } else {
-    print_error(0,'You must specify a course_module ID or an instance ID');
+    throw new \moodle_exception('You must specify a course_module ID or an instance ID');
 }
 
 $PAGE->set_url('/mod/cpassignment/view.php', array('id' => $cm->id));
