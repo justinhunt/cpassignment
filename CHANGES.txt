@@ -5,6 +5,7 @@ Version 1.0.5 (Build 2026102700)
 - Fixed backup and restore: restoring with user data stopped with an error, and the backup left out some settings
 - Tested with Moodle 5.3
 - Replaced calls to print_error() and error(), which no longer exist in Moodle, so error pages show their message instead of a fatal error
+- Declared support for Moodle 4.3 to 5.3
 
 Version 1.0.4 (Build 2026042000)
 - Updates for Moodle 5.2 (now requires Moodle 4.3)

@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version   = 2026102700; // If version == 0 then module will not be installed.
 $plugin->requires  = 2023100900; // Requires Moodle 4.3
+$plugin->supported = [403, 503]; // Moodle 4.3 to 5.3.
 $plugin->component = 'mod_cpassignment'; // To check on upgrade, that module sits in correct place.
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = '1.0.5 (Build 2026102700)';
